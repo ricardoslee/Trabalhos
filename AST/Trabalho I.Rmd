@@ -1,8 +1,7 @@
 ---
 title: "Analise de Series Temporais - Trabalho 1"
 output: word_document
-authors: Gustavo Hotta (A56865193), Rafael Furlan (A56871487), Ricardo Squassina Lee
-  (A56843646)
+authors: 
 ---
 
 Iniciando o ambiente
