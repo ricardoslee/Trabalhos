@@ -1,8 +1,6 @@
 ---
 title: "Analise de Series Temporais - Trabalho 1"
-output:
-  html_document:
-    df_print: paged
+output: word_document
 authors: Gustavo Hotta (A56865193), Rafael Furlan (A56871487), Ricardo Squassina Lee
   (A56843646)
 ---
@@ -17,7 +15,7 @@ rm(list = ls())
 
 ```{r}
 Serie_Dados <- read.csv("Serie_Dados.csv", sep=";")
-#View(Serie_Dados)
+Serie_Dados
 ```
 
 a) Crie a série temporal dos retornos Ln, ou seja, r=Ln(P_t+1 /P_t)
@@ -25,6 +23,7 @@ a) Crie a série temporal dos retornos Ln, ou seja, r=Ln(P_t+1 /P_t)
 ```{r}
 Serie_Dados.LN <- log(Serie_Dados[2:13]/rbind(NA,Serie_Dados[2:13][-nrow(Serie_Dados[2:13]),]))
 Serie_Dados.LN <- Serie_Dados.LN[-1,]
+Serie_Dados.LN
 ```
 
 b)	Para cada ação construa o histograma dos retornos. Comente o resultado dos histogramas, verifique também o desvio padrão e a média de cada série
@@ -36,6 +35,7 @@ for (col in 1:ncol(Serie_Dados.LN)) {
   hist(Serie_Dados.LN[,col], main = names(Serie_Dados.LN[col]), xlab = "")
 }
 ```
+
 Desvio Padrao e Media:
 
 ```{r}
@@ -227,10 +227,16 @@ Para cada simulação, plote o gráfico da série, calcule o ACF e PACF. Usando 
 5- Obtenha a série histórica do PIB Brasil no site: http://www.bcb.gov.br/pre/portalCidadao/cadsis/series.asp?idpai=PORTALBCB
 Código da série: 1232
 
+Lendo o arquivo do PIB (Editado fora do R por comodidade)
 ```{r}
-PIB <- read.csv("PIB.csv", sep=";")
-#View(PIB)
-PIB.ts<-ts(PIB$X1232.PIB, frequency=4, start=c(1991,1))
+PIB <- read.csv("PIB2.csv")
+PIB
+```
+
+Criando uma Serie Temporal baseado no PIB (data inicio 1 Trimestre de 1991 e frequencia trimestral)
+```{r}
+PIB.ts<-ts(PIB, frequency=4, start=c(1991,1))
+PIB.ts
 ```
 
 a)	Plote o gráfico da série usando o R
@@ -256,7 +262,7 @@ if(!require(forecast)) {
   install.packages("forecast")
   library(forecast)
 }
-PIB.dif <- diff(PIB.ts[49:96])
+PIB.dif <- diff(PIB.ts[(nrow(PIB.ts)-12*4):nrow(PIB.ts)])
 PIB.predict <- predict(auto.arima(PIB.dif),ahead = 1)
 PIB.predict
 ```
@@ -281,7 +287,7 @@ plot(fcast.ARIMA.PIB.dif)
 
 Usando Forecast (sem usar a diferença):
 ```{r}
-etsfit.PIB.ts <- ets(PIB.ts[49:96])
+etsfit.PIB.ts <- ets(PIB.ts[(nrow(PIB.ts)-12*4):nrow(PIB.ts)])
 etsfit.PIB.ts
 accuracy(etsfit.PIB.ts)
 fcast.PIB.ts <- forecast(etsfit.PIB.ts)
@@ -291,7 +297,7 @@ plot(fcast.PIB.ts)
 
 Usando ARIMA (sem usar a diferença):
 ```{r}
-arimafit.PIB.ts <- auto.arima(PIB.ts[49:96])
+arimafit.PIB.ts <- auto.arima(PIB.ts[(nrow(PIB.ts)-12*4):nrow(PIB.ts)])
 fcast.ARIMA.PIB.ts <- forecast(arimafit.PIB.ts)
 fcast.ARIMA.PIB.ts
 plot(fcast.ARIMA.PIB.ts)

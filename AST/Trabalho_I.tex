@@ -1,0 +1,1211 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Analise de Series Temporais - Trabalho 1},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Analise de Series Temporais - Trabalho 1}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{}
+  \preauthor{}\postauthor{}
+  \date{}
+  \predate{}\postdate{}
+
+
+\begin{document}
+\maketitle
+
+Iniciando o ambiente
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cat}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}014}\StringTok{"}\NormalTok{)  }
+\end{Highlighting}
+\end{Shaded}
+
+
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{rm}\NormalTok{(}\DataTypeTok{list =} \KeywordTok{ls}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+1- Utilizando o arquivo ``Serie\_Dados.csv'' realize as seguintes
+etapas:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Serie_Dados <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"Serie_Dados.csv"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{";"}\NormalTok{)}
+\CommentTok{#View(Serie_Dados)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\tightlist
+\item
+  Crie a série temporal dos retornos Ln, ou seja, r=Ln(P\_t+1 /P\_t)
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Serie_Dados.LN <-}\StringTok{ }\KeywordTok{log}\NormalTok{(Serie_Dados[}\DecValTok{2}\OperatorTok{:}\DecValTok{13}\NormalTok{]}\OperatorTok{/}\KeywordTok{rbind}\NormalTok{(}\OtherTok{NA}\NormalTok{,Serie_Dados[}\DecValTok{2}\OperatorTok{:}\DecValTok{13}\NormalTok{][}\OperatorTok{-}\KeywordTok{nrow}\NormalTok{(Serie_Dados[}\DecValTok{2}\OperatorTok{:}\DecValTok{13}\NormalTok{]),]))}
+\NormalTok{Serie_Dados.LN <-}\StringTok{ }\NormalTok{Serie_Dados.LN[}\OperatorTok{-}\DecValTok{1}\NormalTok{,]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Para cada ação construa o histograma dos retornos. Comente o resultado
+  dos histogramas, verifique também o desvio padrão e a média de cada
+  série
+\end{enumerate}
+
+Histogramas:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (col }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{ncol}\NormalTok{(Serie_Dados.LN)) \{}
+  \KeywordTok{hist}\NormalTok{(Serie_Dados.LN[,col], }\DataTypeTok{main =} \KeywordTok{names}\NormalTok{(Serie_Dados.LN[col]), }\DataTypeTok{xlab =} \StringTok{""}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-4-1.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-4-2.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-4-3.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-4-4.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-4-5.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-4-6.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-4-7.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-4-8.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-4-9.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-4-10.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-4-11.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-4-12.pdf}
+Desvio Padrao e Media:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sapply}\NormalTok{(Serie_Dados.LN, }\ControlFlowTok{function}\NormalTok{(cl) }\KeywordTok{list}\NormalTok{(}\DataTypeTok{Media=}\KeywordTok{mean}\NormalTok{(cl,}\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{), }\DataTypeTok{DesvioPadrao=}\KeywordTok{sd}\NormalTok{(cl,}\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              VALE5        GOLL4        AMBV4       ITUB4        
+## Media        0.0001293889 -0.000491604 0.001271904 -3.197417e-05
+## DesvioPadrao 0.01838984   0.0324803    0.01426466  0.01833354   
+##              BBDC4       BVMF3        RAPT4        MYPK3      
+## Media        0.000209532 9.431336e-05 0.0003498633 0.001024337
+## DesvioPadrao 0.01708826  0.02193809   0.02011623   0.02255594 
+##              GOAU4         LLXL3        CSAN3        DOLAR       
+## Media        -0.0001969214 -0.001223711 0.0008827886 0.0002516147
+## DesvioPadrao 0.02253222    0.04117323   0.01928199   0.007719852
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Calcule o ACF e PACF de cada série de retornos. Comente os resultados.
+\end{enumerate}
+
+ACF
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (col }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{ncol}\NormalTok{(Serie_Dados.LN)) \{}
+  \KeywordTok{acf}\NormalTok{(Serie_Dados.LN[,col], }\DataTypeTok{main =} \KeywordTok{names}\NormalTok{(Serie_Dados.LN[col]), }\DataTypeTok{xlab =} \StringTok{""}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-6-1.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-6-2.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-6-3.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-6-4.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-6-5.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-6-6.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-6-7.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-6-8.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-6-9.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-6-10.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-6-11.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-6-12.pdf}
+
+PACF
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (col }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{ncol}\NormalTok{(Serie_Dados.LN)) \{}
+  \KeywordTok{pacf}\NormalTok{(Serie_Dados.LN[,col], }\DataTypeTok{main =} \KeywordTok{names}\NormalTok{(Serie_Dados.LN[col]), }\DataTypeTok{xlab =} \StringTok{""}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-7-2.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-7-3.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-7-4.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-7-5.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-7-6.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-7-7.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-7-8.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-7-9.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-7-10.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-7-11.pdf}
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-7-12.pdf}
+
+2- Para cada um dos processos abaixo gere 200 observações. Faça um
+gráfico da série, ACF e PACF. Comente os resultados.
+
+Definindo uma semente para os numeros aleatorios serem sempre os mesmos:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1234}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Série aleatória, observações iid da distribuição N(0,1)
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#x.iid = data.frame(t = x[2:200],}
+\CommentTok{#                 t_1 = x[1:199])}
+\CommentTok{#x.iid}
+\CommentTok{#x.iid.mod = lm(t~t_1,data = x.iid)}
+\CommentTok{#summary(x.iid.mod)}
+\CommentTok{#plot(x.iid.mod)}
+\CommentTok{#acf(x.iid)}
+\CommentTok{#pacf(x.iid)}
+
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+
+\NormalTok{d <-}\StringTok{ }\KeywordTok{ts}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(}\DecValTok{200}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)) }\CommentTok{#ts: time series}
+\KeywordTok{plot}\NormalTok{(d)}
+\KeywordTok{acf}\NormalTok{(d)}
+\KeywordTok{pacf}\NormalTok{(d)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+A serie é estacionária, mas por ser iid tem a PACF igual a 0
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Série com tendência estocástica,
+\end{enumerate}
+
+Neste caso o coeficiente tem que ser menor que 1 para rodar, então ar =
+0.99999
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{e <-}\StringTok{ }\KeywordTok{arima.sim}\NormalTok{(}\DataTypeTok{model =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{ar=} \FloatTok{0.99999}\NormalTok{), }\DataTypeTok{n=}\DecValTok{200}\NormalTok{, }\DataTypeTok{innov =} \KeywordTok{rnorm}\NormalTok{(}\DecValTok{200}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{25}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(e)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{acf}\NormalTok{(e)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-10-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pacf}\NormalTok{(e)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-10-3.pdf}
+
+A série não é estacionaria
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Serie com correlação de curto-prazo,
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{f <-}\StringTok{ }\KeywordTok{arima.sim}\NormalTok{(}\DataTypeTok{model =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{ar =} \FloatTok{0.7}\NormalTok{), }\DataTypeTok{n =} \DecValTok{200}\NormalTok{, }\DataTypeTok{innov =} \KeywordTok{rnorm}\NormalTok{(}\DecValTok{200}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(f)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{acf}\NormalTok{(f)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-11-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pacf}\NormalTok{(f)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-11-3.pdf}
+
+A série é estacionária, ACF com decaimento e grafico de pacf com pico em
+1
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{6}
+\tightlist
+\item
+  Série com correlações negativas
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g <-}\StringTok{ }\KeywordTok{arima.sim}\NormalTok{(}\DataTypeTok{model =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{ar =} \OperatorTok{-}\FloatTok{0.7}\NormalTok{), }\DataTypeTok{n =} \DecValTok{200}\NormalTok{, }\DataTypeTok{innov =} \KeywordTok{rnorm}\NormalTok{(}\DecValTok{200}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(g)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{acf}\NormalTok{(g)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-12-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pacf}\NormalTok{(g)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-12-3.pdf}
+
+A série é estacionária, acf com decaimento oscilando, pacf pico em 1
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{7}
+\tightlist
+\item
+  Medias moveis,
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{h <-}\StringTok{ }\KeywordTok{arima.sim}\NormalTok{(}\DataTypeTok{model =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{ar =} \FloatTok{0.6}\NormalTok{), }\DataTypeTok{n =} \DecValTok{200}\NormalTok{, }\DataTypeTok{innov =} \KeywordTok{rnorm}\NormalTok{(}\DecValTok{200}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(h)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{acf}\NormalTok{(h)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-13-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pacf}\NormalTok{(h)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-13-3.pdf}
+
+A série é estacionaria, acf igual a 0 em K\textgreater{}1 e pacf com
+decaimento oscilando
+
+3- Utilize a série abaixo para resolver cada item.
+
+An example of a time series that can probably be described using an
+additive model with a trend and no seasonality is the time series of the
+annual diameter of women's skirts at the hem, from 1866 to 1911. The
+data is available in the file
+\url{http://robjhyndman.com/tsdldata/roberts/skirts.dat} (original data
+from Hipel and McLeod, 1994).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{skirts <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\StringTok{"http://robjhyndman.com/tsdldata/roberts/skirts.dat"}\NormalTok{, }\DataTypeTok{header =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{skip =} \DecValTok{3}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\tightlist
+\item
+  Faça a leitura da série de dados e os tratamentos necessários para
+  considerar a mesma como uma série temporal
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{skirts.ts<-}\KeywordTok{ts}\NormalTok{(skirts, }\DataTypeTok{frequency=}\DecValTok{1}\NormalTok{, }\DataTypeTok{start=}\KeywordTok{c}\NormalTok{(}\DecValTok{1866}\NormalTok{))}
+\NormalTok{skirts.ts}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Time Series:
+## Start = 1866 
+## End = 1911 
+## Frequency = 1 
+##       SKIRTS
+##  [1,]    608
+##  [2,]    617
+##  [3,]    625
+##  [4,]    636
+##  [5,]    657
+##  [6,]    691
+##  [7,]    728
+##  [8,]    784
+##  [9,]    816
+## [10,]    876
+## [11,]    949
+## [12,]    997
+## [13,]   1027
+## [14,]   1047
+## [15,]   1049
+## [16,]   1018
+## [17,]   1021
+## [18,]   1012
+## [19,]   1018
+## [20,]    991
+## [21,]    962
+## [22,]    921
+## [23,]    871
+## [24,]    829
+## [25,]    822
+## [26,]    820
+## [27,]    802
+## [28,]    821
+## [29,]    819
+## [30,]    791
+## [31,]    746
+## [32,]    726
+## [33,]    661
+## [34,]    620
+## [35,]    588
+## [36,]    568
+## [37,]    542
+## [38,]    551
+## [39,]    541
+## [40,]    557
+## [41,]    556
+## [42,]    534
+## [43,]    528
+## [44,]    529
+## [45,]    523
+## [46,]    531
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Faça a decomposição da série do item (a): Sazonalidade, Tendência e
+  Aleatória.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{skirts.components <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(}\KeywordTok{frequency}\NormalTok{(skirts.ts)}\OperatorTok{>}\DecValTok{1}\NormalTok{,}
+                        \KeywordTok{decompose}\NormalTok{(skirts.ts,}\DataTypeTok{type =} \KeywordTok{c}\NormalTok{(}\StringTok{"additive"}\NormalTok{, }\StringTok{"multiplicative"}\NormalTok{)),}
+                        \KeywordTok{print}\NormalTok{(}\StringTok{"Nao e' possivel decompor uma serie anual, para ser feita a decomposicao a serie deveria ter, no minimo, 2 periodos"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Nao e' possivel decompor uma serie anual, para ser feita a decomposicao a serie deveria ter, no minimo, 2 periodos"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#plot(skirts.components)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Calcule a ACF e PACF da série e da primeira diferença
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{acf}\NormalTok{(skirts.ts)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-17-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{acf}\NormalTok{(}\KeywordTok{diff}\NormalTok{(skirts.ts))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-17-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pacf}\NormalTok{(skirts.ts)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-17-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pacf}\NormalTok{(}\KeywordTok{diff}\NormalTok{(skirts.ts))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-17-4.pdf}
+
+4- Usando a função arima.sim gere as seguintes simulações (300 ptos):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1234}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\tightlist
+\item
+  Processo AR(1) onde θ0=0, θ1=0.7
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a <-}\StringTok{ }\KeywordTok{arima.sim}\NormalTok{(}\DataTypeTok{n=}\DecValTok{300}\NormalTok{,}\KeywordTok{list}\NormalTok{(}\DataTypeTok{ar =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,.}\DecValTok{7}\NormalTok{)))}
+\KeywordTok{plot}\NormalTok{(a)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-19-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{acf}\NormalTok{(a)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-19-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pacf}\NormalTok{(a)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-19-3.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Processo AR(1) onde θ0=0, θ1= -0.7
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{b <-}\StringTok{ }\KeywordTok{arima.sim}\NormalTok{(}\DataTypeTok{n=}\DecValTok{300}\NormalTok{,}\KeywordTok{list}\NormalTok{(}\DataTypeTok{ar =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\OperatorTok{-}\NormalTok{.}\DecValTok{7}\NormalTok{)))}
+\KeywordTok{plot}\NormalTok{(b)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-20-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{acf}\NormalTok{(b)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-20-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pacf}\NormalTok{(b)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-20-3.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Processo AR(2) onde θ0=0, θ1=0.3 e θ2=0.5
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{c <-}\StringTok{ }\KeywordTok{arima.sim}\NormalTok{(}\DataTypeTok{n=}\DecValTok{300}\NormalTok{,}\KeywordTok{list}\NormalTok{(}\DataTypeTok{ar =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,.}\DecValTok{3}\NormalTok{,.}\DecValTok{5}\NormalTok{)))}
+\KeywordTok{plot}\NormalTok{(c)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-21-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{acf}\NormalTok{(c)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-21-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pacf}\NormalTok{(c)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-21-3.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Processo MA(1) onde θ0=0, θ1=0.6
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{d <-}\StringTok{ }\KeywordTok{arima.sim}\NormalTok{(}\DataTypeTok{n=}\DecValTok{300}\NormalTok{,}\KeywordTok{list}\NormalTok{(}\DataTypeTok{ma =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,.}\DecValTok{6}\NormalTok{)))}
+\KeywordTok{plot}\NormalTok{(d)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-22-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{acf}\NormalTok{(d)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-22-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pacf}\NormalTok{(d)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-22-3.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Processo MA(1) onde θ0=0, θ1=-0.6
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{e <-}\StringTok{ }\KeywordTok{arima.sim}\NormalTok{(}\DataTypeTok{n=}\DecValTok{300}\NormalTok{,}\KeywordTok{list}\NormalTok{(}\DataTypeTok{ma =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\OperatorTok{-}\NormalTok{.}\DecValTok{6}\NormalTok{)))}
+\KeywordTok{plot}\NormalTok{(e)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-23-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{acf}\NormalTok{(e)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-23-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pacf}\NormalTok{(e)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-23-3.pdf}
+
+Para cada simulação, plote o gráfico da série, calcule o ACF e PACF.
+Usando estes resultados conclua como deve ser o comportamento da ACF de
+PACF de um modelo autoregressivo( AR.)
+
+5- Obtenha a série histórica do PIB Brasil no site:
+\url{http://www.bcb.gov.br/pre/portalCidadao/cadsis/series.asp?idpai=PORTALBCB}
+Código da série: 1232
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{PIB <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"PIB.csv"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{";"}\NormalTok{)}
+\CommentTok{#View(PIB)}
+\NormalTok{PIB.ts<-}\KeywordTok{ts}\NormalTok{(PIB}\OperatorTok{$}\NormalTok{X1232.PIB, }\DataTypeTok{frequency=}\DecValTok{4}\NormalTok{, }\DataTypeTok{start=}\KeywordTok{c}\NormalTok{(}\DecValTok{1991}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\tightlist
+\item
+  Plote o gráfico da série usando o R
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot.ts}\NormalTok{(PIB.ts)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-25-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Faça a decomposição da série em: Sazonalidade, Tendência e Aleatória.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{PIB.decomposto <-}\StringTok{ }\KeywordTok{decompose}\NormalTok{(PIB.ts)}
+\NormalTok{PIB.decomposto}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $x
+##      Qtr1 Qtr2 Qtr3 Qtr4
+## 1991   75   80   84   78
+## 1992   74   77   82   83
+## 1993   76   81   87   86
+## 1994   79   85   92    5
+## 1995   89   91    3    4
+## 1996   88    2   11    6
+## 1997   90    8   18   12
+## 1998   93   10   17    8
+## 1999    1    9   14   13
+## 2000    7   19   22   23
+## 2001   15   25   24   21
+## 2002   16   26   29   30
+## 2003   20   28   31   32
+## 2004   27   34   35   36
+## 2005   33   40   38   39
+## 2006   37   41   43   44
+## 2007   42   46   48   49
+## 2008   47   52   55   50
+## 2009   45   51   53   56
+## 2010   54   59   60   61
+## 2011   57   63   65   62
+## 2012   58   66   67   68
+## 2013   61   73   71   72
+## 2014   64   69   70   94
+## 
+## $seasonal
+##            Qtr1       Qtr2       Qtr3       Qtr4
+## 1991  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 1992  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 1993  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 1994  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 1995  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 1996  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 1997  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 1998  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 1999  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2000  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2001  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2002  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2003  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2004  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2005  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2006  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2007  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2008  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2009  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2010  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2011  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2012  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2013  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 2014  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 
+## $trend
+##        Qtr1   Qtr2   Qtr3   Qtr4
+## 1991     NA     NA 79.125 78.625
+## 1992 78.000 78.375 79.250 80.000
+## 1993 81.125 82.125 82.875 83.750
+## 1994 84.875 75.375 66.500 68.500
+## 1995 58.125 46.875 46.625 35.375
+## 1996 25.250 26.500 27.000 28.000
+## 1997 29.625 31.250 32.375 33.000
+## 1998 33.125 32.500 20.500  8.875
+## 1999  8.375  8.625 10.000 12.000
+## 2000 14.250 16.500 18.750 20.500
+## 2001 21.500 21.500 21.375 21.625
+## 2002 22.375 24.125 25.750 26.500
+## 2003 27.000 27.500 28.625 30.250
+## 2004 31.500 32.500 33.750 35.250
+## 2005 36.375 37.125 38.000 38.625
+## 2006 39.375 40.625 41.875 43.125
+## 2007 44.375 45.625 46.875 48.250
+## 2008 49.875 50.875 50.750 50.375
+## 2009 50.000 50.500 52.375 54.500
+## 2010 56.375 57.875 58.875 59.750
+## 2011 60.875 61.625 61.875 62.375
+## 2012 63.000 64.000 65.125 66.375
+## 2013 67.750 68.750 69.625 69.500
+## 2014 68.875 71.500     NA     NA
+## 
+## $random
+##             Qtr1        Qtr2        Qtr3        Qtr4
+## 1991          NA          NA   5.2364130   4.4429348
+## 1992  -9.2853261  -1.5190217   3.1114130   8.0679348
+## 1993 -10.4103261  -1.2690217   4.4864130   7.3179348
+## 1994 -11.1603261   9.4809783  25.8614130 -58.4320652
+## 1995  25.5896739  43.9809783 -43.2635870 -26.3070652
+## 1996  57.4646739 -24.6440217 -15.6385870 -16.9320652
+## 1997  55.0896739 -23.3940217 -14.0135870 -15.9320652
+## 1998  54.5896739 -22.6440217  -3.1385870   4.1929348
+## 1999 -12.6603261   0.2309783   4.3614130   6.0679348
+## 2000 -12.5353261   2.3559783   3.6114130   7.5679348
+## 2001 -11.7853261   3.3559783   2.9864130   4.4429348
+## 2002 -11.6603261   1.7309783   3.6114130   8.5679348
+## 2003 -12.2853261   0.3559783   2.7364130   6.8179348
+## 2004  -9.7853261   1.3559783   1.6114130   5.8179348
+## 2005  -8.6603261   2.7309783   0.3614130   5.4429348
+## 2006  -7.6603261   0.2309783   1.4864130   5.9429348
+## 2007  -7.6603261   0.2309783   1.4864130   5.8179348
+## 2008  -8.1603261   0.9809783   4.6114130   4.6929348
+## 2009 -10.2853261   0.3559783   0.9864130   6.5679348
+## 2010  -7.6603261   0.9809783   1.4864130   6.3179348
+## 2011  -9.1603261   1.2309783   3.4864130   4.6929348
+## 2012 -10.2853261   1.8559783   2.2364130   6.6929348
+## 2013 -12.0353261   4.1059783   1.7364130   7.5679348
+## 2014 -10.1603261  -2.6440217          NA          NA
+## 
+## $figure
+## [1]  5.2853261  0.1440217 -0.3614130 -5.0679348
+## 
+## $type
+## [1] "additive"
+## 
+## attr(,"class")
+## [1] "decomposed.ts"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(PIB.decomposto)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-26-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Usando o índice dos últimos 12 anos, encontre uma projeção para o
+  PIB(índice) do próximo semestre usando um modelo AR(1). Neste caso use
+  a série das diferenças.
+\end{enumerate}
+
+Usando Predict:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(forecast)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"forecast"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(forecast)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: forecast
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{PIB.dif <-}\StringTok{ }\KeywordTok{diff}\NormalTok{(PIB.ts[}\DecValTok{49}\OperatorTok{:}\DecValTok{96}\NormalTok{])}
+\NormalTok{PIB.predict <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(}\KeywordTok{auto.arima}\NormalTok{(PIB.dif),}\DataTypeTok{ahead =} \DecValTok{1}\NormalTok{)}
+\NormalTok{PIB.predict}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $pred
+## Time Series:
+## Start = 48 
+## End = 48 
+## Frequency = 1 
+## [1] -6.898466
+## 
+## $se
+## Time Series:
+## Start = 48 
+## End = 48 
+## Frequency = 1 
+## [1] 5.194559
+\end{verbatim}
+
+Usando Forecast:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{etsfit.PIB.dif <-}\StringTok{ }\KeywordTok{ets}\NormalTok{(PIB.dif)}
+\NormalTok{etsfit.PIB.dif}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ETS(A,N,N) 
+## 
+## Call:
+##  ets(y = PIB.dif) 
+## 
+##   Smoothing parameters:
+##     alpha = 1e-04 
+## 
+##   Initial states:
+##     l = 1.5736 
+## 
+##   sigma:  5.4275
+## 
+##      AIC     AICc      BIC 
+## 343.9129 344.4711 349.4634
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{accuracy}\NormalTok{(etsfit.PIB.dif)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                       ME     RMSE      MAE      MPE    MAPE      MASE
+## Training set 0.001407463 5.310812 3.681257 59.63687 88.9061 0.6271772
+##                    ACF1
+## Training set -0.2199867
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fcast.PIB.dif <-}\StringTok{ }\KeywordTok{forecast}\NormalTok{(etsfit.PIB.dif)}
+\NormalTok{fcast.PIB.dif}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Point Forecast     Lo 80    Hi 80     Lo 95    Hi 95
+## 48        1.57364 -5.382041 8.529321 -9.064157 12.21144
+## 49        1.57364 -5.382041 8.529321 -9.064157 12.21144
+## 50        1.57364 -5.382041 8.529321 -9.064157 12.21144
+## 51        1.57364 -5.382042 8.529321 -9.064157 12.21144
+## 52        1.57364 -5.382042 8.529322 -9.064157 12.21144
+## 53        1.57364 -5.382042 8.529322 -9.064157 12.21144
+## 54        1.57364 -5.382042 8.529322 -9.064157 12.21144
+## 55        1.57364 -5.382042 8.529322 -9.064157 12.21144
+## 56        1.57364 -5.382042 8.529322 -9.064157 12.21144
+## 57        1.57364 -5.382042 8.529322 -9.064157 12.21144
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(fcast.PIB.dif)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-28-1.pdf}
+
+Usando ARIMA:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{arimafit.PIB.dif <-}\StringTok{ }\KeywordTok{auto.arima}\NormalTok{(PIB.dif)}
+\NormalTok{fcast.ARIMA.PIB.dif <-}\StringTok{ }\KeywordTok{forecast}\NormalTok{(arimafit.PIB.dif)}
+\NormalTok{fcast.ARIMA.PIB.dif}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Point Forecast      Lo 80      Hi 80      Lo 95     Hi 95
+## 48     -6.8984662 -13.555561 -0.2413712 -17.079614  3.282682
+## 49      4.4612251  -2.631513 11.5539636  -6.386182 15.308633
+## 50      0.2848823  -6.864703  7.4344677 -10.649465 11.219230
+## 51      1.8202972  -5.336937  8.9775316  -9.125748 12.766343
+## 52      1.2558084  -5.902459  8.4140760  -9.691817 12.203434
+## 53      1.4633403  -5.695067  8.6217476  -9.484499 12.411179
+## 54      1.3870421  -5.771384  8.5454682  -9.560826 12.334910
+## 55      1.4150928  -5.743336  8.5735215  -9.532779 12.362965
+## 56      1.4047801  -5.753649  8.5632091  -9.543092 12.352653
+## 57      1.4085715  -5.749858  8.5670006  -9.539301 12.356444
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(fcast.ARIMA.PIB.dif)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-29-1.pdf}
+
+Usando Forecast (sem usar a diferença):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{etsfit.PIB.ts <-}\StringTok{ }\KeywordTok{ets}\NormalTok{(PIB.ts[}\DecValTok{49}\OperatorTok{:}\DecValTok{96}\NormalTok{])}
+\NormalTok{etsfit.PIB.ts}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ETS(M,A,N) 
+## 
+## Call:
+##  ets(y = PIB.ts[49:96]) 
+## 
+##   Smoothing parameters:
+##     alpha = 0.0296 
+##     beta  = 0.0296 
+## 
+##   Initial states:
+##     l = 25.1972 
+##     b = 1.3539 
+## 
+##   sigma:  0.0825
+## 
+##      AIC     AICc      BIC 
+## 326.5554 327.9840 335.9114
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{accuracy}\NormalTok{(etsfit.PIB.ts)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                      ME     RMSE      MAE       MPE     MAPE      MASE
+## Training set 0.01216636 4.313633 2.950698 -1.043802 5.960771 0.7456065
+##                     ACF1
+## Training set -0.04256709
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fcast.PIB.ts <-}\StringTok{ }\KeywordTok{forecast}\NormalTok{(etsfit.PIB.ts)}
+\NormalTok{fcast.PIB.ts}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Point Forecast    Lo 80    Hi 80    Lo 95     Hi 95
+## 49       75.54042 67.55617 83.52466 63.32957  87.75127
+## 50       76.91158 68.76863 85.05453 64.45801  89.36515
+## 51       78.28274 69.96423 86.60126 65.56067  91.00482
+## 52       79.65391 71.13682 88.17100 66.62814  92.67967
+## 53       81.02507 72.28071 89.76944 67.65172  94.39842
+## 54       82.39623 73.39078 91.40169 68.62358  96.16889
+## 55       83.76740 74.46259 93.07221 69.53692  97.99787
+## 56       85.13856 75.49243 94.78469 70.38608  99.89105
+## 57       86.50972 76.47736 96.54209 71.16654 101.85291
+## 58       87.88089 77.41520 98.34658 71.87500 103.88678
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(fcast.PIB.ts)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-30-1.pdf}
+
+Usando ARIMA (sem usar a diferença):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{arimafit.PIB.ts <-}\StringTok{ }\KeywordTok{auto.arima}\NormalTok{(PIB.ts[}\DecValTok{49}\OperatorTok{:}\DecValTok{96}\NormalTok{])}
+\NormalTok{fcast.ARIMA.PIB.ts <-}\StringTok{ }\KeywordTok{forecast}\NormalTok{(arimafit.PIB.ts)}
+\NormalTok{fcast.ARIMA.PIB.ts}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Point Forecast    Lo 80     Hi 80    Lo 95     Hi 95
+## 49       87.10154 80.44444  93.75863 76.92039  97.28269
+## 50       91.56276 83.68634  99.43918 79.51681 103.60871
+## 51       91.84764 82.45912 101.23617 77.48913 106.20615
+## 52       93.66794 83.13325 104.20263 77.55652 109.77936
+## 53       94.92375 83.30514 106.54236 77.15461 112.69289
+## 54       96.38709 83.79469 108.97949 77.12868 115.64550
+## 55       97.77413 84.27211 111.27616 77.12457 118.42370
+## 56       99.18923 84.83715 113.54130 77.23963 121.13883
+## 57      100.59401 85.43878 115.74923 77.41609 123.77193
+## 58      102.00258 86.08492 117.92024 77.65862 126.34654
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(fcast.ARIMA.PIB.ts)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho_I_files/figure-latex/unnamed-chunk-31-1.pdf}
+
+
+\end{document}
