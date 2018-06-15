@@ -1,7 +1,7 @@
 ---
 title: "Analise de Series Temporais - Trabalho 1"
-output: word_document
-authors: 
+output: html_document
+authors: null
 ---
 
 Iniciando o ambiente
@@ -70,8 +70,9 @@ set.seed(1234)
 d)	Série aleatória, observações iid da distribuição N(0,1)
 
 ```{r}
-#x.iid = data.frame(t = x[2:200],
-#                 t_1 = x[1:199])
+#x <- rnorm(201, 0, 1)
+#x.iid = data.frame(t = x[2:201],
+#                 t_1 = x[1:200])
 #x.iid
 #x.iid.mod = lm(t~t_1,data = x.iid)
 #summary(x.iid.mod)
@@ -117,7 +118,7 @@ A série é estacionária, ACF com decaimento e grafico de pacf com pico em 1
 g)	Série com correlações negativas
 
 ```{r}
-g <- arima.sim(model = list(ar = -0.7), n = 200, innov = rnorm(200, 0, 1))
+g <- arima.sim(model = list(ar = -0.8), n = 200, innov = rnorm(200, 0, 1))
 plot(g)
 acf(g)
 pacf(g)
@@ -128,7 +129,7 @@ A série é estacionária, acf com decaimento oscilando, pacf pico em 1
 h)	Medias moveis, 
 
 ```{r}
-h <- arima.sim(model = list(ar = 0.6), n = 200, innov = rnorm(200, 0, 1))
+h <- arima.sim(model = list(ma = 0.6), n = 200, innov = rnorm(200, 0, 1))
 plot(h)
 acf(h)
 pacf(h)
@@ -180,7 +181,7 @@ set.seed(1234)
 a) Processo AR(1) onde θ0=0, θ1=0.7
 
 ```{r}
-a <- arima.sim(n=300,list(ar = c(0,.7)))
+a <- arima.sim(n=300,list(ar = c(.7)))
 plot(a)
 acf(a)
 pacf(a)
@@ -189,7 +190,7 @@ pacf(a)
 b) Processo AR(1) onde θ0=0, θ1= -0.7
 
 ```{r}
-b <- arima.sim(n=300,list(ar = c(0,-.7)))
+b <- arima.sim(n=300,list(ar = c(-.7)))
 plot(b)
 acf(b)
 pacf(b)
@@ -197,7 +198,7 @@ pacf(b)
 
 c) Processo AR(2) onde θ0=0, θ1=0.3 e θ2=0.5
 ```{r}
-c <- arima.sim(n=300,list(ar = c(0,.3,.5)))
+c <- arima.sim(n=300,list(ar = c(.3,.5)))
 plot(c)
 acf(c)
 pacf(c)
@@ -206,7 +207,7 @@ pacf(c)
 d) Processo MA(1) onde θ0=0, θ1=0.6
 
 ```{r}
-d <- arima.sim(n=300,list(ma = c(0,.6)))
+d <- arima.sim(n=300,list(ma = c(.6)))
 plot(d)
 acf(d)
 pacf(d)
@@ -214,7 +215,7 @@ pacf(d)
 
 e) Processo MA(1) onde θ0=0, θ1=-0.6
 ```{r}
-e <- arima.sim(n=300,list(ma = c(0,-.6)))
+e <- arima.sim(n=300,list(ma = c(-.6)))
 plot(e)
 acf(e)
 pacf(e)
