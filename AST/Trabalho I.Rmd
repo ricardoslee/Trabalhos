@@ -1,11 +1,11 @@
 ---
 title: "Analise de Series Temporais - Trabalho 1"
-output: html_document
-authors: null
+output: word_document
+author: "Gustavo Hotta (A56865193), Rafael Furlan (A56871487), Ricardo Squassina Lee (A56843646)"
 ---
 
-Iniciando o ambiente
-```{r}
+```{r include=FALSE}
+#Iniciando o ambiente
 cat("\014")  
 rm(list = ls())
 ```
@@ -14,7 +14,7 @@ rm(list = ls())
 
 ```{r}
 Serie_Dados <- read.csv("Serie_Dados.csv", sep=";")
-Serie_Dados
+#Serie_Dados
 ```
 
 a) Crie a série temporal dos retornos Ln, ou seja, r=Ln(P_t+1 /P_t)
@@ -22,14 +22,19 @@ a) Crie a série temporal dos retornos Ln, ou seja, r=Ln(P_t+1 /P_t)
 ```{r}
 Serie_Dados.LN <- log(Serie_Dados[2:13]/rbind(NA,Serie_Dados[2:13][-nrow(Serie_Dados[2:13]),]))
 Serie_Dados.LN <- Serie_Dados.LN[-1,]
-Serie_Dados.LN
+#Serie_Dados.LN
 ```
+
+A maior parte dos estudos financeiros concentram-se na análise de séries temporal dos retornos ao invés do uso da série dos preços dos ativos. A razão de utilizarmos série de retornos tem dois fatores, as informações de retornos atendem aos interesses de investidores e a série de retornos possui propriedades estatísticas mais interessantes do que séries dos preços.
 
 b)	Para cada ação construa o histograma dos retornos. Comente o resultado dos histogramas, verifique também o desvio padrão e a média de cada série
 
 Histogramas:
 
 ```{r}
+par(mfrow = c(2, 2))
+
+
 for (col in 1:ncol(Serie_Dados.LN)) {
   hist(Serie_Dados.LN[,col], main = names(Serie_Dados.LN[col]), xlab = "")
 }
@@ -41,11 +46,17 @@ Desvio Padrao e Media:
 sapply(Serie_Dados.LN, function(cl) list(Media=mean(cl,na.rm=TRUE), DesvioPadrao=sd(cl,na.rm=TRUE)))
 ```
 
+Graficamente, as variações dos retornos da carteira apresentam uma distribuição normal. 
+Os melhores retornos para os piores são: AMBV4; MYPK3; BVMF3; CSAN3; RAPT4; DÓLAR; BBDC4; VALE5; ITUB4; GOAU4; GOLL4; LLXL3. Os últimos quatro retornos são negativos. Os maiores desvios padrões para os menores são: LLXL3; GOLL4; MYPK3; GOAU4; BVMF3; RAPT4; CSAN3; VALE5; ITUB4; BBDC4; AMBV4; DÓLAR.
+Podemos analisar que o melhor e mais seguro retorno é a AMBR4, porque tem o melhor retorno e um menor desvio padrão.
+
 c)	Calcule o ACF e PACF de cada série de retornos. Comente os resultados.
 
 ACF
 
 ```{r}
+par(mfrow = c(2, 2))
+
 for (col in 1:ncol(Serie_Dados.LN)) {
   acf(Serie_Dados.LN[,col], main = names(Serie_Dados.LN[col]), xlab = "")
 }
@@ -54,10 +65,15 @@ for (col in 1:ncol(Serie_Dados.LN)) {
 PACF
 
 ```{r}
+par(mfrow = c(1, 2))
+
 for (col in 1:ncol(Serie_Dados.LN)) {
   pacf(Serie_Dados.LN[,col], main = names(Serie_Dados.LN[col]), xlab = "")
 }
 ```
+
+Nos gráficos de ACF, podemos analisar que todos os retornos convergem rapidamente para zero, então podemos  concluir que eles são estacionários como AR(p).
+O PACF (função de autocorrelação parcial) nos dá correlação entre a variável no instante t e uma de suas defasagens, retirando os efeitos das outras defasagens. Graficamente cada retorno apresenta um padrão.
 
 2-   Para cada um dos processos abaixo gere 200 observações. Faça um gráfico da série, ACF e PACF. Comente os resultados.
 
@@ -70,19 +86,9 @@ set.seed(1234)
 d)	Série aleatória, observações iid da distribuição N(0,1)
 
 ```{r}
-#x <- rnorm(201, 0, 1)
-#x.iid = data.frame(t = x[2:201],
-#                 t_1 = x[1:200])
-#x.iid
-#x.iid.mod = lm(t~t_1,data = x.iid)
-#summary(x.iid.mod)
-#plot(x.iid.mod)
-#acf(x.iid)
-#pacf(x.iid)
-
 par(mfrow = c(1, 3))
 
-d <- ts(rnorm(200, 0, 1)) #ts: time series
+d <- ts(rnorm(200, 0, 1))
 plot(d)
 acf(d)
 pacf(d)
@@ -96,6 +102,8 @@ e)	Série com tendência estocástica,
 Neste caso o coeficiente tem que ser menor que 1 para rodar, então ar = 0.99999
 
 ```{r}
+par(mfrow = c(1, 3))
+
 e <- arima.sim(model = list(ar= 0.99999), n=200, innov = rnorm(200,1,25))
 plot(e)
 acf(e)
@@ -107,6 +115,8 @@ A série não é estacionaria
 f)	Serie com correlação de curto-prazo, 
 
 ```{r}
+par(mfrow = c(1, 3))
+
 f <- arima.sim(model = list(ar = 0.7), n = 200, innov = rnorm(200, 0, 1))
 plot(f)
 acf(f)
@@ -118,6 +128,8 @@ A série é estacionária, ACF com decaimento e grafico de pacf com pico em 1
 g)	Série com correlações negativas
 
 ```{r}
+par(mfrow = c(1, 3))
+
 g <- arima.sim(model = list(ar = -0.8), n = 200, innov = rnorm(200, 0, 1))
 plot(g)
 acf(g)
@@ -129,6 +141,8 @@ A série é estacionária, acf com decaimento oscilando, pacf pico em 1
 h)	Medias moveis, 
 
 ```{r}
+par(mfrow = c(1, 3))
+
 h <- arima.sim(model = list(ma = 0.6), n = 200, innov = rnorm(200, 0, 1))
 plot(h)
 acf(h)
@@ -150,7 +164,7 @@ a)	Faça a leitura da série de dados e os tratamentos necessários para conside
 
 ```{r}
 skirts.ts<-ts(skirts, frequency=1, start=c(1866))
-skirts.ts
+#skirts.ts
 ```
 
 b)	Faça a decomposição da série do item (a): Sazonalidade, Tendência e Aleatória.
@@ -165,12 +179,16 @@ skirts.components <- ifelse(frequency(skirts.ts)>1,
 c)	Calcule a ACF e PACF da série e da primeira diferença
 
 ```{r}
+par(mfrow = c(2, 2))
+
 acf(skirts.ts)
 acf(diff(skirts.ts))
 pacf(skirts.ts)
 pacf(diff(skirts.ts))
 
 ```
+
+Os ACF da série e da primeira diferença não apresentam muita diferença quando comparados entre si. No gráfico PACF na série apresenta um lag com valor negativo no tempo 2 e na primeira diferença apresenta um lag com valor positivo no tempo 6.
 
 4- Usando a função arima.sim gere as seguintes simulações (300 ptos):
 
@@ -181,6 +199,8 @@ set.seed(1234)
 a) Processo AR(1) onde θ0=0, θ1=0.7
 
 ```{r}
+par(mfrow = c(1, 3))
+
 a <- arima.sim(n=300,list(ar = c(.7)))
 plot(a)
 acf(a)
@@ -190,6 +210,8 @@ pacf(a)
 b) Processo AR(1) onde θ0=0, θ1= -0.7
 
 ```{r}
+par(mfrow = c(1, 3))
+
 b <- arima.sim(n=300,list(ar = c(-.7)))
 plot(b)
 acf(b)
@@ -198,6 +220,8 @@ pacf(b)
 
 c) Processo AR(2) onde θ0=0, θ1=0.3 e θ2=0.5
 ```{r}
+par(mfrow = c(1, 3))
+
 c <- arima.sim(n=300,list(ar = c(.3,.5)))
 plot(c)
 acf(c)
@@ -207,6 +231,8 @@ pacf(c)
 d) Processo MA(1) onde θ0=0, θ1=0.6
 
 ```{r}
+par(mfrow = c(1, 3))
+
 d <- arima.sim(n=300,list(ma = c(.6)))
 plot(d)
 acf(d)
@@ -215,6 +241,8 @@ pacf(d)
 
 e) Processo MA(1) onde θ0=0, θ1=-0.6
 ```{r}
+par(mfrow = c(1, 3))
+
 e <- arima.sim(n=300,list(ma = c(-.6)))
 plot(e)
 acf(e)
@@ -230,13 +258,13 @@ Código da série: 1232
 Lendo o arquivo do PIB (Editado fora do R por comodidade)
 ```{r}
 PIB <- read.csv("PIB2.csv")
-PIB
+#PIB
 ```
 
 Criando uma Serie Temporal baseado no PIB (data inicio 1 Trimestre de 1991 e frequencia trimestral)
 ```{r}
 PIB.ts<-ts(PIB, frequency=4, start=c(1991,1))
-PIB.ts
+#PIB.ts
 ```
 
 a)	Plote o gráfico da série usando o R
@@ -249,7 +277,7 @@ b)	Faça a decomposição da série em: Sazonalidade, Tendência e Aleatória.
 
 ```{r}
 PIB.decomposto <- decompose(PIB.ts)
-PIB.decomposto
+#PIB.decomposto
 plot(PIB.decomposto)
 ```
 
@@ -263,7 +291,7 @@ if(!require(forecast)) {
   library(forecast)
 }
 PIB.dif <- diff(PIB.ts[(nrow(PIB.ts)-12*4):nrow(PIB.ts)])
-PIB.predict <- predict(auto.arima(PIB.dif),ahead = 1)
+PIB.predict <- predict(auto.arima(PIB.dif),ahead = 2)
 PIB.predict
 ```
 
@@ -272,16 +300,16 @@ Usando Forecast:
 etsfit.PIB.dif <- ets(PIB.dif)
 etsfit.PIB.dif
 accuracy(etsfit.PIB.dif)
-fcast.PIB.dif <- forecast(etsfit.PIB.dif)
-fcast.PIB.dif
+fcast.PIB.dif <- forecast(etsfit.PIB.dif, h = 2, level = c(80,95))
+#fcast.PIB.dif
 plot(fcast.PIB.dif)
 ```
 
 Usando ARIMA:
 ```{r}
 arimafit.PIB.dif <- auto.arima(PIB.dif)
-fcast.ARIMA.PIB.dif <- forecast(arimafit.PIB.dif)
-fcast.ARIMA.PIB.dif
+fcast.ARIMA.PIB.dif <- forecast(arimafit.PIB.dif, h = 2, level = c(80,95))
+#fcast.ARIMA.PIB.dif
 plot(fcast.ARIMA.PIB.dif)
 ```
 
@@ -290,15 +318,15 @@ Usando Forecast (sem usar a diferença):
 etsfit.PIB.ts <- ets(PIB.ts[(nrow(PIB.ts)-12*4):nrow(PIB.ts)])
 etsfit.PIB.ts
 accuracy(etsfit.PIB.ts)
-fcast.PIB.ts <- forecast(etsfit.PIB.ts)
-fcast.PIB.ts
+fcast.PIB.ts <- forecast(etsfit.PIB.ts, h = 2, level = c(80,95))
+#fcast.PIB.ts
 plot(fcast.PIB.ts)
 ```
 
 Usando ARIMA (sem usar a diferença):
 ```{r}
 arimafit.PIB.ts <- auto.arima(PIB.ts[(nrow(PIB.ts)-12*4):nrow(PIB.ts)])
-fcast.ARIMA.PIB.ts <- forecast(arimafit.PIB.ts)
-fcast.ARIMA.PIB.ts
+fcast.ARIMA.PIB.ts <- forecast(arimafit.PIB.ts, h = 2, level = c(80,95))
+#fcast.ARIMA.PIB.ts
 plot(fcast.ARIMA.PIB.ts)
 ```
