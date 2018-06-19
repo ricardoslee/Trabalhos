@@ -14,7 +14,7 @@ rm(list = ls())
 cat("\014") 
 ```
 
-```{r include = FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
 #Teste de Mapas
 require(ggmap)
 endereco <- c("Av Paulista 548 Sao Paulo Brazil")
@@ -24,16 +24,43 @@ ggmap(mapa) + geom_point(aes(x = geo_end$lon, y = geo_end$lat), color="red", siz
 ```
 
 ```{r}
-library(readxl)
+require(readxl)
 EMPRESAS_Paulista_T4 <- read_excel("EMPRESAS_Paulista T4.xlsx")
 #View(EMPRESAS_Paulista_T4)
 
 EMPRESAS_GRUPO <- EMPRESAS_Paulista_T4[EMPRESAS_Paulista_T4$`Gestor da Empresa`=="GUSTAVO FUNAYAMA HOTTA" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RAFAEL GUSTAVO FURLAN" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RICARDO SQUASSINA LEE",]
 
-EMPRESAS_GRUPO$geocode <- geocode(EMPRESAS_GRUPO$CEP, source = "google",output = "more")
+require(ggmap)
+geocodeQueryCheck()
+#EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, source = "google", output = "more", override_limit = TRUE)
+geocodeQueryCheck()
 
-mapa <- get_map(location = "Sao Paulo Brazil", zoom = 5, source = "google")
+i <- 1
+while (i < length(EMPRESAS_GRUPO$ID)) {
+  print(EMPRESAS_GRUPO$CEP[i])
+  EMPRESAS_GRUPO$GEOCODE[i] <- geocode(EMPRESAS_GRUPO$CEP[i], source = "google")
+  Sys.sleep(1)
+  i <- i + 1
+}
 
-ggmap(mapa) + geom_point(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$geocode.lon, y = EMPRESAS_GRUPO$geocode.lat, size = EMPRESAS_GRUPO$`Faturamento 2017`), color="red", alpha=0.5)
+mapa <- get_map(location = "Sao Paulo Brazil", zoom = 4, source = "google")
 
+EMPRESAS_geocode <- EMPRESAS_GRUPO$GEOCODE
+
+ggmap(mapa) + geom_point(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_geocode$lon, y = EMPRESAS_geocode$lat, size = EMPRESAS_GRUPO$`Faturamento 2017`), color="red", alpha=0.5)
+```
+
+```{r}
+require(readxl)
+EMPRESAS_Paulista_T4 <- read_excel("EMPRESAS_Paulista T4.xlsx")
+#View(EMPRESAS_Paulista_T4)
+
+EMPRESAS_GRUPO <- EMPRESAS_Paulista_T4[EMPRESAS_Paulista_T4$`Gestor da Empresa`=="GUSTAVO FUNAYAMA HOTTA" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RAFAEL GUSTAVO FURLAN" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RICARDO SQUASSINA LEE",]
+
+require(ggmap)
+geo_end_empresas <- geocode(EMPRESAS_GRUPO$CEP)
+
+mapa <- get_map(location = "State of Sao Paulo - Brazil", zoom = 5)
+
+ggmap(mapa) + geom_point(data = geo_end_empresas, aes(x = geo_end_empresas$lon, y = geo_end_empresas$lat, size = EMPRESAS_GRUPO$`Faturamento 2017`), color="red", alpha=0.5)
 ```
