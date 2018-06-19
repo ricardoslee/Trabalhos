@@ -1,0 +1,39 @@
+---
+title: "Tarefa 2"
+author: "Gustavo Hotta (A56865193), Rafael Furlan (A56871487), Ricardo Squassina Lee (A56843646)"
+date: "6/18/2018"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014") 
+```
+
+```{r include = FALSE}
+#Teste de Mapas
+require(ggmap)
+endereco <- c("Av Paulista 548 Sao Paulo Brazil")
+geo_end <- geocode(endereco)
+mapa <- get_map(location = geo_end, zoom = 19, maptype = "hybrid", source = "google")
+ggmap(mapa) + geom_point(aes(x = geo_end$lon, y = geo_end$lat), color="red", size=3, alpha=0.5)
+```
+
+```{r}
+library(readxl)
+EMPRESAS_Paulista_T4 <- read_excel("EMPRESAS_Paulista T4.xlsx")
+#View(EMPRESAS_Paulista_T4)
+
+EMPRESAS_GRUPO <- EMPRESAS_Paulista_T4[EMPRESAS_Paulista_T4$`Gestor da Empresa`=="GUSTAVO FUNAYAMA HOTTA" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RAFAEL GUSTAVO FURLAN" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RICARDO SQUASSINA LEE",]
+
+EMPRESAS_GRUPO$geocode <- geocode(EMPRESAS_GRUPO$CEP, source = "google",output = "more")
+
+mapa <- get_map(location = "Sao Paulo Brazil", zoom = 5, source = "google")
+
+ggmap(mapa) + geom_point(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$geocode.lon, y = EMPRESAS_GRUPO$geocode.lat, size = EMPRESAS_GRUPO$`Faturamento 2017`), color="red", alpha=0.5)
+
+```
