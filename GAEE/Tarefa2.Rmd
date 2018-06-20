@@ -31,32 +31,36 @@ EMPRESAS_Paulista_T4 <- read_excel("EMPRESAS_Paulista T4.xlsx")
 EMPRESAS_GRUPO <- EMPRESAS_Paulista_T4[EMPRESAS_Paulista_T4$`Gestor da Empresa`=="GUSTAVO FUNAYAMA HOTTA" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RAFAEL GUSTAVO FURLAN" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RICARDO SQUASSINA LEE",]
 
 require(ggmap)
-geocodeQueryCheck()
-#EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, source = "google", output = "more", override_limit = TRUE)
-geocodeQueryCheck()
+#geocodeQueryCheck()
+EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, source = "google", output = "more", override_limit = FALSE)
+#geocodeQueryCheck()
 
-i <- 1
-while (i < length(EMPRESAS_GRUPO$ID)) {
-  print(EMPRESAS_GRUPO$CEP[i])
-  EMPRESAS_GRUPO$GEOCODE[i] <- geocode(EMPRESAS_GRUPO$CEP[i], source = "google")
-  Sys.sleep(1)
-  i <- i + 1
-}
+#i <- 1
+#while (i < length(EMPRESAS_GRUPO$ID)) {
+#  print(EMPRESAS_GRUPO$CEP[i])
+#  EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP[i], source = "google", output = "more")
+#  Sys.sleep(1)
+#  i <- i + 1
+#}
 
-mapa <- get_map(location = "Sao Paulo Brazil", zoom = 4, source = "google")
+mapa <- get_map(location = "State of Sao Paulo - Brazil", zoom = 5, source = "google")
 
-EMPRESAS_geocode <- EMPRESAS_GRUPO$GEOCODE
+#EMPRESAS_geocode <- EMPRESAS_GRUPO$GEOCODE
 
-ggmap(mapa) + geom_point(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_geocode$lon, y = EMPRESAS_geocode$lat, size = EMPRESAS_GRUPO$`Faturamento 2017`), color="red", alpha=0.5)
+ggmap(mapa) + geom_point(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2], size = EMPRESAS_GRUPO$`Faturamento 2017`), color="red", alpha=0.5)
+
+write.table(EMPRESAS_GRUPO, file = "EMPRESAS_GRUPO.tsv", sep = "\t", fileEncoding = "UTF-8", row.names = FALSE, col.names = TRUE)
+
 ```
 
-```{r}
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
 require(readxl)
 EMPRESAS_Paulista_T4 <- read_excel("EMPRESAS_Paulista T4.xlsx")
 #View(EMPRESAS_Paulista_T4)
 
 EMPRESAS_GRUPO <- EMPRESAS_Paulista_T4[EMPRESAS_Paulista_T4$`Gestor da Empresa`=="GUSTAVO FUNAYAMA HOTTA" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RAFAEL GUSTAVO FURLAN" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RICARDO SQUASSINA LEE",]
 
+#install.packages("ggmap")
 require(ggmap)
 geo_end_empresas <- geocode(EMPRESAS_GRUPO$CEP)
 
