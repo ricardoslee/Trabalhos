@@ -14,9 +14,22 @@ rm(list = ls())
 cat("\014") 
 ```
 
+```{r}
+#Load required packages
+if(!require(ggmap)) {
+  install.packages("ggmap")
+  library(ggmap)
+}
+
+if(!require(readxl)) {
+  install.packages("readxl")
+  library(readxl)
+}
+
+```
+
 ```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
 #Teste de Mapas
-require(ggmap)
 endereco <- c("Av Paulista 548 Sao Paulo Brazil")
 geo_end <- geocode(endereco)
 mapa <- get_map(location = geo_end, zoom = 19, maptype = "hybrid", source = "google")
@@ -24,13 +37,11 @@ ggmap(mapa) + geom_point(aes(x = geo_end$lon, y = geo_end$lat), color="red", siz
 ```
 
 ```{r}
-require(readxl)
 EMPRESAS_Paulista_T4 <- read_excel("EMPRESAS_Paulista T4.xlsx")
 #View(EMPRESAS_Paulista_T4)
 
 EMPRESAS_GRUPO <- EMPRESAS_Paulista_T4[EMPRESAS_Paulista_T4$`Gestor da Empresa`=="GUSTAVO FUNAYAMA HOTTA" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RAFAEL GUSTAVO FURLAN" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RICARDO SQUASSINA LEE",]
 
-require(ggmap)
 #geocodeQueryCheck()
 EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, source = "google", output = "more", override_limit = FALSE)
 #geocodeQueryCheck()
