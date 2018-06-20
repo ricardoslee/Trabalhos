@@ -8,22 +8,33 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r include=FALSE}
+```{r message=FALSE, include=FALSE}
 #Iniciando o ambiente
 rm(list = ls())
 cat("\014") 
 ```
 
-```{r}
+```{r message=FALSE, warning=TRUE, include=FALSE}
 #Load required packages
+if(!require(devtools)) {
+  install.packages("devtools")
+  library(devtools)
+}
+
 if(!require(ggmap)) {
-  install.packages("ggmap")
+  #install.packages("ggmap")
+  devtools::install_github("dkahle/ggmap")
   library(ggmap)
 }
 
 if(!require(readxl)) {
   install.packages("readxl")
   library(readxl)
+}
+
+if(!require(googleway)) {
+  install.packages("googleway")
+  library(googleway)
 }
 
 ```
@@ -43,8 +54,12 @@ EMPRESAS_Paulista_T4 <- read_excel("EMPRESAS_Paulista T4.xlsx")
 EMPRESAS_GRUPO <- EMPRESAS_Paulista_T4[EMPRESAS_Paulista_T4$`Gestor da Empresa`=="GUSTAVO FUNAYAMA HOTTA" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RAFAEL GUSTAVO FURLAN" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RICARDO SQUASSINA LEE",]
 
 #geocodeQueryCheck()
-EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, source = "google", output = "more", override_limit = FALSE)
-#geocodeQueryCheck()
+register_google(key = readLines(con <- file("api.key")))
+EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, source = "google", output = "more", override_limit = TRUE)
+
+#EMPRESAS_GRUPO$GEOCODE <- google_geocode(address = "Brazil", components = EMPRESAS_GRUPO$CEP, key = "AIzaSyDtKeCA0LOQ9T__Yj2pKWlr5T54g0bPoNQ")
+
+geocodeQueryCheck()
 
 #i <- 1
 #while (i < length(EMPRESAS_GRUPO$ID)) {
@@ -54,6 +69,7 @@ EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, source = "google", output 
 #  i <- i + 1
 #}
 
+register_google(key = "")
 mapa <- get_map(location = "State of Sao Paulo - Brazil", zoom = 5, source = "google")
 
 #EMPRESAS_geocode <- EMPRESAS_GRUPO$GEOCODE
