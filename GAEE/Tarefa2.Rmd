@@ -32,9 +32,9 @@ if(!require(readxl)) {
   library(readxl)
 }
 
-if(!require(googleway)) {
-  install.packages("googleway")
-  library(googleway)
+if(!require(dplyr)) {
+  install.packages("dplyr")
+  library(dplyr)
 }
 
 ```
@@ -47,7 +47,7 @@ mapa <- get_map(location = geo_end, zoom = 19, maptype = "hybrid", source = "goo
 ggmap(mapa) + geom_point(aes(x = geo_end$lon, y = geo_end$lat), color="red", size=3, alpha=0.5)
 ```
 
-```{r}
+```{r message=FALSE}
 EMPRESAS_Paulista_T4 <- read_excel("EMPRESAS_Paulista T4.xlsx")
 #View(EMPRESAS_Paulista_T4)
 
@@ -55,43 +55,67 @@ EMPRESAS_GRUPO <- EMPRESAS_Paulista_T4[EMPRESAS_Paulista_T4$`Gestor da Empresa`=
 
 #geocodeQueryCheck()
 register_google(key = readLines(con <- file("api.key")))
-EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, source = "google", output = "more", override_limit = TRUE)
-
-#EMPRESAS_GRUPO$GEOCODE <- google_geocode(address = "Brazil", components = EMPRESAS_GRUPO$CEP, key = "AIzaSyDtKeCA0LOQ9T__Yj2pKWlr5T54g0bPoNQ")
-
-geocodeQueryCheck()
-
-#i <- 1
-#while (i < length(EMPRESAS_GRUPO$ID)) {
-#  print(EMPRESAS_GRUPO$CEP[i])
-#  EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP[i], source = "google", output = "more")
-#  Sys.sleep(1)
-#  i <- i + 1
-#}
-
-register_google(key = "")
-mapa <- get_map(location = "State of Sao Paulo - Brazil", zoom = 5, source = "google")
-
-#EMPRESAS_geocode <- EMPRESAS_GRUPO$GEOCODE
-
-ggmap(mapa) + geom_point(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2], size = EMPRESAS_GRUPO$`Faturamento 2017`), color="red", alpha=0.5)
+EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, source = "google", output = "more", override_limit = TRUE, messaging = FALSE)
+#geocodeQueryCheck()
 
 write.table(EMPRESAS_GRUPO, file = "EMPRESAS_GRUPO.tsv", sep = "\t", fileEncoding = "UTF-8", row.names = FALSE, col.names = TRUE)
 
 ```
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
-require(readxl)
-EMPRESAS_Paulista_T4 <- read_excel("EMPRESAS_Paulista T4.xlsx")
-#View(EMPRESAS_Paulista_T4)
+Tarefa 1
+Descreva o processo de geocodificação realizado para suas empresas (quantas empresas no total e quantas foram localizadas “corretamente”). Apresente as empresas não localizadas em uma tabela, contendo os CEPs não encontrados.
 
-EMPRESAS_GRUPO <- EMPRESAS_Paulista_T4[EMPRESAS_Paulista_T4$`Gestor da Empresa`=="GUSTAVO FUNAYAMA HOTTA" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RAFAEL GUSTAVO FURLAN" | EMPRESAS_Paulista_T4$`Gestor da Empresa`=="RICARDO SQUASSINA LEE",]
+```{r}
+print(c("Empresas consideradas no grupo", nrow(EMPRESAS_GRUPO),
+        "Empresas localizadas", sum(!is.na(EMPRESAS_GRUPO$GEOCODE$lon)),
+        "Empresas não localizadas", sum(is.na(EMPRESAS_GRUPO$GEOCODE$lon))
+    )
+)
 
-#install.packages("ggmap")
-require(ggmap)
-geo_end_empresas <- geocode(EMPRESAS_GRUPO$CEP)
-
-mapa <- get_map(location = "State of Sao Paulo - Brazil", zoom = 5)
-
-ggmap(mapa) + geom_point(data = geo_end_empresas, aes(x = geo_end_empresas$lon, y = geo_end_empresas$lat, size = EMPRESAS_GRUPO$`Faturamento 2017`), color="red", alpha=0.5)
+i <- 1
+while (i < nrow(EMPRESAS_GRUPO)) {
+  if(is.na(EMPRESAS_GRUPO$GEOCODE$lon[i])) {print(c("CEP não localizado", EMPRESAS_GRUPO$CEP[i]))}
+  i <- i + 1
+}
 ```
+
+Tarefa 2
+Apresente um mapa contendo o tema de municípios do Brasil e o tema com as suas empresas localizadas.
+
+```{r}
+register_google(key = readLines(con <- file("api.key")))
+#register_google(key = "")
+mapa <- get_map(location = c(lon = min(EMPRESAS_GRUPO$GEOCODE$lon, na.rm = TRUE), lat = max(EMPRESAS_GRUPO$GEOCODE$lat, na.rm = TRUE)), zoom = 5, source = "google", scale = 2, force = TRUE, maptype = "roadmap")
+
+#mapa <- get_map(location = c(lat = -25, lon = -48), zoom = 6, source = "google", scale = 1, force = TRUE, maptype = "roadmap")
+
+ggmap(mapa) + geom_point(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5)
+
+
+```
+
+Tarefa 3
+Apresente um mapa contendo os municípios do Brasil de acordo com a quantidade de empresas que eles contêm. Utilize algum método de classificação (legenda do mapa) que lhe parecer razoável. Justifique essa escolha.
+
+```{r}
+
+ggmap(mapa) + geom_point(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5)
+
+```
+
+Tarefa 4
+Apresente um outro mapa contendo os municípios do Brasil de acordo com a quantidade de empresas que eles contêm. Utilize algum outro método de classificação (legenda do mapa) que lhe parecer razoável. Justifique essa escolha.
+[ copie a View do ArcView ou o mapa do QGIS para o documento Word – não se esqueça de trazer a legenda (table of contents) da View ]
+
+Tarefa 5
+Apresente um mapa contendo os municípios do Brasil de acordo com o faturamento acumulado. Utilize algum método de classificação (legenda do mapa) que lhe parecer razoável. Justifique essa escolha.
+[ copie a View do ArcView ou o mapa do QGIS para o documento Word – não se esqueça de trazer a legenda (table of contents) da View ]
+
+Pergunta 6
+Quais são os 5 municípios do Brasil com maior número de empresas que são gerenciadas por você? Qual é o número de empresas por município desses 5 primeiros do ranking? (se houver empate na 5ª posição, informar todas nessa situação)
+
+Pergunta 7
+Dos municípios com clientes na sua carteira, qual deles apresenta o menor faturamento acumulado em 2017? Qual é esse faturamento?
+
+Tarefa 8 (bônus)
+Apresente seu shapefile de municípios no Google Earth (ou Google Earth Pro) destacando em cores diferentes (ou através da altura do polígono) o faturamento acumulado em 2017.
