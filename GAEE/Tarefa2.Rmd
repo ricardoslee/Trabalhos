@@ -37,6 +37,25 @@ if(!require(dplyr)) {
   library(dplyr)
 }
 
+if(!require(rgdal)) {
+  install.packages("rgdal")
+  library(rgdal)
+}
+
+if(!require(scales)) {
+  install.packages("scales")
+  library(scales)
+}
+
+if(!require(maptools)) {
+  install.packages("maptools")
+  library(maptools)
+}
+
+if(!require(gpclib)) {
+  install.packages("gpclib")
+  library(gpclib)
+}
 ```
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
@@ -58,8 +77,12 @@ register_google(key = readLines(con <- file("api.key")))
 EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, source = "google", output = "more", override_limit = TRUE, messaging = FALSE)
 #geocodeQueryCheck()
 
-write.table(EMPRESAS_GRUPO, file = "EMPRESAS_GRUPO.tsv", sep = "\t", fileEncoding = "UTF-8", row.names = FALSE, col.names = TRUE)
+#write.table(EMPRESAS_GRUPO, file = "EMPRESAS_GRUPO.tsv", sep = "\t", fileEncoding = "UTF-8", row.names = FALSE, col.names = TRUE)
 
+Mapa_Municipios <- readOGR( dsn = "Munic_brasil", layer = "munic_brasil")
+names(Mapa_Municipios)
+gpclibPermit()
+Mapa_Municipios <- fortify(Mapa_Municipios, region = "MICRORREGI")
 ```
 
 Tarefa 1
@@ -79,43 +102,65 @@ while (i < nrow(EMPRESAS_GRUPO)) {
 }
 ```
 
-Tarefa 2
-Apresente um mapa contendo o tema de municípios do Brasil e o tema com as suas empresas localizadas.
+Baixando Mapa para exibição nas Tarefas seguintes.
 
 ```{r}
 register_google(key = readLines(con <- file("api.key")))
 #register_google(key = "")
-mapa <- get_map(location = c(lon = min(EMPRESAS_GRUPO$GEOCODE$lon, na.rm = TRUE), lat = max(EMPRESAS_GRUPO$GEOCODE$lat, na.rm = TRUE)), zoom = 5, source = "google", scale = 2, force = TRUE, maptype = "roadmap")
+mapa <- get_map(location = c(lon = min(EMPRESAS_GRUPO$GEOCODE$lon, na.rm = TRUE), lat = max(EMPRESAS_GRUPO$GEOCODE$lat, na.rm = TRUE)), zoom = 5, source = "google", scale = 2, force = TRUE, maptype = "roadmap", crop = FALSE)
 
 #mapa <- get_map(location = c(lat = -25, lon = -48), zoom = 6, source = "google", scale = 1, force = TRUE, maptype = "roadmap")
+```
 
-ggmap(mapa) + geom_point(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5)
+Tarefa 2
+Apresente um mapa contendo o tema de municípios do Brasil e o tema com as suas empresas localizadas.
 
+```{r}
+#ggmap(mapa) + geom_point(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5, na.rm = TRUE, show.legend = TRUE) 
 
+ggmap(mapa) + geom_polygon(data = Mapa_Municipios, aes(x = Mapa_Municipios$long, y = Mapa_Municipios$lat, group = Mapa_Municipios$group), color = "black", size = 0.25) + geom_point(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5, na.rm = TRUE, show.legend = TRUE) + coord_map()
 ```
 
 Tarefa 3
 Apresente um mapa contendo os municípios do Brasil de acordo com a quantidade de empresas que eles contêm. Utilize algum método de classificação (legenda do mapa) que lhe parecer razoável. Justifique essa escolha.
 
 ```{r}
-
-ggmap(mapa) + geom_point(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5)
-
+ggmap(mapa) + geom_density2d(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5, na.rm = TRUE,show.legend = TRUE)
 ```
 
 Tarefa 4
 Apresente um outro mapa contendo os municípios do Brasil de acordo com a quantidade de empresas que eles contêm. Utilize algum outro método de classificação (legenda do mapa) que lhe parecer razoável. Justifique essa escolha.
 [ copie a View do ArcView ou o mapa do QGIS para o documento Word – não se esqueça de trazer a legenda (table of contents) da View ]
 
+```{r}
+ggmap(mapa) + geom_density2d(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2], size = EMPRESAS_GRUPO$`Faturamento 2017`), color="blue", alpha=0.5, na.rm = TRUE, show.legend = TRUE)
+```
+
 Tarefa 5
 Apresente um mapa contendo os municípios do Brasil de acordo com o faturamento acumulado. Utilize algum método de classificação (legenda do mapa) que lhe parecer razoável. Justifique essa escolha.
 [ copie a View do ArcView ou o mapa do QGIS para o documento Word – não se esqueça de trazer a legenda (table of contents) da View ]
 
+```{r}
+ggmap(mapa) + geom_density2d(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5, na.rm = TRUE)
+```
+
 Pergunta 6
 Quais são os 5 municípios do Brasil com maior número de empresas que são gerenciadas por você? Qual é o número de empresas por município desses 5 primeiros do ranking? (se houver empate na 5ª posição, informar todas nessa situação)
+
+```{r}
+ggmap(mapa) + geom_density2d(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5, na.rm = TRUE)
+```
 
 Pergunta 7
 Dos municípios com clientes na sua carteira, qual deles apresenta o menor faturamento acumulado em 2017? Qual é esse faturamento?
 
+```{r}
+ggmap(mapa) + geom_density2d(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5, na.rm = TRUE)
+```
+
 Tarefa 8 (bônus)
 Apresente seu shapefile de municípios no Google Earth (ou Google Earth Pro) destacando em cores diferentes (ou através da altura do polígono) o faturamento acumulado em 2017.
+
+```{r}
+ggmap(mapa) + geom_density2d(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5, na.rm = TRUE)
+```
