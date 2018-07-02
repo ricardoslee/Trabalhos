@@ -79,7 +79,7 @@ EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, source = "google", output 
 
 #write.table(EMPRESAS_GRUPO, file = "EMPRESAS_GRUPO.tsv", sep = "\t", fileEncoding = "UTF-8", row.names = FALSE, col.names = TRUE)
 
-Mapa_Municipios <- readOGR( dsn = "Munic_brasil", layer = "munic_brasil")
+Mapa_Municipios <- readOGR( dsn = "Munic_brasil", layer = "munic_brasil", )
 names(Mapa_Municipios)
 gpclibPermit()
 Mapa_Municipios <- fortify(Mapa_Municipios, region = "MICRORREGI")
@@ -107,7 +107,7 @@ Baixando Mapa para exibição nas Tarefas seguintes.
 ```{r}
 register_google(key = readLines(con <- file("api.key")))
 #register_google(key = "")
-mapa <- get_map(location = c(lon = min(EMPRESAS_GRUPO$GEOCODE$lon, na.rm = TRUE), lat = max(EMPRESAS_GRUPO$GEOCODE$lat, na.rm = TRUE)), zoom = 5, source = "google", scale = 2, force = TRUE, maptype = "roadmap", crop = FALSE)
+mapa <- get_map(location = c(lon = max(EMPRESAS_GRUPO$GEOCODE$lon, na.rm = TRUE), lat = min(EMPRESAS_GRUPO$GEOCODE$lat, na.rm = TRUE)), zoom = 5, source = "google", scale = 2, force = TRUE)#, maptype = "roadmap", crop = FALSE)
 
 #mapa <- get_map(location = c(lat = -25, lon = -48), zoom = 6, source = "google", scale = 1, force = TRUE, maptype = "roadmap")
 ```
@@ -125,7 +125,7 @@ Tarefa 3
 Apresente um mapa contendo os municípios do Brasil de acordo com a quantidade de empresas que eles contêm. Utilize algum método de classificação (legenda do mapa) que lhe parecer razoável. Justifique essa escolha.
 
 ```{r}
-ggmap(mapa) + geom_density2d(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5, na.rm = TRUE,show.legend = TRUE)
+ggmap(mapa) + geom_polygon(data = Mapa_Municipios, aes(x = Mapa_Municipios$long, y = Mapa_Municipios$lat, group = Mapa_Municipios$group), color = "black", size = 0.25) + geom_density2d(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5, na.rm = TRUE,show.legend = TRUE)
 ```
 
 Tarefa 4
