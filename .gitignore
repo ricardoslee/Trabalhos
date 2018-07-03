@@ -36,3 +36,7 @@ vignettes/*.pdf
 rsconnect/
 *.key
 .DS_Store
+
+#Python Virtual Env
+venv/
+.idea/
