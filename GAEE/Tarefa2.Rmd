@@ -74,12 +74,25 @@ EMPRESAS_GRUPO <- EMPRESAS_Paulista_T4[EMPRESAS_Paulista_T4$`Gestor da Empresa`=
 
 #geocodeQueryCheck()
 register_google(key = readLines(con <- file("api.key")))
-EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, source = "google", output = "more", override_limit = TRUE, messaging = FALSE)
+EMPRESAS_GRUPO$GEOCODE <- geocode(EMPRESAS_GRUPO$CEP, inject = "region=br", source = "google", output = "more", override_limit = TRUE, messaging = FALSE, nameType = "short")
+
+#summary(EMPRESAS_GRUPO)
+
+EMPRESAS_GRUPO$GEOCODE$administrative_area_level_1 <- gsub("state of ", "", ignore.case = TRUE, EMPRESAS_GRUPO$GEOCODE$administrative_area_level_1) 
+
+EMPRESAS_GRUPO$GEOCODE$administrative_area_level_1 <- gsub("São Paulo", "SP", ignore.case = TRUE, EMPRESAS_GRUPO$GEOCODE$administrative_area_level_1) 
+
+EMPRESAS_GRUPO$GEOCODE$administrative_area_level_1 <- gsub("Rio de Janeiro", "RJ", ignore.case = TRUE, EMPRESAS_GRUPO$GEOCODE$administrative_area_level_1) 
+
+EMPRESAS_GRUPO$GEOCODE$administrative_area_level_1 <- gsub("rio grande do sul", "RS", ignore.case = TRUE, EMPRESAS_GRUPO$GEOCODE$administrative_area_level_1) 
+
+EMPRESAS_GRUPO$CIDADEESTADO <- paste(EMPRESAS_GRUPO$GEOCODE$administrative_area_level_2, "-", EMPRESAS_GRUPO$GEOCODE$administrative_area_level_1)
+
 #geocodeQueryCheck()
 
-#write.table(EMPRESAS_GRUPO, file = "EMPRESAS_GRUPO.tsv", sep = "\t", fileEncoding = "UTF-8", row.names = FALSE, col.names = TRUE)
+write.table(EMPRESAS_GRUPO, file = "EMPRESAS_GRUPO.txt", sep = "\t", fileEncoding = "UTF-8", row.names = FALSE, col.names = TRUE)
 
-Mapa_Municipios <- readOGR( dsn = "Munic_brasil", layer = "munic_brasil", )
+Mapa_Municipios <- readOGR( dsn = "Munic_brasil", layer = "munic_brasil")
 names(Mapa_Municipios)
 gpclibPermit()
 Mapa_Municipios <- fortify(Mapa_Municipios, region = "MICRORREGI")

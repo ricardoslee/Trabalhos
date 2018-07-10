@@ -40,3 +40,6 @@ rsconnect/
 #Python Virtual Env
 venv/
 .idea/
+
+#tests
+test*

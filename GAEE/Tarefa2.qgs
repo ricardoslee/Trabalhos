@@ -1,5 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis projectname="" version="3.0.3-Girona">
+<qgis projectname="" version="3.2.0-Bonn">
+  <homePath path=""/>
   <title></title>
   <autotransaction active="0"/>
   <evaluateDefaultValues active="0"/>
@@ -18,38 +19,51 @@
   </projectCrs>
   <layer-tree-group>
     <customproperties/>
-    <layer-tree-layer providerKey="delimitedtext" expanded="0" name="EMPRESAS_GRUPO" source="file:///Users/ricardolee/Tresors/zz-pessoal/FGV/git/Trabalhos/GAEE/EMPRESAS_GRUPO.csv?type=csv&amp;xField=GEOCODE.lon&amp;yField=GEOCODE.lat&amp;crs=EPSG:4326&amp;spatialIndex=no&amp;subsetIndex=no&amp;watchFile=no" id="EMPRESAS_GRUPO_6491fc08_b750_444c_a226_db801195c12e" checked="Qt::Checked">
+    <layer-tree-layer name="Distribuicao das Empresas" id="EMPRESAS_GRUPO_04ccc8f6_4f61_4538_ad5f_991afdc93705" checked="Qt::Unchecked" source="file:///Users/ricardolee/Tresors/zz-pessoal/FGV/git/Trabalhos/GAEE/EMPRESAS_GRUPO.txt?type=csv&amp;delimiter=%5Ct&amp;xField=GEOCODE.lon&amp;yField=GEOCODE.lat&amp;crs=EPSG:4326&amp;spatialIndex=no&amp;subsetIndex=no&amp;watchFile=no" providerKey="delimitedtext" expanded="1">
       <customproperties>
-        <property key="expandedLegendNodes"/>
-        <property value=" count(  &quot;ID&quot; , group_by :=  &quot;GEOCODE.administrative_area_level_2&quot; )" key="legend/expressionFilter"/>
+        <property value=" sum( &quot;Faturamento 2017&quot;, group_by  := &quot;GEOCODE.administrative_area_level_2&quot;)" key="legend/expressionFilter"/>
         <property value="true" key="legend/expressionFilterEnabled"/>
-        <property value="1" key="showFeatureCount"/>
       </customproperties>
     </layer-tree-layer>
-    <layer-tree-layer providerKey="ogr" expanded="0" name="munic_brasil" source="./Munic_brasil/munic_brasil.shp" id="munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3" checked="Qt::Unchecked">
+    <layer-tree-layer name="Heatmap de Faturamento" id="EMPRESAS_GRUPO_6d93ed4e_4a2c_485f_bdaf_6b95c3b279ea" checked="Qt::Unchecked" source="file:///Users/ricardolee/Tresors/zz-pessoal/FGV/git/Trabalhos/GAEE/EMPRESAS_GRUPO.txt?type=csv&amp;delimiter=%5Ct&amp;xField=GEOCODE.lon&amp;yField=GEOCODE.lat&amp;crs=EPSG:4326&amp;spatialIndex=no&amp;subsetIndex=no&amp;watchFile=no" providerKey="delimitedtext" expanded="1">
+      <customproperties>
+        <property value="" key="legend/expressionFilter"/>
+        <property value="false" key="legend/expressionFilterEnabled"/>
+      </customproperties>
+    </layer-tree-layer>
+    <layer-tree-layer name="Faturamento" id="Heatmap_de_Faturamento_3222ba3e_6d5e_4e59_9891_d0931db48a1c" checked="Qt::Checked" source="file:///Users/ricardolee/Tresors/zz-pessoal/FGV/git/Trabalhos/GAEE/EMPRESAS_GRUPO.txt?type=csv&amp;delimiter=%5Ct&amp;xField=GEOCODE.lon&amp;yField=GEOCODE.lat&amp;crs=EPSG:4326&amp;spatialIndex=no&amp;subsetIndex=no&amp;watchFile=no" providerKey="delimitedtext" expanded="0">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer name="Municipios do Brasil" id="munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3" checked="Qt::Checked" source="./Munic_brasil/munic_brasil.shp" providerKey="ogr" expanded="0">
       <customproperties>
         <property key="expandedLegendNodes"/>
+        <property value="" key="legend/expressionFilter"/>
+        <property value="false" key="legend/expressionFilterEnabled"/>
       </customproperties>
     </layer-tree-layer>
     <custom-order enabled="0">
       <item>munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3</item>
-      <item>EMPRESAS_GRUPO_6491fc08_b750_444c_a226_db801195c12e</item>
+      <item>EMPRESAS_GRUPO_04ccc8f6_4f61_4538_ad5f_991afdc93705</item>
+      <item>EMPRESAS_GRUPO_6d93ed4e_4a2c_485f_bdaf_6b95c3b279ea</item>
+      <item>Heatmap_de_Faturamento_3222ba3e_6d5e_4e59_9891_d0931db48a1c</item>
     </custom-order>
   </layer-tree-group>
-  <snapping-settings intersection-snapping="0" tolerance="12" mode="2" enabled="0" unit="1" type="1">
+  <snapping-settings type="1" enabled="0" intersection-snapping="0" tolerance="12" mode="2" unit="1">
     <individual-layer-settings>
-      <layer-setting tolerance="12" enabled="0" id="munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3" type="1" units="1"/>
-      <layer-setting tolerance="12" enabled="0" id="EMPRESAS_GRUPO_6491fc08_b750_444c_a226_db801195c12e" type="1" units="1"/>
+      <layer-setting type="1" enabled="0" id="munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3" tolerance="12" units="1"/>
+      <layer-setting type="1" enabled="0" id="Heatmap_de_Faturamento_3222ba3e_6d5e_4e59_9891_d0931db48a1c" tolerance="12" units="1"/>
+      <layer-setting type="1" enabled="0" id="EMPRESAS_GRUPO_6d93ed4e_4a2c_485f_bdaf_6b95c3b279ea" tolerance="12" units="1"/>
+      <layer-setting type="1" enabled="0" id="EMPRESAS_GRUPO_04ccc8f6_4f61_4538_ad5f_991afdc93705" tolerance="12" units="1"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations/>
   <mapcanvas name="theMapCanvas" annotationsVisible="1">
     <units>degrees</units>
     <extent>
-      <xmin>-51.44424250000000143</xmin>
-      <ymin>-30.30926449999999761</ymin>
-      <xmax>-41.51869750000000181</xmax>
-      <ymax>-22.14553550000000115</ymax>
+      <xmin>-48.27666170839254534</xmin>
+      <ymin>-25.45070770953582695</ymin>
+      <xmax>-44.49582702061145056</xmax>
+      <ymax>-23.02128065460993156</ymax>
     </extent>
     <rotation>0</rotation>
     <destinationsrs>
@@ -67,33 +81,43 @@
     <rendermaptile>0</rendermaptile>
   </mapcanvas>
   <legend updateDrawingOrder="true">
-    <legendlayer name="EMPRESAS_GRUPO" open="false" showFeatureCount="1" checked="Qt::Checked" drawingOrder="-1">
-      <filegroup open="false" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="EMPRESAS_GRUPO_6491fc08_b750_444c_a226_db801195c12e" visible="1"/>
+    <legendlayer name="Distribuicao das Empresas" drawingOrder="-1" open="true" checked="Qt::Unchecked" showFeatureCount="0">
+      <filegroup hidden="false" open="true">
+        <legendlayerfile layerid="EMPRESAS_GRUPO_04ccc8f6_4f61_4538_ad5f_991afdc93705" visible="0" isInOverview="0"/>
       </filegroup>
     </legendlayer>
-    <legendlayer name="munic_brasil" open="false" showFeatureCount="0" checked="Qt::Unchecked" drawingOrder="-1">
-      <filegroup open="false" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3" visible="0"/>
+    <legendlayer name="Heatmap de Faturamento" drawingOrder="-1" open="true" checked="Qt::Unchecked" showFeatureCount="0">
+      <filegroup hidden="false" open="true">
+        <legendlayerfile layerid="EMPRESAS_GRUPO_6d93ed4e_4a2c_485f_bdaf_6b95c3b279ea" visible="0" isInOverview="0"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer name="Faturamento" drawingOrder="-1" open="false" checked="Qt::Checked" showFeatureCount="0">
+      <filegroup hidden="false" open="false">
+        <legendlayerfile layerid="Heatmap_de_Faturamento_3222ba3e_6d5e_4e59_9891_d0931db48a1c" visible="1" isInOverview="0"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer name="Municipios do Brasil" drawingOrder="-1" open="false" checked="Qt::Checked" showFeatureCount="0">
+      <filegroup hidden="false" open="false">
+        <legendlayerfile layerid="munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3" visible="1" isInOverview="0"/>
       </filegroup>
     </legendlayer>
   </legend>
   <mapViewDocks/>
   <mapViewDocks3D/>
   <projectlayers>
-    <maplayer refreshOnNotifyMessage="" geometry="Point" autoRefreshTime="0" readOnly="0" simplifyDrawingHints="1" simplifyMaxScale="1" minScale="1e+8" refreshOnNotifyEnabled="0" labelsEnabled="0" simplifyLocal="1" autoRefreshEnabled="0" simplifyDrawingTol="1" simplifyAlgorithm="0" hasScaleBasedVisibilityFlag="0" type="vector" maxScale="0">
+    <maplayer type="vector" simplifyMaxScale="1" minScale="1e+8" labelsEnabled="0" simplifyLocal="1" maxScale="0" refreshOnNotifyMessage="" simplifyDrawingHints="0" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" hasScaleBasedVisibilityFlag="0" simplifyDrawingTol="1" autoRefreshTime="0" simplifyAlgorithm="0" readOnly="0" geometry="Point">
       <extent>
         <xmin>-51.20792000000000144</xmin>
         <ymin>-30.11488999999999905</ymin>
         <xmax>-41.7550200000000018</xmax>
         <ymax>-22.33990999999999971</ymax>
       </extent>
-      <id>EMPRESAS_GRUPO_6491fc08_b750_444c_a226_db801195c12e</id>
-      <datasource>file:./EMPRESAS_GRUPO.csv?type=csv&amp;xField=GEOCODE.lon&amp;yField=GEOCODE.lat&amp;crs=EPSG:4326&amp;spatialIndex=no&amp;subsetIndex=no&amp;watchFile=no</datasource>
+      <id>EMPRESAS_GRUPO_04ccc8f6_4f61_4538_ad5f_991afdc93705</id>
+      <datasource>file:./EMPRESAS_GRUPO.txt?type=csv&amp;delimiter=%5Ct&amp;xField=GEOCODE.lon&amp;yField=GEOCODE.lat&amp;crs=EPSG:4326&amp;spatialIndex=no&amp;subsetIndex=no&amp;watchFile=no</datasource>
       <keywordList>
         <value></value>
       </keywordList>
-      <layername>EMPRESAS_GRUPO</layername>
+      <layername>Distribuicao das Empresas</layername>
       <srs>
         <spatialrefsys>
           <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
@@ -113,6 +137,16 @@
         <type></type>
         <title></title>
         <abstract></abstract>
+        <contact>
+          <name></name>
+          <organization></organization>
+          <position></position>
+          <voice></voice>
+          <fax></fax>
+          <email></email>
+          <role></role>
+        </contact>
+        <links/>
         <fees></fees>
         <encoding></encoding>
         <crs>
@@ -127,166 +161,299 @@
             <geographicflag>true</geographicflag>
           </spatialrefsys>
         </crs>
-        <extent/>
-        <links/>
+        <extent>
+          <spatial maxy="0" miny="0" maxx="0" dimensions="2" crs="" maxz="0" minz="0" minx="0"/>
+          <temporal>
+            <period>
+              <start></start>
+              <end></end>
+            </period>
+          </temporal>
+        </extent>
       </resourceMetadata>
       <provider encoding="UTF-8">delimitedtext</provider>
-      <vectorjoins/>
+      <vectorjoins>
+        <join joinFieldName="NOME" editable="0" memoryCache="1" cascadedDelete="0" targetFieldName="GEOCODE.administrative_area_level_2" joinLayerId="munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3" dynamicForm="0" upsertOnEdit="0"/>
+      </vectorjoins>
       <layerDependencies/>
       <dataDependencies/>
+      <legend type="default-vector"/>
       <expressionfields/>
       <map-layer-style-manager current="default">
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
-      <renderer-v2 attr=" count(  &quot;ID&quot; , group_bu :=  &quot;GEOCODE.administrative_area_level_2&quot;  ) " enableorderby="0" forceraster="0" type="graduatedSymbol" graduatedMethod="GraduatedColor" symbollevels="0">
-        <ranges/>
-        <symbols/>
-        <colorramp name="[source]" type="gradient">
-          <prop k="color1" v="255,255,255,255"/>
-          <prop k="color2" v="255,0,0,255"/>
-          <prop k="discrete" v="0"/>
-          <prop k="rampType" v="gradient"/>
-        </colorramp>
-        <mode name="equal"/>
+      <renderer-v2 forceraster="0" type="singleSymbol" enableorderby="0" symbollevels="0">
+        <symbols>
+          <symbol type="marker" name="0" clip_to_extent="1" alpha="1">
+            <layer enabled="1" locked="0" class="SimpleMarker" pass="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="250,172,160,255"/>
+              <prop k="horizontal_anchor_point" v="1"/>
+              <prop k="joinstyle" v="bevel"/>
+              <prop k="name" v="circle"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_color" v="35,35,35,255"/>
+              <prop k="outline_style" v="solid"/>
+              <prop k="outline_width" v="0"/>
+              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="diameter"/>
+              <prop k="size" v="2"/>
+              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+              <prop k="size_unit" v="MM"/>
+              <prop k="vertical_anchor_point" v="1"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option type="QString" name="name" value=""/>
+                  <Option name="properties"/>
+                  <Option type="QString" name="type" value="collection"/>
+                </Option>
+              </data_defined_properties>
+            </layer>
+          </symbol>
+        </symbols>
         <rotation/>
         <sizescale/>
-        <labelformat format=" %1 - %2 " trimtrailingzeroes="false" decimalplaces="4"/>
       </renderer-v2>
       <customproperties>
         <property value="&quot;ID&quot;" key="dualview/previewExpressions"/>
+        <property value="0" key="embeddedWidgets/count"/>
+        <property key="variableNames"/>
+        <property key="variableValues"/>
       </customproperties>
       <blendMode>0</blendMode>
       <featureBlendMode>0</featureBlendMode>
       <layerOpacity>1</layerOpacity>
+      <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
+        <DiagramCategory rotationOffset="270" maxScaleDenominator="1e+8" labelPlacementMethod="XHeight" height="15" scaleDependency="Area" penAlpha="255" lineSizeType="MM" sizeScale="3x:0,0,0,0,0,0" minimumSize="0" opacity="1" scaleBasedVisibility="0" enabled="0" sizeType="MM" width="15" minScaleDenominator="0" backgroundAlpha="255" penWidth="0" lineSizeScale="3x:0,0,0,0,0,0" barWidth="5" diagramOrientation="Up" penColor="#000000" backgroundColor="#ffffff">
+          <fontProperties style="" description=".SF NS Text,13,-1,5,50,0,0,0,0,0"/>
+          <attribute field="" label="" color="#000000"/>
+        </DiagramCategory>
+      </SingleCategoryDiagramRenderer>
+      <DiagramLayerSettings showAll="1" obstacle="0" dist="0" priority="0" placement="0" linePlacementFlags="18" zIndex="0">
+        <properties>
+          <Option type="Map">
+            <Option type="QString" name="name" value=""/>
+            <Option name="properties"/>
+            <Option type="QString" name="type" value="collection"/>
+          </Option>
+        </properties>
+      </DiagramLayerSettings>
       <fieldConfiguration>
         <field name="ID">
-          <editWidget type="">
+          <editWidget type="Range">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="CEP">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="Faturamento 2017">
-          <editWidget type="">
+          <editWidget type="Range">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="Gestor da Empresa">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.lon">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.lat">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.type">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.loctype">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.address">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.north">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.south">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.east">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.west">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.postal_code">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.administrative_area_level_2">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.administrative_area_level_1">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.country">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.political">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODE.route">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_ID">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_AREA">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_GEOCODIGO">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_NOMECAPS">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_UF">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_CODUF">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_REGIAO">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_MESORREGIA">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_MICRORREGI">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_RM">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_POP2004">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_DENSDEMO">
           <editWidget type="">
             <config>
               <Option/>
@@ -295,149 +462,289 @@
         </field>
       </fieldConfiguration>
       <aliases>
-        <alias field="ID" name="" index="0"/>
-        <alias field="CEP" name="" index="1"/>
-        <alias field="Faturamento 2017" name="" index="2"/>
-        <alias field="Gestor da Empresa" name="" index="3"/>
-        <alias field="GEOCODE.lon" name="" index="4"/>
-        <alias field="GEOCODE.lat" name="" index="5"/>
-        <alias field="GEOCODE.type" name="" index="6"/>
-        <alias field="GEOCODE.loctype" name="" index="7"/>
-        <alias field="GEOCODE.address" name="" index="8"/>
-        <alias field="GEOCODE.north" name="" index="9"/>
-        <alias field="GEOCODE.south" name="" index="10"/>
-        <alias field="GEOCODE.east" name="" index="11"/>
-        <alias field="GEOCODE.west" name="" index="12"/>
-        <alias field="GEOCODE.postal_code" name="" index="13"/>
-        <alias field="GEOCODE.administrative_area_level_2" name="" index="14"/>
-        <alias field="GEOCODE.administrative_area_level_1" name="" index="15"/>
-        <alias field="GEOCODE.country" name="" index="16"/>
-        <alias field="GEOCODE.political" name="" index="17"/>
-        <alias field="GEOCODE.route" name="" index="18"/>
+        <alias name="" index="0" field="ID"/>
+        <alias name="" index="1" field="CEP"/>
+        <alias name="" index="2" field="Faturamento 2017"/>
+        <alias name="" index="3" field="Gestor da Empresa"/>
+        <alias name="" index="4" field="GEOCODE.lon"/>
+        <alias name="" index="5" field="GEOCODE.lat"/>
+        <alias name="" index="6" field="GEOCODE.type"/>
+        <alias name="" index="7" field="GEOCODE.loctype"/>
+        <alias name="" index="8" field="GEOCODE.address"/>
+        <alias name="" index="9" field="GEOCODE.north"/>
+        <alias name="" index="10" field="GEOCODE.south"/>
+        <alias name="" index="11" field="GEOCODE.east"/>
+        <alias name="" index="12" field="GEOCODE.west"/>
+        <alias name="" index="13" field="GEOCODE.postal_code"/>
+        <alias name="" index="14" field="GEOCODE.administrative_area_level_2"/>
+        <alias name="" index="15" field="GEOCODE.administrative_area_level_1"/>
+        <alias name="" index="16" field="GEOCODE.country"/>
+        <alias name="" index="17" field="GEOCODE.political"/>
+        <alias name="" index="18" field="GEOCODE.route"/>
+        <alias name="" index="19" field="Municipios do Brasil_ID"/>
+        <alias name="" index="20" field="Municipios do Brasil_AREA"/>
+        <alias name="" index="21" field="Municipios do Brasil_GEOCODIGO"/>
+        <alias name="" index="22" field="Municipios do Brasil_NOMECAPS"/>
+        <alias name="" index="23" field="Municipios do Brasil_UF"/>
+        <alias name="" index="24" field="Municipios do Brasil_CODUF"/>
+        <alias name="" index="25" field="Municipios do Brasil_REGIAO"/>
+        <alias name="" index="26" field="Municipios do Brasil_MESORREGIA"/>
+        <alias name="" index="27" field="Municipios do Brasil_MICRORREGI"/>
+        <alias name="" index="28" field="Municipios do Brasil_RM"/>
+        <alias name="" index="29" field="Municipios do Brasil_POP2004"/>
+        <alias name="" index="30" field="Municipios do Brasil_DENSDEMO"/>
       </aliases>
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
       <defaults>
-        <default expression="" field="ID" applyOnUpdate="0"/>
-        <default expression="" field="CEP" applyOnUpdate="0"/>
-        <default expression="" field="Faturamento 2017" applyOnUpdate="0"/>
-        <default expression="" field="Gestor da Empresa" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.lon" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.lat" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.type" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.loctype" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.address" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.north" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.south" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.east" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.west" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.postal_code" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.administrative_area_level_2" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.administrative_area_level_1" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.country" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.political" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODE.route" applyOnUpdate="0"/>
+        <default applyOnUpdate="0" expression="" field="ID"/>
+        <default applyOnUpdate="0" expression="" field="CEP"/>
+        <default applyOnUpdate="0" expression="" field="Faturamento 2017"/>
+        <default applyOnUpdate="0" expression="" field="Gestor da Empresa"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.lon"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.lat"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.type"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.loctype"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.address"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.north"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.south"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.east"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.west"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.postal_code"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.administrative_area_level_2"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.administrative_area_level_1"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.country"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.political"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.route"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_ID"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_AREA"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_GEOCODIGO"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_NOMECAPS"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_UF"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_CODUF"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_REGIAO"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_MESORREGIA"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_MICRORREGI"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_RM"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_POP2004"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_DENSDEMO"/>
       </defaults>
       <constraints>
-        <constraint exp_strength="0" field="ID" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="CEP" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="Faturamento 2017" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="Gestor da Empresa" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.lon" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.lat" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.type" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.loctype" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.address" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.north" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.south" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.east" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.west" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.postal_code" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.administrative_area_level_2" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.administrative_area_level_1" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.country" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.political" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODE.route" constraints="0" unique_strength="0" notnull_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="ID" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="CEP" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Faturamento 2017" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Gestor da Empresa" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.lon" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.lat" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.type" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.loctype" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.address" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.north" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.south" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.east" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.west" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.postal_code" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.administrative_area_level_2" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.administrative_area_level_1" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.country" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.political" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.route" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_ID" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_AREA" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_GEOCODIGO" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_NOMECAPS" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_UF" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_CODUF" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_REGIAO" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_MESORREGIA" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_MICRORREGI" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_RM" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_POP2004" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_DENSDEMO" notnull_strength="0" exp_strength="0"/>
       </constraints>
       <constraintExpressions>
-        <constraint field="ID" exp="" desc=""/>
-        <constraint field="CEP" exp="" desc=""/>
-        <constraint field="Faturamento 2017" exp="" desc=""/>
-        <constraint field="Gestor da Empresa" exp="" desc=""/>
-        <constraint field="GEOCODE.lon" exp="" desc=""/>
-        <constraint field="GEOCODE.lat" exp="" desc=""/>
-        <constraint field="GEOCODE.type" exp="" desc=""/>
-        <constraint field="GEOCODE.loctype" exp="" desc=""/>
-        <constraint field="GEOCODE.address" exp="" desc=""/>
-        <constraint field="GEOCODE.north" exp="" desc=""/>
-        <constraint field="GEOCODE.south" exp="" desc=""/>
-        <constraint field="GEOCODE.east" exp="" desc=""/>
-        <constraint field="GEOCODE.west" exp="" desc=""/>
-        <constraint field="GEOCODE.postal_code" exp="" desc=""/>
-        <constraint field="GEOCODE.administrative_area_level_2" exp="" desc=""/>
-        <constraint field="GEOCODE.administrative_area_level_1" exp="" desc=""/>
-        <constraint field="GEOCODE.country" exp="" desc=""/>
-        <constraint field="GEOCODE.political" exp="" desc=""/>
-        <constraint field="GEOCODE.route" exp="" desc=""/>
+        <constraint exp="" desc="" field="ID"/>
+        <constraint exp="" desc="" field="CEP"/>
+        <constraint exp="" desc="" field="Faturamento 2017"/>
+        <constraint exp="" desc="" field="Gestor da Empresa"/>
+        <constraint exp="" desc="" field="GEOCODE.lon"/>
+        <constraint exp="" desc="" field="GEOCODE.lat"/>
+        <constraint exp="" desc="" field="GEOCODE.type"/>
+        <constraint exp="" desc="" field="GEOCODE.loctype"/>
+        <constraint exp="" desc="" field="GEOCODE.address"/>
+        <constraint exp="" desc="" field="GEOCODE.north"/>
+        <constraint exp="" desc="" field="GEOCODE.south"/>
+        <constraint exp="" desc="" field="GEOCODE.east"/>
+        <constraint exp="" desc="" field="GEOCODE.west"/>
+        <constraint exp="" desc="" field="GEOCODE.postal_code"/>
+        <constraint exp="" desc="" field="GEOCODE.administrative_area_level_2"/>
+        <constraint exp="" desc="" field="GEOCODE.administrative_area_level_1"/>
+        <constraint exp="" desc="" field="GEOCODE.country"/>
+        <constraint exp="" desc="" field="GEOCODE.political"/>
+        <constraint exp="" desc="" field="GEOCODE.route"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_ID"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_AREA"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_GEOCODIGO"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_NOMECAPS"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_UF"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_CODUF"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_REGIAO"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_MESORREGIA"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_MICRORREGI"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_RM"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_POP2004"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_DENSDEMO"/>
       </constraintExpressions>
       <attributeactions>
         <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
       </attributeactions>
-      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="&quot;ID&quot;">
+      <attributetableconfig sortOrder="0" actionWidgetStyle="dropDown" sortExpression="&quot;GEOCODE.administrative_area_level_2&quot;">
         <columns>
-          <column width="-1" name="ID" hidden="0" type="field"/>
-          <column width="-1" name="CEP" hidden="0" type="field"/>
-          <column width="-1" name="Faturamento 2017" hidden="0" type="field"/>
-          <column width="-1" name="Gestor da Empresa" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.lon" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.lat" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.type" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.loctype" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.address" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.north" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.south" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.east" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.west" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.postal_code" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.administrative_area_level_2" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.administrative_area_level_1" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.country" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.political" hidden="0" type="field"/>
-          <column width="-1" name="GEOCODE.route" hidden="0" type="field"/>
-          <column width="-1" hidden="1" type="actions"/>
+          <column type="field" hidden="0" name="ID" width="-1"/>
+          <column type="field" hidden="0" name="CEP" width="-1"/>
+          <column type="field" hidden="0" name="Faturamento 2017" width="-1"/>
+          <column type="field" hidden="0" name="Gestor da Empresa" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.lon" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.lat" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.type" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.loctype" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.address" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.north" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.south" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.east" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.west" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.postal_code" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.administrative_area_level_2" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.administrative_area_level_1" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.country" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.political" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.route" width="-1"/>
+          <column type="actions" hidden="1" width="-1"/>
+          <column type="field" hidden="0" name="munic_brasil_ID" width="-1"/>
+          <column type="field" hidden="0" name="munic_brasil_AREA" width="-1"/>
+          <column type="field" hidden="0" name="munic_brasil_GEOCODIGO" width="-1"/>
+          <column type="field" hidden="0" name="munic_brasil_NOMECAPS" width="-1"/>
+          <column type="field" hidden="0" name="munic_brasil_UF" width="-1"/>
+          <column type="field" hidden="0" name="munic_brasil_CODUF" width="-1"/>
+          <column type="field" hidden="0" name="munic_brasil_REGIAO" width="-1"/>
+          <column type="field" hidden="0" name="munic_brasil_MESORREGIA" width="-1"/>
+          <column type="field" hidden="0" name="munic_brasil_MICRORREGI" width="-1"/>
+          <column type="field" hidden="0" name="munic_brasil_RM" width="-1"/>
+          <column type="field" hidden="0" name="munic_brasil_POP2004" width="-1"/>
+          <column type="field" hidden="0" name="munic_brasil_DENSDEMO" width="-1"/>
         </columns>
       </attributetableconfig>
       <editform>.</editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
       <editforminitfilepath></editforminitfilepath>
-      <editforminitcode><![CDATA[]]></editforminitcode>
+      <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget, "MyLineEdit")
+]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
-      <editable/>
-      <labelOnTop/>
+      <editable>
+        <field name="CEP" editable="1"/>
+        <field name="Faturamento 2017" editable="1"/>
+        <field name="GEOCODE.address" editable="1"/>
+        <field name="GEOCODE.administrative_area_level_1" editable="1"/>
+        <field name="GEOCODE.administrative_area_level_2" editable="1"/>
+        <field name="GEOCODE.country" editable="1"/>
+        <field name="GEOCODE.east" editable="1"/>
+        <field name="GEOCODE.lat" editable="1"/>
+        <field name="GEOCODE.loctype" editable="1"/>
+        <field name="GEOCODE.lon" editable="1"/>
+        <field name="GEOCODE.north" editable="1"/>
+        <field name="GEOCODE.political" editable="1"/>
+        <field name="GEOCODE.postal_code" editable="1"/>
+        <field name="GEOCODE.route" editable="1"/>
+        <field name="GEOCODE.south" editable="1"/>
+        <field name="GEOCODE.type" editable="1"/>
+        <field name="GEOCODE.west" editable="1"/>
+        <field name="Gestor da Empresa" editable="1"/>
+        <field name="ID" editable="1"/>
+        <field name="munic_brasil_AREA" editable="0"/>
+        <field name="munic_brasil_CODUF" editable="0"/>
+        <field name="munic_brasil_DENSDEMO" editable="0"/>
+        <field name="munic_brasil_GEOCODIGO" editable="0"/>
+        <field name="munic_brasil_ID" editable="0"/>
+        <field name="munic_brasil_MESORREGIA" editable="0"/>
+        <field name="munic_brasil_MICRORREGI" editable="0"/>
+        <field name="munic_brasil_NOMECAPS" editable="0"/>
+        <field name="munic_brasil_POP2004" editable="0"/>
+        <field name="munic_brasil_REGIAO" editable="0"/>
+        <field name="munic_brasil_RM" editable="0"/>
+        <field name="munic_brasil_UF" editable="0"/>
+      </editable>
+      <labelOnTop>
+        <field name="CEP" labelOnTop="0"/>
+        <field name="Faturamento 2017" labelOnTop="0"/>
+        <field name="GEOCODE.address" labelOnTop="0"/>
+        <field name="GEOCODE.administrative_area_level_1" labelOnTop="0"/>
+        <field name="GEOCODE.administrative_area_level_2" labelOnTop="0"/>
+        <field name="GEOCODE.country" labelOnTop="0"/>
+        <field name="GEOCODE.east" labelOnTop="0"/>
+        <field name="GEOCODE.lat" labelOnTop="0"/>
+        <field name="GEOCODE.loctype" labelOnTop="0"/>
+        <field name="GEOCODE.lon" labelOnTop="0"/>
+        <field name="GEOCODE.north" labelOnTop="0"/>
+        <field name="GEOCODE.political" labelOnTop="0"/>
+        <field name="GEOCODE.postal_code" labelOnTop="0"/>
+        <field name="GEOCODE.route" labelOnTop="0"/>
+        <field name="GEOCODE.south" labelOnTop="0"/>
+        <field name="GEOCODE.type" labelOnTop="0"/>
+        <field name="GEOCODE.west" labelOnTop="0"/>
+        <field name="Gestor da Empresa" labelOnTop="0"/>
+        <field name="ID" labelOnTop="0"/>
+        <field name="munic_brasil_AREA" labelOnTop="0"/>
+        <field name="munic_brasil_CODUF" labelOnTop="0"/>
+        <field name="munic_brasil_DENSDEMO" labelOnTop="0"/>
+        <field name="munic_brasil_GEOCODIGO" labelOnTop="0"/>
+        <field name="munic_brasil_ID" labelOnTop="0"/>
+        <field name="munic_brasil_MESORREGIA" labelOnTop="0"/>
+        <field name="munic_brasil_MICRORREGI" labelOnTop="0"/>
+        <field name="munic_brasil_NOMECAPS" labelOnTop="0"/>
+        <field name="munic_brasil_POP2004" labelOnTop="0"/>
+        <field name="munic_brasil_REGIAO" labelOnTop="0"/>
+        <field name="munic_brasil_RM" labelOnTop="0"/>
+        <field name="munic_brasil_UF" labelOnTop="0"/>
+      </labelOnTop>
       <widgets/>
       <conditionalstyles>
         <rowstyles/>
         <fieldstyles/>
       </conditionalstyles>
       <expressionfields/>
-      <previewExpression>"ID"</previewExpression>
+      <previewExpression>ID</previewExpression>
       <mapTip></mapTip>
     </maplayer>
-    <maplayer refreshOnNotifyMessage="" geometry="Polygon" autoRefreshTime="0" readOnly="0" simplifyDrawingHints="1" simplifyMaxScale="1" minScale="1e+8" refreshOnNotifyEnabled="0" labelsEnabled="0" simplifyLocal="1" autoRefreshEnabled="0" simplifyDrawingTol="1" simplifyAlgorithm="0" hasScaleBasedVisibilityFlag="0" type="vector" maxScale="0">
+    <maplayer type="vector" simplifyMaxScale="1" minScale="1e+8" labelsEnabled="0" simplifyLocal="1" maxScale="0" refreshOnNotifyMessage="" simplifyDrawingHints="0" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" hasScaleBasedVisibilityFlag="0" simplifyDrawingTol="1" autoRefreshTime="0" simplifyAlgorithm="0" readOnly="0" geometry="Point">
       <extent>
-        <xmin>-73.99025000000000318</xmin>
-        <ymin>-33.75158299999999656</ymin>
-        <xmax>-32.39222699999999833</xmax>
-        <ymax>5.27215599999999984</ymax>
+        <xmin>-51.20792000000000144</xmin>
+        <ymin>-30.11488999999999905</ymin>
+        <xmax>-41.7550200000000018</xmax>
+        <ymax>-22.33990999999999971</ymax>
       </extent>
-      <id>munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3</id>
-      <datasource>./Munic_brasil/munic_brasil.shp</datasource>
+      <id>EMPRESAS_GRUPO_6d93ed4e_4a2c_485f_bdaf_6b95c3b279ea</id>
+      <datasource>file:./EMPRESAS_GRUPO.txt?type=csv&amp;delimiter=%5Ct&amp;xField=GEOCODE.lon&amp;yField=GEOCODE.lat&amp;crs=EPSG:4326&amp;spatialIndex=no&amp;subsetIndex=no&amp;watchFile=no</datasource>
       <keywordList>
         <value></value>
       </keywordList>
-      <layername>munic_brasil</layername>
+      <layername>Heatmap de Faturamento</layername>
       <srs>
         <spatialrefsys>
           <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
@@ -457,6 +764,16 @@
         <type></type>
         <title></title>
         <abstract></abstract>
+        <contact>
+          <name></name>
+          <organization></organization>
+          <position></position>
+          <voice></voice>
+          <fax></fax>
+          <email></email>
+          <role></role>
+        </contact>
+        <links/>
         <fees></fees>
         <encoding></encoding>
         <crs>
@@ -471,24 +788,1503 @@
             <geographicflag>false</geographicflag>
           </spatialrefsys>
         </crs>
-        <extent/>
-        <links/>
+        <extent>
+          <spatial maxy="0" miny="0" maxx="0" dimensions="2" crs="" maxz="0" minz="0" minx="0"/>
+          <temporal>
+            <period>
+              <start></start>
+              <end></end>
+            </period>
+          </temporal>
+        </extent>
       </resourceMetadata>
-      <provider encoding="UTF-8">ogr</provider>
-      <vectorjoins/>
+      <provider encoding="UTF-8">delimitedtext</provider>
+      <vectorjoins>
+        <join joinFieldName="NOME" editable="0" memoryCache="1" cascadedDelete="0" targetFieldName="GEOCODE.administrative_area_level_2" joinLayerId="munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3" dynamicForm="0" upsertOnEdit="0"/>
+      </vectorjoins>
       <layerDependencies/>
       <dataDependencies/>
+      <legend type="default-vector"/>
       <expressionfields/>
       <map-layer-style-manager current="default">
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
-      <renderer-v2 enableorderby="0" forceraster="0" type="singleSymbol" symbollevels="0">
+      <renderer-v2 forceraster="0" type="heatmapRenderer" max_value="0" quality="3" enableorderby="0" radius_map_unit_scale="3x:0,0,0,0,0,0" radius_unit="0" weight_expression="Faturamento 2017" radius="10">
+        <colorramp type="gradient" name="[source]">
+          <prop k="color1" v="255,245,240,255"/>
+          <prop k="color2" v="103,0,13,255"/>
+          <prop k="discrete" v="0"/>
+          <prop k="rampType" v="gradient"/>
+          <prop k="stops" v="0.13;254,224,210,255:0.26;252,187,161,255:0.39;252,146,114,255:0.52;251,106,74,255:0.65;239,59,44,255:0.78;203,24,29,255:0.9;165,15,21,255"/>
+        </colorramp>
+      </renderer-v2>
+      <customproperties>
+        <property value="&quot;ID&quot;" key="dualview/previewExpressions"/>
+        <property value="0" key="embeddedWidgets/count"/>
+        <property key="variableNames"/>
+        <property key="variableValues"/>
+      </customproperties>
+      <blendMode>6</blendMode>
+      <featureBlendMode>0</featureBlendMode>
+      <layerOpacity>1</layerOpacity>
+      <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
+        <DiagramCategory rotationOffset="270" maxScaleDenominator="1e+8" labelPlacementMethod="XHeight" height="15" scaleDependency="Area" penAlpha="255" lineSizeType="MM" sizeScale="3x:0,0,0,0,0,0" minimumSize="0" opacity="1" scaleBasedVisibility="0" enabled="0" sizeType="MM" width="15" minScaleDenominator="0" backgroundAlpha="255" penWidth="0" lineSizeScale="3x:0,0,0,0,0,0" barWidth="5" diagramOrientation="Up" penColor="#000000" backgroundColor="#ffffff">
+          <fontProperties style="" description=".SF NS Text,13,-1,5,50,0,0,0,0,0"/>
+          <attribute field="" label="" color="#000000"/>
+        </DiagramCategory>
+      </SingleCategoryDiagramRenderer>
+      <DiagramLayerSettings showAll="1" obstacle="0" dist="0" priority="0" placement="0" linePlacementFlags="18" zIndex="0">
+        <properties>
+          <Option type="Map">
+            <Option type="QString" name="name" value=""/>
+            <Option name="properties"/>
+            <Option type="QString" name="type" value="collection"/>
+          </Option>
+        </properties>
+      </DiagramLayerSettings>
+      <fieldConfiguration>
+        <field name="ID">
+          <editWidget type="Range">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="CEP">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Faturamento 2017">
+          <editWidget type="Range">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Gestor da Empresa">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.lon">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.lat">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.type">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.loctype">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.address">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.north">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.south">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.east">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.west">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.postal_code">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.administrative_area_level_2">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.administrative_area_level_1">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.country">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.political">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.route">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_ID">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_AREA">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_GEOCODIGO">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_NOMECAPS">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_UF">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_CODUF">
+          <editWidget type="Range">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_REGIAO">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_MESORREGIA">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_MICRORREGI">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_RM">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_POP2004">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_DENSDEMO">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" index="0" field="ID"/>
+        <alias name="" index="1" field="CEP"/>
+        <alias name="" index="2" field="Faturamento 2017"/>
+        <alias name="" index="3" field="Gestor da Empresa"/>
+        <alias name="" index="4" field="GEOCODE.lon"/>
+        <alias name="" index="5" field="GEOCODE.lat"/>
+        <alias name="" index="6" field="GEOCODE.type"/>
+        <alias name="" index="7" field="GEOCODE.loctype"/>
+        <alias name="" index="8" field="GEOCODE.address"/>
+        <alias name="" index="9" field="GEOCODE.north"/>
+        <alias name="" index="10" field="GEOCODE.south"/>
+        <alias name="" index="11" field="GEOCODE.east"/>
+        <alias name="" index="12" field="GEOCODE.west"/>
+        <alias name="" index="13" field="GEOCODE.postal_code"/>
+        <alias name="" index="14" field="GEOCODE.administrative_area_level_2"/>
+        <alias name="" index="15" field="GEOCODE.administrative_area_level_1"/>
+        <alias name="" index="16" field="GEOCODE.country"/>
+        <alias name="" index="17" field="GEOCODE.political"/>
+        <alias name="" index="18" field="GEOCODE.route"/>
+        <alias name="" index="19" field="Municipios do Brasil_ID"/>
+        <alias name="" index="20" field="Municipios do Brasil_AREA"/>
+        <alias name="" index="21" field="Municipios do Brasil_GEOCODIGO"/>
+        <alias name="" index="22" field="Municipios do Brasil_NOMECAPS"/>
+        <alias name="" index="23" field="Municipios do Brasil_UF"/>
+        <alias name="" index="24" field="Municipios do Brasil_CODUF"/>
+        <alias name="" index="25" field="Municipios do Brasil_REGIAO"/>
+        <alias name="" index="26" field="Municipios do Brasil_MESORREGIA"/>
+        <alias name="" index="27" field="Municipios do Brasil_MICRORREGI"/>
+        <alias name="" index="28" field="Municipios do Brasil_RM"/>
+        <alias name="" index="29" field="Municipios do Brasil_POP2004"/>
+        <alias name="" index="30" field="Municipios do Brasil_DENSDEMO"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default applyOnUpdate="0" expression="" field="ID"/>
+        <default applyOnUpdate="0" expression="" field="CEP"/>
+        <default applyOnUpdate="0" expression="" field="Faturamento 2017"/>
+        <default applyOnUpdate="0" expression="" field="Gestor da Empresa"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.lon"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.lat"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.type"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.loctype"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.address"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.north"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.south"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.east"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.west"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.postal_code"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.administrative_area_level_2"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.administrative_area_level_1"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.country"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.political"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.route"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_ID"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_AREA"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_GEOCODIGO"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_NOMECAPS"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_UF"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_CODUF"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_REGIAO"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_MESORREGIA"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_MICRORREGI"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_RM"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_POP2004"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_DENSDEMO"/>
+      </defaults>
+      <constraints>
+        <constraint constraints="0" unique_strength="0" field="ID" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="CEP" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Faturamento 2017" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Gestor da Empresa" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.lon" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.lat" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.type" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.loctype" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.address" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.north" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.south" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.east" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.west" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.postal_code" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.administrative_area_level_2" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.administrative_area_level_1" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.country" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.political" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.route" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_ID" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_AREA" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_GEOCODIGO" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_NOMECAPS" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_UF" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_CODUF" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_REGIAO" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_MESORREGIA" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_MICRORREGI" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_RM" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_POP2004" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_DENSDEMO" notnull_strength="0" exp_strength="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint exp="" desc="" field="ID"/>
+        <constraint exp="" desc="" field="CEP"/>
+        <constraint exp="" desc="" field="Faturamento 2017"/>
+        <constraint exp="" desc="" field="Gestor da Empresa"/>
+        <constraint exp="" desc="" field="GEOCODE.lon"/>
+        <constraint exp="" desc="" field="GEOCODE.lat"/>
+        <constraint exp="" desc="" field="GEOCODE.type"/>
+        <constraint exp="" desc="" field="GEOCODE.loctype"/>
+        <constraint exp="" desc="" field="GEOCODE.address"/>
+        <constraint exp="" desc="" field="GEOCODE.north"/>
+        <constraint exp="" desc="" field="GEOCODE.south"/>
+        <constraint exp="" desc="" field="GEOCODE.east"/>
+        <constraint exp="" desc="" field="GEOCODE.west"/>
+        <constraint exp="" desc="" field="GEOCODE.postal_code"/>
+        <constraint exp="" desc="" field="GEOCODE.administrative_area_level_2"/>
+        <constraint exp="" desc="" field="GEOCODE.administrative_area_level_1"/>
+        <constraint exp="" desc="" field="GEOCODE.country"/>
+        <constraint exp="" desc="" field="GEOCODE.political"/>
+        <constraint exp="" desc="" field="GEOCODE.route"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_ID"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_AREA"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_GEOCODIGO"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_NOMECAPS"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_UF"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_CODUF"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_REGIAO"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_MESORREGIA"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_MICRORREGI"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_RM"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_POP2004"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_DENSDEMO"/>
+      </constraintExpressions>
+      <attributeactions>
+        <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
+      </attributeactions>
+      <attributetableconfig sortOrder="0" actionWidgetStyle="dropDown" sortExpression="&quot;GEOCODE.administrative_area_level_2&quot;">
+        <columns>
+          <column type="field" hidden="0" name="ID" width="-1"/>
+          <column type="field" hidden="0" name="CEP" width="-1"/>
+          <column type="field" hidden="0" name="Faturamento 2017" width="-1"/>
+          <column type="field" hidden="0" name="Gestor da Empresa" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.lon" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.lat" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.type" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.loctype" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.address" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.north" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.south" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.east" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.west" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.postal_code" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.administrative_area_level_2" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.administrative_area_level_1" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.country" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.political" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.route" width="-1"/>
+          <column type="actions" hidden="1" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_ID" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_AREA" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_GEOCODIGO" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_NOMECAPS" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_UF" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_CODUF" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_REGIAO" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_MESORREGIA" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_MICRORREGI" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_RM" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_POP2004" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_DENSDEMO" width="-1"/>
+        </columns>
+      </attributetableconfig>
+      <editform>.</editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget, "MyLineEdit")
+]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>generatedlayout</editorlayout>
+      <editable>
+        <field name="CEP" editable="1"/>
+        <field name="Faturamento 2017" editable="1"/>
+        <field name="GEOCODE.address" editable="1"/>
+        <field name="GEOCODE.administrative_area_level_1" editable="1"/>
+        <field name="GEOCODE.administrative_area_level_2" editable="1"/>
+        <field name="GEOCODE.country" editable="1"/>
+        <field name="GEOCODE.east" editable="1"/>
+        <field name="GEOCODE.lat" editable="1"/>
+        <field name="GEOCODE.loctype" editable="1"/>
+        <field name="GEOCODE.lon" editable="1"/>
+        <field name="GEOCODE.north" editable="1"/>
+        <field name="GEOCODE.political" editable="1"/>
+        <field name="GEOCODE.postal_code" editable="1"/>
+        <field name="GEOCODE.route" editable="1"/>
+        <field name="GEOCODE.south" editable="1"/>
+        <field name="GEOCODE.type" editable="1"/>
+        <field name="GEOCODE.west" editable="1"/>
+        <field name="Gestor da Empresa" editable="1"/>
+        <field name="ID" editable="1"/>
+        <field name="munic_brasil_AREA" editable="0"/>
+        <field name="munic_brasil_CODUF" editable="0"/>
+        <field name="munic_brasil_DENSDEMO" editable="0"/>
+        <field name="munic_brasil_GEOCODIGO" editable="0"/>
+        <field name="munic_brasil_ID" editable="0"/>
+        <field name="munic_brasil_MESORREGIA" editable="0"/>
+        <field name="munic_brasil_MICRORREGI" editable="0"/>
+        <field name="munic_brasil_NOMECAPS" editable="0"/>
+        <field name="munic_brasil_POP2004" editable="0"/>
+        <field name="munic_brasil_REGIAO" editable="0"/>
+        <field name="munic_brasil_RM" editable="0"/>
+        <field name="munic_brasil_UF" editable="0"/>
+      </editable>
+      <labelOnTop>
+        <field name="CEP" labelOnTop="0"/>
+        <field name="Faturamento 2017" labelOnTop="0"/>
+        <field name="GEOCODE.address" labelOnTop="0"/>
+        <field name="GEOCODE.administrative_area_level_1" labelOnTop="0"/>
+        <field name="GEOCODE.administrative_area_level_2" labelOnTop="0"/>
+        <field name="GEOCODE.country" labelOnTop="0"/>
+        <field name="GEOCODE.east" labelOnTop="0"/>
+        <field name="GEOCODE.lat" labelOnTop="0"/>
+        <field name="GEOCODE.loctype" labelOnTop="0"/>
+        <field name="GEOCODE.lon" labelOnTop="0"/>
+        <field name="GEOCODE.north" labelOnTop="0"/>
+        <field name="GEOCODE.political" labelOnTop="0"/>
+        <field name="GEOCODE.postal_code" labelOnTop="0"/>
+        <field name="GEOCODE.route" labelOnTop="0"/>
+        <field name="GEOCODE.south" labelOnTop="0"/>
+        <field name="GEOCODE.type" labelOnTop="0"/>
+        <field name="GEOCODE.west" labelOnTop="0"/>
+        <field name="Gestor da Empresa" labelOnTop="0"/>
+        <field name="ID" labelOnTop="0"/>
+        <field name="munic_brasil_AREA" labelOnTop="0"/>
+        <field name="munic_brasil_CODUF" labelOnTop="0"/>
+        <field name="munic_brasil_DENSDEMO" labelOnTop="0"/>
+        <field name="munic_brasil_GEOCODIGO" labelOnTop="0"/>
+        <field name="munic_brasil_ID" labelOnTop="0"/>
+        <field name="munic_brasil_MESORREGIA" labelOnTop="0"/>
+        <field name="munic_brasil_MICRORREGI" labelOnTop="0"/>
+        <field name="munic_brasil_NOMECAPS" labelOnTop="0"/>
+        <field name="munic_brasil_POP2004" labelOnTop="0"/>
+        <field name="munic_brasil_REGIAO" labelOnTop="0"/>
+        <field name="munic_brasil_RM" labelOnTop="0"/>
+        <field name="munic_brasil_UF" labelOnTop="0"/>
+      </labelOnTop>
+      <widgets/>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <expressionfields/>
+      <previewExpression>ID</previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer type="vector" simplifyMaxScale="1" minScale="1e+8" labelsEnabled="0" simplifyLocal="1" maxScale="0" refreshOnNotifyMessage="" simplifyDrawingHints="0" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" hasScaleBasedVisibilityFlag="0" simplifyDrawingTol="1" autoRefreshTime="0" simplifyAlgorithm="0" readOnly="0" geometry="Point">
+      <extent>
+        <xmin>-51.20792000000000144</xmin>
+        <ymin>-30.11488999999999905</ymin>
+        <xmax>-41.7550200000000018</xmax>
+        <ymax>-22.33990999999999971</ymax>
+      </extent>
+      <id>Heatmap_de_Faturamento_3222ba3e_6d5e_4e59_9891_d0931db48a1c</id>
+      <datasource>file:./EMPRESAS_GRUPO.txt?type=csv&amp;delimiter=%5Ct&amp;xField=GEOCODE.lon&amp;yField=GEOCODE.lat&amp;crs=EPSG:4326&amp;spatialIndex=no&amp;subsetIndex=no&amp;watchFile=no</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>Faturamento</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
+          <srsid>3452</srsid>
+          <srid>4326</srid>
+          <authid>EPSG:4326</authid>
+          <description>WGS 84</description>
+          <projectionacronym>longlat</projectionacronym>
+          <ellipsoidacronym>WGS84</ellipsoidacronym>
+          <geographicflag>true</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <contact>
+          <name></name>
+          <organization></organization>
+          <position></position>
+          <voice></voice>
+          <fax></fax>
+          <email></email>
+          <role></role>
+        </contact>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent>
+          <spatial maxy="0" miny="0" maxx="0" dimensions="2" crs="" maxz="0" minz="0" minx="0"/>
+          <temporal>
+            <period>
+              <start></start>
+              <end></end>
+            </period>
+          </temporal>
+        </extent>
+      </resourceMetadata>
+      <provider encoding="UTF-8">delimitedtext</provider>
+      <vectorjoins>
+        <join joinFieldName="NOME" editable="0" memoryCache="1" cascadedDelete="0" targetFieldName="GEOCODE.administrative_area_level_2" joinLayerId="munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3" dynamicForm="0" upsertOnEdit="0"/>
+      </vectorjoins>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <renderer-v2 forceraster="0" type="graduatedSymbol" enableorderby="1" attr="sum( &quot;Faturamento 2017&quot; , group_by:= &quot;GEOCODE.administrative_area_level_2&quot;)" symbollevels="0" graduatedMethod="GraduatedSize">
+        <ranges>
+          <range upper="203404.000000000000000" label=" 3124.0000 - 203404.0000 " render="true" lower="3124.000000000000000" symbol="0"/>
+          <range upper="403684.000000000000000" label=" 203404.0000 - 403684.0000 " render="true" lower="203404.000000000000000" symbol="1"/>
+          <range upper="603964.000000000000000" label=" 403684.0000 - 603964.0000 " render="true" lower="403684.000000000000000" symbol="2"/>
+          <range upper="804244.000000000000000" label=" 603964.0000 - 804244.0000 " render="true" lower="603964.000000000000000" symbol="3"/>
+          <range upper="1004524.000000000000000" label=" 804244.0000 - 1004524.0000 " render="true" lower="804244.000000000000000" symbol="4"/>
+        </ranges>
         <symbols>
-          <symbol clip_to_extent="1" name="0" alpha="1" type="fill">
-            <layer locked="0" enabled="1" pass="0" class="SimpleFill">
+          <symbol type="marker" name="0" clip_to_extent="1" alpha="1">
+            <layer enabled="1" locked="0" class="GeometryGenerator" pass="0">
+              <prop k="SymbolType" v="Fill"/>
+              <prop k="geometryModifier" v="$geometry"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option type="QString" name="name" value=""/>
+                  <Option name="properties"/>
+                  <Option type="QString" name="type" value="collection"/>
+                </Option>
+              </data_defined_properties>
+              <symbol type="fill" name="@0@0" clip_to_extent="1" alpha="1">
+                <layer enabled="1" locked="0" class="GradientFill" pass="0">
+                  <prop k="angle" v="0"/>
+                  <prop k="color" v="0,0,255,255"/>
+                  <prop k="color1" v="13,8,135,255"/>
+                  <prop k="color2" v="240,249,33,255"/>
+                  <prop k="color_type" v="1"/>
+                  <prop k="coordinate_mode" v="0"/>
+                  <prop k="discrete" v="0"/>
+                  <prop k="gradient_color2" v="255,255,255,255"/>
+                  <prop k="offset" v="0,0"/>
+                  <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+                  <prop k="offset_unit" v="MM"/>
+                  <prop k="rampType" v="gradient"/>
+                  <prop k="reference_point1" v="0,0"/>
+                  <prop k="reference_point1_iscentroid" v="0"/>
+                  <prop k="reference_point2" v="1,1"/>
+                  <prop k="reference_point2_iscentroid" v="0"/>
+                  <prop k="spread" v="0"/>
+                  <prop k="stops" v="0.0196078;27,6,141,255:0.0392157;38,5,145,255:0.0588235;47,5,150,255:0.0784314;56,4,154,255:0.0980392;65,4,157,255:0.117647;73,3,160,255:0.137255;81,2,163,255:0.156863;89,1,165,255:0.176471;97,0,167,255:0.196078;105,0,168,255:0.215686;113,0,168,255:0.235294;120,1,168,255:0.254902;128,4,168,255:0.27451;135,7,166,255:0.294118;142,12,164,255:0.313725;149,17,161,255:0.333333;156,23,158,255:0.352941;162,29,154,255:0.372549;168,34,150,255:0.392157;174,40,146,255:0.411765;180,46,141,255:0.431373;186,51,136,255:0.45098;191,57,132,255:0.470588;196,62,127,255:0.490196;201,68,122,255:0.509804;205,74,118,255:0.529412;210,79,113,255:0.54902;214,85,109,255:0.568627;218,91,105,255:0.588235;222,97,100,255:0.607843;226,102,96,255:0.627451;230,108,92,255:0.647059;233,114,87,255:0.666667;237,121,83,255:0.686275;240,127,79,255:0.705882;243,133,75,255:0.72549;245,140,70,255:0.745098;247,147,66,255:0.764706;249,154,62,255:0.784314;251,161,57,255:0.803922;252,168,53,255:0.823529;253,175,49,255:0.843137;254,183,45,255:0.862745;254,190,42,255:0.882353;253,198,39,255:0.901961;252,206,37,255:0.921569;251,215,36,255:0.941176;248,223,37,255:0.960784;246,232,38,255:0.980392;243,240,39,255"/>
+                  <prop k="type" v="1"/>
+                  <data_defined_properties>
+                    <Option type="Map">
+                      <Option type="QString" name="name" value=""/>
+                      <Option name="properties"/>
+                      <Option type="QString" name="type" value="collection"/>
+                    </Option>
+                  </data_defined_properties>
+                </layer>
+              </symbol>
+            </layer>
+          </symbol>
+          <symbol type="marker" name="1" clip_to_extent="1" alpha="1">
+            <layer enabled="1" locked="0" class="GeometryGenerator" pass="0">
+              <prop k="SymbolType" v="Fill"/>
+              <prop k="geometryModifier" v="$geometry"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option type="QString" name="name" value=""/>
+                  <Option name="properties"/>
+                  <Option type="QString" name="type" value="collection"/>
+                </Option>
+              </data_defined_properties>
+              <symbol type="fill" name="@1@0" clip_to_extent="1" alpha="1">
+                <layer enabled="1" locked="0" class="GradientFill" pass="0">
+                  <prop k="angle" v="0"/>
+                  <prop k="color" v="0,0,255,255"/>
+                  <prop k="color1" v="13,8,135,255"/>
+                  <prop k="color2" v="240,249,33,255"/>
+                  <prop k="color_type" v="1"/>
+                  <prop k="coordinate_mode" v="0"/>
+                  <prop k="discrete" v="0"/>
+                  <prop k="gradient_color2" v="255,255,255,255"/>
+                  <prop k="offset" v="0,0"/>
+                  <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+                  <prop k="offset_unit" v="MM"/>
+                  <prop k="rampType" v="gradient"/>
+                  <prop k="reference_point1" v="0,0"/>
+                  <prop k="reference_point1_iscentroid" v="0"/>
+                  <prop k="reference_point2" v="1,1"/>
+                  <prop k="reference_point2_iscentroid" v="0"/>
+                  <prop k="spread" v="0"/>
+                  <prop k="stops" v="0.0196078;27,6,141,255:0.0392157;38,5,145,255:0.0588235;47,5,150,255:0.0784314;56,4,154,255:0.0980392;65,4,157,255:0.117647;73,3,160,255:0.137255;81,2,163,255:0.156863;89,1,165,255:0.176471;97,0,167,255:0.196078;105,0,168,255:0.215686;113,0,168,255:0.235294;120,1,168,255:0.254902;128,4,168,255:0.27451;135,7,166,255:0.294118;142,12,164,255:0.313725;149,17,161,255:0.333333;156,23,158,255:0.352941;162,29,154,255:0.372549;168,34,150,255:0.392157;174,40,146,255:0.411765;180,46,141,255:0.431373;186,51,136,255:0.45098;191,57,132,255:0.470588;196,62,127,255:0.490196;201,68,122,255:0.509804;205,74,118,255:0.529412;210,79,113,255:0.54902;214,85,109,255:0.568627;218,91,105,255:0.588235;222,97,100,255:0.607843;226,102,96,255:0.627451;230,108,92,255:0.647059;233,114,87,255:0.666667;237,121,83,255:0.686275;240,127,79,255:0.705882;243,133,75,255:0.72549;245,140,70,255:0.745098;247,147,66,255:0.764706;249,154,62,255:0.784314;251,161,57,255:0.803922;252,168,53,255:0.823529;253,175,49,255:0.843137;254,183,45,255:0.862745;254,190,42,255:0.882353;253,198,39,255:0.901961;252,206,37,255:0.921569;251,215,36,255:0.941176;248,223,37,255:0.960784;246,232,38,255:0.980392;243,240,39,255"/>
+                  <prop k="type" v="1"/>
+                  <data_defined_properties>
+                    <Option type="Map">
+                      <Option type="QString" name="name" value=""/>
+                      <Option name="properties"/>
+                      <Option type="QString" name="type" value="collection"/>
+                    </Option>
+                  </data_defined_properties>
+                </layer>
+              </symbol>
+            </layer>
+          </symbol>
+          <symbol type="marker" name="2" clip_to_extent="1" alpha="1">
+            <layer enabled="1" locked="0" class="GeometryGenerator" pass="0">
+              <prop k="SymbolType" v="Fill"/>
+              <prop k="geometryModifier" v="$geometry"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option type="QString" name="name" value=""/>
+                  <Option name="properties"/>
+                  <Option type="QString" name="type" value="collection"/>
+                </Option>
+              </data_defined_properties>
+              <symbol type="fill" name="@2@0" clip_to_extent="1" alpha="1">
+                <layer enabled="1" locked="0" class="GradientFill" pass="0">
+                  <prop k="angle" v="0"/>
+                  <prop k="color" v="0,0,255,255"/>
+                  <prop k="color1" v="13,8,135,255"/>
+                  <prop k="color2" v="240,249,33,255"/>
+                  <prop k="color_type" v="1"/>
+                  <prop k="coordinate_mode" v="0"/>
+                  <prop k="discrete" v="0"/>
+                  <prop k="gradient_color2" v="255,255,255,255"/>
+                  <prop k="offset" v="0,0"/>
+                  <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+                  <prop k="offset_unit" v="MM"/>
+                  <prop k="rampType" v="gradient"/>
+                  <prop k="reference_point1" v="0,0"/>
+                  <prop k="reference_point1_iscentroid" v="0"/>
+                  <prop k="reference_point2" v="1,1"/>
+                  <prop k="reference_point2_iscentroid" v="0"/>
+                  <prop k="spread" v="0"/>
+                  <prop k="stops" v="0.0196078;27,6,141,255:0.0392157;38,5,145,255:0.0588235;47,5,150,255:0.0784314;56,4,154,255:0.0980392;65,4,157,255:0.117647;73,3,160,255:0.137255;81,2,163,255:0.156863;89,1,165,255:0.176471;97,0,167,255:0.196078;105,0,168,255:0.215686;113,0,168,255:0.235294;120,1,168,255:0.254902;128,4,168,255:0.27451;135,7,166,255:0.294118;142,12,164,255:0.313725;149,17,161,255:0.333333;156,23,158,255:0.352941;162,29,154,255:0.372549;168,34,150,255:0.392157;174,40,146,255:0.411765;180,46,141,255:0.431373;186,51,136,255:0.45098;191,57,132,255:0.470588;196,62,127,255:0.490196;201,68,122,255:0.509804;205,74,118,255:0.529412;210,79,113,255:0.54902;214,85,109,255:0.568627;218,91,105,255:0.588235;222,97,100,255:0.607843;226,102,96,255:0.627451;230,108,92,255:0.647059;233,114,87,255:0.666667;237,121,83,255:0.686275;240,127,79,255:0.705882;243,133,75,255:0.72549;245,140,70,255:0.745098;247,147,66,255:0.764706;249,154,62,255:0.784314;251,161,57,255:0.803922;252,168,53,255:0.823529;253,175,49,255:0.843137;254,183,45,255:0.862745;254,190,42,255:0.882353;253,198,39,255:0.901961;252,206,37,255:0.921569;251,215,36,255:0.941176;248,223,37,255:0.960784;246,232,38,255:0.980392;243,240,39,255"/>
+                  <prop k="type" v="1"/>
+                  <data_defined_properties>
+                    <Option type="Map">
+                      <Option type="QString" name="name" value=""/>
+                      <Option name="properties"/>
+                      <Option type="QString" name="type" value="collection"/>
+                    </Option>
+                  </data_defined_properties>
+                </layer>
+              </symbol>
+            </layer>
+          </symbol>
+          <symbol type="marker" name="3" clip_to_extent="1" alpha="1">
+            <layer enabled="1" locked="0" class="GeometryGenerator" pass="0">
+              <prop k="SymbolType" v="Fill"/>
+              <prop k="geometryModifier" v="$geometry"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option type="QString" name="name" value=""/>
+                  <Option name="properties"/>
+                  <Option type="QString" name="type" value="collection"/>
+                </Option>
+              </data_defined_properties>
+              <symbol type="fill" name="@3@0" clip_to_extent="1" alpha="1">
+                <layer enabled="1" locked="0" class="GradientFill" pass="0">
+                  <prop k="angle" v="0"/>
+                  <prop k="color" v="0,0,255,255"/>
+                  <prop k="color1" v="13,8,135,255"/>
+                  <prop k="color2" v="240,249,33,255"/>
+                  <prop k="color_type" v="1"/>
+                  <prop k="coordinate_mode" v="0"/>
+                  <prop k="discrete" v="0"/>
+                  <prop k="gradient_color2" v="255,255,255,255"/>
+                  <prop k="offset" v="0,0"/>
+                  <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+                  <prop k="offset_unit" v="MM"/>
+                  <prop k="rampType" v="gradient"/>
+                  <prop k="reference_point1" v="0,0"/>
+                  <prop k="reference_point1_iscentroid" v="0"/>
+                  <prop k="reference_point2" v="1,1"/>
+                  <prop k="reference_point2_iscentroid" v="0"/>
+                  <prop k="spread" v="0"/>
+                  <prop k="stops" v="0.0196078;27,6,141,255:0.0392157;38,5,145,255:0.0588235;47,5,150,255:0.0784314;56,4,154,255:0.0980392;65,4,157,255:0.117647;73,3,160,255:0.137255;81,2,163,255:0.156863;89,1,165,255:0.176471;97,0,167,255:0.196078;105,0,168,255:0.215686;113,0,168,255:0.235294;120,1,168,255:0.254902;128,4,168,255:0.27451;135,7,166,255:0.294118;142,12,164,255:0.313725;149,17,161,255:0.333333;156,23,158,255:0.352941;162,29,154,255:0.372549;168,34,150,255:0.392157;174,40,146,255:0.411765;180,46,141,255:0.431373;186,51,136,255:0.45098;191,57,132,255:0.470588;196,62,127,255:0.490196;201,68,122,255:0.509804;205,74,118,255:0.529412;210,79,113,255:0.54902;214,85,109,255:0.568627;218,91,105,255:0.588235;222,97,100,255:0.607843;226,102,96,255:0.627451;230,108,92,255:0.647059;233,114,87,255:0.666667;237,121,83,255:0.686275;240,127,79,255:0.705882;243,133,75,255:0.72549;245,140,70,255:0.745098;247,147,66,255:0.764706;249,154,62,255:0.784314;251,161,57,255:0.803922;252,168,53,255:0.823529;253,175,49,255:0.843137;254,183,45,255:0.862745;254,190,42,255:0.882353;253,198,39,255:0.901961;252,206,37,255:0.921569;251,215,36,255:0.941176;248,223,37,255:0.960784;246,232,38,255:0.980392;243,240,39,255"/>
+                  <prop k="type" v="1"/>
+                  <data_defined_properties>
+                    <Option type="Map">
+                      <Option type="QString" name="name" value=""/>
+                      <Option name="properties"/>
+                      <Option type="QString" name="type" value="collection"/>
+                    </Option>
+                  </data_defined_properties>
+                </layer>
+              </symbol>
+            </layer>
+          </symbol>
+          <symbol type="marker" name="4" clip_to_extent="1" alpha="1">
+            <layer enabled="1" locked="0" class="GeometryGenerator" pass="0">
+              <prop k="SymbolType" v="Fill"/>
+              <prop k="geometryModifier" v="$geometry"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option type="QString" name="name" value=""/>
+                  <Option name="properties"/>
+                  <Option type="QString" name="type" value="collection"/>
+                </Option>
+              </data_defined_properties>
+              <symbol type="fill" name="@4@0" clip_to_extent="1" alpha="1">
+                <layer enabled="1" locked="0" class="GradientFill" pass="0">
+                  <prop k="angle" v="0"/>
+                  <prop k="color" v="0,0,255,255"/>
+                  <prop k="color1" v="13,8,135,255"/>
+                  <prop k="color2" v="240,249,33,255"/>
+                  <prop k="color_type" v="1"/>
+                  <prop k="coordinate_mode" v="0"/>
+                  <prop k="discrete" v="0"/>
+                  <prop k="gradient_color2" v="255,255,255,255"/>
+                  <prop k="offset" v="0,0"/>
+                  <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+                  <prop k="offset_unit" v="MM"/>
+                  <prop k="rampType" v="gradient"/>
+                  <prop k="reference_point1" v="0,0"/>
+                  <prop k="reference_point1_iscentroid" v="0"/>
+                  <prop k="reference_point2" v="1,1"/>
+                  <prop k="reference_point2_iscentroid" v="0"/>
+                  <prop k="spread" v="0"/>
+                  <prop k="stops" v="0.0196078;27,6,141,255:0.0392157;38,5,145,255:0.0588235;47,5,150,255:0.0784314;56,4,154,255:0.0980392;65,4,157,255:0.117647;73,3,160,255:0.137255;81,2,163,255:0.156863;89,1,165,255:0.176471;97,0,167,255:0.196078;105,0,168,255:0.215686;113,0,168,255:0.235294;120,1,168,255:0.254902;128,4,168,255:0.27451;135,7,166,255:0.294118;142,12,164,255:0.313725;149,17,161,255:0.333333;156,23,158,255:0.352941;162,29,154,255:0.372549;168,34,150,255:0.392157;174,40,146,255:0.411765;180,46,141,255:0.431373;186,51,136,255:0.45098;191,57,132,255:0.470588;196,62,127,255:0.490196;201,68,122,255:0.509804;205,74,118,255:0.529412;210,79,113,255:0.54902;214,85,109,255:0.568627;218,91,105,255:0.588235;222,97,100,255:0.607843;226,102,96,255:0.627451;230,108,92,255:0.647059;233,114,87,255:0.666667;237,121,83,255:0.686275;240,127,79,255:0.705882;243,133,75,255:0.72549;245,140,70,255:0.745098;247,147,66,255:0.764706;249,154,62,255:0.784314;251,161,57,255:0.803922;252,168,53,255:0.823529;253,175,49,255:0.843137;254,183,45,255:0.862745;254,190,42,255:0.882353;253,198,39,255:0.901961;252,206,37,255:0.921569;251,215,36,255:0.941176;248,223,37,255:0.960784;246,232,38,255:0.980392;243,240,39,255"/>
+                  <prop k="type" v="1"/>
+                  <data_defined_properties>
+                    <Option type="Map">
+                      <Option type="QString" name="name" value=""/>
+                      <Option name="properties"/>
+                      <Option type="QString" name="type" value="collection"/>
+                    </Option>
+                  </data_defined_properties>
+                </layer>
+              </symbol>
+            </layer>
+          </symbol>
+        </symbols>
+        <source-symbol>
+          <symbol type="marker" name="0" clip_to_extent="1" alpha="1">
+            <layer enabled="1" locked="0" class="GeometryGenerator" pass="0">
+              <prop k="SymbolType" v="Fill"/>
+              <prop k="geometryModifier" v="$geometry"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option type="QString" name="name" value=""/>
+                  <Option name="properties"/>
+                  <Option type="QString" name="type" value="collection"/>
+                </Option>
+              </data_defined_properties>
+              <symbol type="fill" name="@0@0" clip_to_extent="1" alpha="1">
+                <layer enabled="1" locked="0" class="GradientFill" pass="0">
+                  <prop k="angle" v="0"/>
+                  <prop k="color" v="0,0,255,255"/>
+                  <prop k="color1" v="13,8,135,255"/>
+                  <prop k="color2" v="240,249,33,255"/>
+                  <prop k="color_type" v="1"/>
+                  <prop k="coordinate_mode" v="0"/>
+                  <prop k="discrete" v="0"/>
+                  <prop k="gradient_color2" v="255,255,255,255"/>
+                  <prop k="offset" v="0,0"/>
+                  <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+                  <prop k="offset_unit" v="MM"/>
+                  <prop k="rampType" v="gradient"/>
+                  <prop k="reference_point1" v="0,0"/>
+                  <prop k="reference_point1_iscentroid" v="0"/>
+                  <prop k="reference_point2" v="1,1"/>
+                  <prop k="reference_point2_iscentroid" v="0"/>
+                  <prop k="spread" v="0"/>
+                  <prop k="stops" v="0.0196078;27,6,141,255:0.0392157;38,5,145,255:0.0588235;47,5,150,255:0.0784314;56,4,154,255:0.0980392;65,4,157,255:0.117647;73,3,160,255:0.137255;81,2,163,255:0.156863;89,1,165,255:0.176471;97,0,167,255:0.196078;105,0,168,255:0.215686;113,0,168,255:0.235294;120,1,168,255:0.254902;128,4,168,255:0.27451;135,7,166,255:0.294118;142,12,164,255:0.313725;149,17,161,255:0.333333;156,23,158,255:0.352941;162,29,154,255:0.372549;168,34,150,255:0.392157;174,40,146,255:0.411765;180,46,141,255:0.431373;186,51,136,255:0.45098;191,57,132,255:0.470588;196,62,127,255:0.490196;201,68,122,255:0.509804;205,74,118,255:0.529412;210,79,113,255:0.54902;214,85,109,255:0.568627;218,91,105,255:0.588235;222,97,100,255:0.607843;226,102,96,255:0.627451;230,108,92,255:0.647059;233,114,87,255:0.666667;237,121,83,255:0.686275;240,127,79,255:0.705882;243,133,75,255:0.72549;245,140,70,255:0.745098;247,147,66,255:0.764706;249,154,62,255:0.784314;251,161,57,255:0.803922;252,168,53,255:0.823529;253,175,49,255:0.843137;254,183,45,255:0.862745;254,190,42,255:0.882353;253,198,39,255:0.901961;252,206,37,255:0.921569;251,215,36,255:0.941176;248,223,37,255:0.960784;246,232,38,255:0.980392;243,240,39,255"/>
+                  <prop k="type" v="1"/>
+                  <data_defined_properties>
+                    <Option type="Map">
+                      <Option type="QString" name="name" value=""/>
+                      <Option name="properties"/>
+                      <Option type="QString" name="type" value="collection"/>
+                    </Option>
+                  </data_defined_properties>
+                </layer>
+              </symbol>
+            </layer>
+          </symbol>
+        </source-symbol>
+        <mode name="equal"/>
+        <rotation/>
+        <sizescale/>
+        <labelformat trimtrailingzeroes="false" format=" %1 - %2 " decimalplaces="0"/>
+      </renderer-v2>
+      <customproperties>
+        <property key="dualview/previewExpressions">
+          <value>ID</value>
+          <value>"ID"</value>
+        </property>
+        <property value="0" key="embeddedWidgets/count"/>
+        <property key="variableNames"/>
+        <property key="variableValues"/>
+      </customproperties>
+      <blendMode>0</blendMode>
+      <featureBlendMode>0</featureBlendMode>
+      <layerOpacity>1</layerOpacity>
+      <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
+        <DiagramCategory rotationOffset="270" maxScaleDenominator="1e+8" labelPlacementMethod="XHeight" height="15" scaleDependency="Area" penAlpha="255" lineSizeType="MM" sizeScale="3x:0,0,0,0,0,0" minimumSize="0" opacity="1" scaleBasedVisibility="0" enabled="0" sizeType="MM" width="15" minScaleDenominator="0" backgroundAlpha="255" penWidth="0" lineSizeScale="3x:0,0,0,0,0,0" barWidth="5" diagramOrientation="Up" penColor="#000000" backgroundColor="#ffffff">
+          <fontProperties style="" description=".SF NS Text,13,-1,5,50,0,0,0,0,0"/>
+          <attribute field="" label="" color="#000000"/>
+        </DiagramCategory>
+      </SingleCategoryDiagramRenderer>
+      <DiagramLayerSettings showAll="1" obstacle="0" dist="0" priority="0" placement="0" linePlacementFlags="18" zIndex="0">
+        <properties>
+          <Option type="Map">
+            <Option type="QString" name="name" value=""/>
+            <Option name="properties"/>
+            <Option type="QString" name="type" value="collection"/>
+          </Option>
+        </properties>
+      </DiagramLayerSettings>
+      <fieldConfiguration>
+        <field name="ID">
+          <editWidget type="Range">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="CEP">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Faturamento 2017">
+          <editWidget type="Range">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Gestor da Empresa">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.lon">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.lat">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.type">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.loctype">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.address">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.north">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.south">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.east">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.west">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.postal_code">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.administrative_area_level_2">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.administrative_area_level_1">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.country">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.political">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="GEOCODE.route">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_ID">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_AREA">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_GEOCODIGO">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_NOMECAPS">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_UF">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_CODUF">
+          <editWidget type="Range">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_REGIAO">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_MESORREGIA">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_MICRORREGI">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_RM">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_POP2004">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Municipios do Brasil_DENSDEMO">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" index="0" field="ID"/>
+        <alias name="" index="1" field="CEP"/>
+        <alias name="" index="2" field="Faturamento 2017"/>
+        <alias name="" index="3" field="Gestor da Empresa"/>
+        <alias name="" index="4" field="GEOCODE.lon"/>
+        <alias name="" index="5" field="GEOCODE.lat"/>
+        <alias name="" index="6" field="GEOCODE.type"/>
+        <alias name="" index="7" field="GEOCODE.loctype"/>
+        <alias name="" index="8" field="GEOCODE.address"/>
+        <alias name="" index="9" field="GEOCODE.north"/>
+        <alias name="" index="10" field="GEOCODE.south"/>
+        <alias name="" index="11" field="GEOCODE.east"/>
+        <alias name="" index="12" field="GEOCODE.west"/>
+        <alias name="" index="13" field="GEOCODE.postal_code"/>
+        <alias name="" index="14" field="GEOCODE.administrative_area_level_2"/>
+        <alias name="" index="15" field="GEOCODE.administrative_area_level_1"/>
+        <alias name="" index="16" field="GEOCODE.country"/>
+        <alias name="" index="17" field="GEOCODE.political"/>
+        <alias name="" index="18" field="GEOCODE.route"/>
+        <alias name="" index="19" field="Municipios do Brasil_ID"/>
+        <alias name="" index="20" field="Municipios do Brasil_AREA"/>
+        <alias name="" index="21" field="Municipios do Brasil_GEOCODIGO"/>
+        <alias name="" index="22" field="Municipios do Brasil_NOMECAPS"/>
+        <alias name="" index="23" field="Municipios do Brasil_UF"/>
+        <alias name="" index="24" field="Municipios do Brasil_CODUF"/>
+        <alias name="" index="25" field="Municipios do Brasil_REGIAO"/>
+        <alias name="" index="26" field="Municipios do Brasil_MESORREGIA"/>
+        <alias name="" index="27" field="Municipios do Brasil_MICRORREGI"/>
+        <alias name="" index="28" field="Municipios do Brasil_RM"/>
+        <alias name="" index="29" field="Municipios do Brasil_POP2004"/>
+        <alias name="" index="30" field="Municipios do Brasil_DENSDEMO"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default applyOnUpdate="0" expression="" field="ID"/>
+        <default applyOnUpdate="0" expression="" field="CEP"/>
+        <default applyOnUpdate="0" expression="" field="Faturamento 2017"/>
+        <default applyOnUpdate="0" expression="" field="Gestor da Empresa"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.lon"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.lat"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.type"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.loctype"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.address"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.north"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.south"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.east"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.west"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.postal_code"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.administrative_area_level_2"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.administrative_area_level_1"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.country"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.political"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODE.route"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_ID"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_AREA"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_GEOCODIGO"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_NOMECAPS"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_UF"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_CODUF"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_REGIAO"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_MESORREGIA"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_MICRORREGI"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_RM"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_POP2004"/>
+        <default applyOnUpdate="0" expression="" field="Municipios do Brasil_DENSDEMO"/>
+      </defaults>
+      <constraints>
+        <constraint constraints="0" unique_strength="0" field="ID" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="CEP" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Faturamento 2017" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Gestor da Empresa" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.lon" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.lat" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.type" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.loctype" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.address" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.north" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.south" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.east" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.west" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.postal_code" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.administrative_area_level_2" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.administrative_area_level_1" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.country" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.political" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODE.route" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_ID" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_AREA" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_GEOCODIGO" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_NOMECAPS" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_UF" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_CODUF" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_REGIAO" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_MESORREGIA" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_MICRORREGI" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_RM" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_POP2004" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="Municipios do Brasil_DENSDEMO" notnull_strength="0" exp_strength="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint exp="" desc="" field="ID"/>
+        <constraint exp="" desc="" field="CEP"/>
+        <constraint exp="" desc="" field="Faturamento 2017"/>
+        <constraint exp="" desc="" field="Gestor da Empresa"/>
+        <constraint exp="" desc="" field="GEOCODE.lon"/>
+        <constraint exp="" desc="" field="GEOCODE.lat"/>
+        <constraint exp="" desc="" field="GEOCODE.type"/>
+        <constraint exp="" desc="" field="GEOCODE.loctype"/>
+        <constraint exp="" desc="" field="GEOCODE.address"/>
+        <constraint exp="" desc="" field="GEOCODE.north"/>
+        <constraint exp="" desc="" field="GEOCODE.south"/>
+        <constraint exp="" desc="" field="GEOCODE.east"/>
+        <constraint exp="" desc="" field="GEOCODE.west"/>
+        <constraint exp="" desc="" field="GEOCODE.postal_code"/>
+        <constraint exp="" desc="" field="GEOCODE.administrative_area_level_2"/>
+        <constraint exp="" desc="" field="GEOCODE.administrative_area_level_1"/>
+        <constraint exp="" desc="" field="GEOCODE.country"/>
+        <constraint exp="" desc="" field="GEOCODE.political"/>
+        <constraint exp="" desc="" field="GEOCODE.route"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_ID"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_AREA"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_GEOCODIGO"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_NOMECAPS"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_UF"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_CODUF"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_REGIAO"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_MESORREGIA"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_MICRORREGI"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_RM"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_POP2004"/>
+        <constraint exp="" desc="" field="Municipios do Brasil_DENSDEMO"/>
+      </constraintExpressions>
+      <attributeactions>
+        <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
+      </attributeactions>
+      <attributetableconfig sortOrder="0" actionWidgetStyle="dropDown" sortExpression="&quot;GEOCODE.administrative_area_level_2&quot;">
+        <columns>
+          <column type="field" hidden="0" name="ID" width="-1"/>
+          <column type="field" hidden="0" name="CEP" width="-1"/>
+          <column type="field" hidden="0" name="Faturamento 2017" width="-1"/>
+          <column type="field" hidden="0" name="Gestor da Empresa" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.lon" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.lat" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.type" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.loctype" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.address" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.north" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.south" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.east" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.west" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.postal_code" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.administrative_area_level_2" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.administrative_area_level_1" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.country" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.political" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODE.route" width="-1"/>
+          <column type="actions" hidden="1" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_ID" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_AREA" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_GEOCODIGO" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_NOMECAPS" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_UF" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_CODUF" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_REGIAO" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_MESORREGIA" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_MICRORREGI" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_RM" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_POP2004" width="-1"/>
+          <column type="field" hidden="0" name="Municipios do Brasil_DENSDEMO" width="-1"/>
+        </columns>
+      </attributetableconfig>
+      <editform>.</editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget, "MyLineEdit")
+]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>generatedlayout</editorlayout>
+      <editable>
+        <field name="CEP" editable="1"/>
+        <field name="Faturamento 2017" editable="1"/>
+        <field name="GEOCODE.address" editable="1"/>
+        <field name="GEOCODE.administrative_area_level_1" editable="1"/>
+        <field name="GEOCODE.administrative_area_level_2" editable="1"/>
+        <field name="GEOCODE.country" editable="1"/>
+        <field name="GEOCODE.east" editable="1"/>
+        <field name="GEOCODE.lat" editable="1"/>
+        <field name="GEOCODE.loctype" editable="1"/>
+        <field name="GEOCODE.lon" editable="1"/>
+        <field name="GEOCODE.north" editable="1"/>
+        <field name="GEOCODE.political" editable="1"/>
+        <field name="GEOCODE.postal_code" editable="1"/>
+        <field name="GEOCODE.route" editable="1"/>
+        <field name="GEOCODE.south" editable="1"/>
+        <field name="GEOCODE.type" editable="1"/>
+        <field name="GEOCODE.west" editable="1"/>
+        <field name="Gestor da Empresa" editable="1"/>
+        <field name="ID" editable="1"/>
+        <field name="munic_brasil_AREA" editable="0"/>
+        <field name="munic_brasil_CODUF" editable="0"/>
+        <field name="munic_brasil_DENSDEMO" editable="0"/>
+        <field name="munic_brasil_GEOCODIGO" editable="0"/>
+        <field name="munic_brasil_ID" editable="0"/>
+        <field name="munic_brasil_MESORREGIA" editable="0"/>
+        <field name="munic_brasil_MICRORREGI" editable="0"/>
+        <field name="munic_brasil_NOMECAPS" editable="0"/>
+        <field name="munic_brasil_POP2004" editable="0"/>
+        <field name="munic_brasil_REGIAO" editable="0"/>
+        <field name="munic_brasil_RM" editable="0"/>
+        <field name="munic_brasil_UF" editable="0"/>
+      </editable>
+      <labelOnTop>
+        <field name="CEP" labelOnTop="0"/>
+        <field name="Faturamento 2017" labelOnTop="0"/>
+        <field name="GEOCODE.address" labelOnTop="0"/>
+        <field name="GEOCODE.administrative_area_level_1" labelOnTop="0"/>
+        <field name="GEOCODE.administrative_area_level_2" labelOnTop="0"/>
+        <field name="GEOCODE.country" labelOnTop="0"/>
+        <field name="GEOCODE.east" labelOnTop="0"/>
+        <field name="GEOCODE.lat" labelOnTop="0"/>
+        <field name="GEOCODE.loctype" labelOnTop="0"/>
+        <field name="GEOCODE.lon" labelOnTop="0"/>
+        <field name="GEOCODE.north" labelOnTop="0"/>
+        <field name="GEOCODE.political" labelOnTop="0"/>
+        <field name="GEOCODE.postal_code" labelOnTop="0"/>
+        <field name="GEOCODE.route" labelOnTop="0"/>
+        <field name="GEOCODE.south" labelOnTop="0"/>
+        <field name="GEOCODE.type" labelOnTop="0"/>
+        <field name="GEOCODE.west" labelOnTop="0"/>
+        <field name="Gestor da Empresa" labelOnTop="0"/>
+        <field name="ID" labelOnTop="0"/>
+        <field name="munic_brasil_AREA" labelOnTop="0"/>
+        <field name="munic_brasil_CODUF" labelOnTop="0"/>
+        <field name="munic_brasil_DENSDEMO" labelOnTop="0"/>
+        <field name="munic_brasil_GEOCODIGO" labelOnTop="0"/>
+        <field name="munic_brasil_ID" labelOnTop="0"/>
+        <field name="munic_brasil_MESORREGIA" labelOnTop="0"/>
+        <field name="munic_brasil_MICRORREGI" labelOnTop="0"/>
+        <field name="munic_brasil_NOMECAPS" labelOnTop="0"/>
+        <field name="munic_brasil_POP2004" labelOnTop="0"/>
+        <field name="munic_brasil_REGIAO" labelOnTop="0"/>
+        <field name="munic_brasil_RM" labelOnTop="0"/>
+        <field name="munic_brasil_UF" labelOnTop="0"/>
+      </labelOnTop>
+      <widgets/>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <expressionfields/>
+      <previewExpression>ID</previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer type="vector" simplifyMaxScale="1" minScale="1e+8" labelsEnabled="0" simplifyLocal="1" maxScale="0" refreshOnNotifyMessage="" simplifyDrawingHints="1" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" hasScaleBasedVisibilityFlag="0" simplifyDrawingTol="1" autoRefreshTime="0" simplifyAlgorithm="0" readOnly="0" geometry="Polygon">
+      <extent>
+        <xmin>-73.99025000000000318</xmin>
+        <ymin>-33.75158299999999656</ymin>
+        <xmax>-32.39222699999999833</xmax>
+        <ymax>5.27215599999999984</ymax>
+      </extent>
+      <id>munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3</id>
+      <datasource>./Munic_brasil/munic_brasil.shp</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>Municipios do Brasil</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
+          <srsid>3452</srsid>
+          <srid>4326</srid>
+          <authid>EPSG:4326</authid>
+          <description>WGS 84</description>
+          <projectionacronym>longlat</projectionacronym>
+          <ellipsoidacronym>WGS84</ellipsoidacronym>
+          <geographicflag>true</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <contact>
+          <name></name>
+          <organization></organization>
+          <position></position>
+          <voice></voice>
+          <fax></fax>
+          <email></email>
+          <role></role>
+        </contact>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent>
+          <spatial maxy="0" miny="0" maxx="0" dimensions="2" crs="" maxz="0" minz="0" minx="0"/>
+          <temporal>
+            <period>
+              <start></start>
+              <end></end>
+            </period>
+          </temporal>
+        </extent>
+      </resourceMetadata>
+      <provider encoding="windows-1250">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <renderer-v2 forceraster="0" type="singleSymbol" enableorderby="0" symbollevels="0">
+        <symbols>
+          <symbol type="fill" name="0" clip_to_extent="1" alpha="1">
+            <layer enabled="1" locked="0" class="SimpleFill" pass="0">
               <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="color" v="161,62,194,255"/>
+              <prop k="color" v="166,206,227,255"/>
               <prop k="joinstyle" v="bevel"/>
               <prop k="offset" v="0,0"/>
               <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
@@ -500,9 +2296,9 @@
               <prop k="style" v="solid"/>
               <data_defined_properties>
                 <Option type="Map">
-                  <Option value="" name="name" type="QString"/>
+                  <Option type="QString" name="name" value=""/>
                   <Option name="properties"/>
-                  <Option value="collection" name="type" type="QString"/>
+                  <Option type="QString" name="type" value="collection"/>
                 </Option>
               </data_defined_properties>
             </layer>
@@ -511,97 +2307,120 @@
         <rotation/>
         <sizescale/>
       </renderer-v2>
-      <customproperties/>
+      <customproperties>
+        <property key="dualview/previewExpressions">
+          <value>ID</value>
+          <value>"ID"</value>
+        </property>
+        <property value="0" key="embeddedWidgets/count"/>
+        <property key="variableNames"/>
+        <property key="variableValues"/>
+      </customproperties>
       <blendMode>0</blendMode>
       <featureBlendMode>0</featureBlendMode>
       <layerOpacity>1</layerOpacity>
+      <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
+        <DiagramCategory rotationOffset="270" maxScaleDenominator="1e+8" labelPlacementMethod="XHeight" height="15" scaleDependency="Area" penAlpha="255" lineSizeType="MM" sizeScale="3x:0,0,0,0,0,0" minimumSize="0" opacity="1" scaleBasedVisibility="0" enabled="0" sizeType="MM" width="15" minScaleDenominator="0" backgroundAlpha="255" penWidth="0" lineSizeScale="3x:0,0,0,0,0,0" barWidth="5" diagramOrientation="Up" penColor="#000000" backgroundColor="#ffffff">
+          <fontProperties style="" description=".SF NS Text,13,-1,5,50,0,0,0,0,0"/>
+          <attribute field="" label="" color="#000000"/>
+        </DiagramCategory>
+      </SingleCategoryDiagramRenderer>
+      <DiagramLayerSettings showAll="1" obstacle="0" dist="0" priority="0" placement="0" linePlacementFlags="18" zIndex="0">
+        <properties>
+          <Option type="Map">
+            <Option type="QString" name="name" value=""/>
+            <Option name="properties"/>
+            <Option type="QString" name="type" value="collection"/>
+          </Option>
+        </properties>
+      </DiagramLayerSettings>
       <fieldConfiguration>
         <field name="ID">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="AREA">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="GEOCODIGO">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="NOME">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="NOMECAPS">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="UF">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="CODUF">
-          <editWidget type="">
+          <editWidget type="Range">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="REGIAO">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="MESORREGIA">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="MICRORREGI">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="RM">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="POP2004">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="DENSDEMO">
-          <editWidget type="">
+          <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
@@ -609,140 +2428,217 @@
         </field>
       </fieldConfiguration>
       <aliases>
-        <alias field="ID" name="" index="0"/>
-        <alias field="AREA" name="" index="1"/>
-        <alias field="GEOCODIGO" name="" index="2"/>
-        <alias field="NOME" name="" index="3"/>
-        <alias field="NOMECAPS" name="" index="4"/>
-        <alias field="UF" name="" index="5"/>
-        <alias field="CODUF" name="" index="6"/>
-        <alias field="REGIAO" name="" index="7"/>
-        <alias field="MESORREGIA" name="" index="8"/>
-        <alias field="MICRORREGI" name="" index="9"/>
-        <alias field="RM" name="" index="10"/>
-        <alias field="POP2004" name="" index="11"/>
-        <alias field="DENSDEMO" name="" index="12"/>
+        <alias name="" index="0" field="ID"/>
+        <alias name="" index="1" field="AREA"/>
+        <alias name="" index="2" field="GEOCODIGO"/>
+        <alias name="" index="3" field="NOME"/>
+        <alias name="" index="4" field="NOMECAPS"/>
+        <alias name="" index="5" field="UF"/>
+        <alias name="" index="6" field="CODUF"/>
+        <alias name="" index="7" field="REGIAO"/>
+        <alias name="" index="8" field="MESORREGIA"/>
+        <alias name="" index="9" field="MICRORREGI"/>
+        <alias name="" index="10" field="RM"/>
+        <alias name="" index="11" field="POP2004"/>
+        <alias name="" index="12" field="DENSDEMO"/>
       </aliases>
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
       <defaults>
-        <default expression="" field="ID" applyOnUpdate="0"/>
-        <default expression="" field="AREA" applyOnUpdate="0"/>
-        <default expression="" field="GEOCODIGO" applyOnUpdate="0"/>
-        <default expression="" field="NOME" applyOnUpdate="0"/>
-        <default expression="" field="NOMECAPS" applyOnUpdate="0"/>
-        <default expression="" field="UF" applyOnUpdate="0"/>
-        <default expression="" field="CODUF" applyOnUpdate="0"/>
-        <default expression="" field="REGIAO" applyOnUpdate="0"/>
-        <default expression="" field="MESORREGIA" applyOnUpdate="0"/>
-        <default expression="" field="MICRORREGI" applyOnUpdate="0"/>
-        <default expression="" field="RM" applyOnUpdate="0"/>
-        <default expression="" field="POP2004" applyOnUpdate="0"/>
-        <default expression="" field="DENSDEMO" applyOnUpdate="0"/>
+        <default applyOnUpdate="0" expression="" field="ID"/>
+        <default applyOnUpdate="0" expression="" field="AREA"/>
+        <default applyOnUpdate="0" expression="" field="GEOCODIGO"/>
+        <default applyOnUpdate="0" expression="" field="NOME"/>
+        <default applyOnUpdate="0" expression="" field="NOMECAPS"/>
+        <default applyOnUpdate="0" expression="" field="UF"/>
+        <default applyOnUpdate="0" expression="" field="CODUF"/>
+        <default applyOnUpdate="0" expression="" field="REGIAO"/>
+        <default applyOnUpdate="0" expression="" field="MESORREGIA"/>
+        <default applyOnUpdate="0" expression="" field="MICRORREGI"/>
+        <default applyOnUpdate="0" expression="" field="RM"/>
+        <default applyOnUpdate="0" expression="" field="POP2004"/>
+        <default applyOnUpdate="0" expression="" field="DENSDEMO"/>
       </defaults>
       <constraints>
-        <constraint exp_strength="0" field="ID" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="AREA" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="GEOCODIGO" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="NOME" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="NOMECAPS" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="UF" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="CODUF" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="REGIAO" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="MESORREGIA" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="MICRORREGI" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="RM" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="POP2004" constraints="0" unique_strength="0" notnull_strength="0"/>
-        <constraint exp_strength="0" field="DENSDEMO" constraints="0" unique_strength="0" notnull_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="ID" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="AREA" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="GEOCODIGO" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="NOME" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="NOMECAPS" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="UF" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="CODUF" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="REGIAO" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="MESORREGIA" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="MICRORREGI" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="RM" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="POP2004" notnull_strength="0" exp_strength="0"/>
+        <constraint constraints="0" unique_strength="0" field="DENSDEMO" notnull_strength="0" exp_strength="0"/>
       </constraints>
       <constraintExpressions>
-        <constraint field="ID" exp="" desc=""/>
-        <constraint field="AREA" exp="" desc=""/>
-        <constraint field="GEOCODIGO" exp="" desc=""/>
-        <constraint field="NOME" exp="" desc=""/>
-        <constraint field="NOMECAPS" exp="" desc=""/>
-        <constraint field="UF" exp="" desc=""/>
-        <constraint field="CODUF" exp="" desc=""/>
-        <constraint field="REGIAO" exp="" desc=""/>
-        <constraint field="MESORREGIA" exp="" desc=""/>
-        <constraint field="MICRORREGI" exp="" desc=""/>
-        <constraint field="RM" exp="" desc=""/>
-        <constraint field="POP2004" exp="" desc=""/>
-        <constraint field="DENSDEMO" exp="" desc=""/>
+        <constraint exp="" desc="" field="ID"/>
+        <constraint exp="" desc="" field="AREA"/>
+        <constraint exp="" desc="" field="GEOCODIGO"/>
+        <constraint exp="" desc="" field="NOME"/>
+        <constraint exp="" desc="" field="NOMECAPS"/>
+        <constraint exp="" desc="" field="UF"/>
+        <constraint exp="" desc="" field="CODUF"/>
+        <constraint exp="" desc="" field="REGIAO"/>
+        <constraint exp="" desc="" field="MESORREGIA"/>
+        <constraint exp="" desc="" field="MICRORREGI"/>
+        <constraint exp="" desc="" field="RM"/>
+        <constraint exp="" desc="" field="POP2004"/>
+        <constraint exp="" desc="" field="DENSDEMO"/>
       </constraintExpressions>
       <attributeactions>
         <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
       </attributeactions>
-      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
-        <columns/>
+      <attributetableconfig sortOrder="0" actionWidgetStyle="dropDown" sortExpression="&quot;NOME&quot;">
+        <columns>
+          <column type="field" hidden="0" name="ID" width="-1"/>
+          <column type="field" hidden="0" name="AREA" width="-1"/>
+          <column type="field" hidden="0" name="GEOCODIGO" width="-1"/>
+          <column type="field" hidden="0" name="NOME" width="176"/>
+          <column type="field" hidden="0" name="NOMECAPS" width="221"/>
+          <column type="field" hidden="0" name="UF" width="-1"/>
+          <column type="field" hidden="0" name="CODUF" width="-1"/>
+          <column type="field" hidden="0" name="REGIAO" width="-1"/>
+          <column type="field" hidden="0" name="MESORREGIA" width="-1"/>
+          <column type="field" hidden="0" name="MICRORREGI" width="-1"/>
+          <column type="field" hidden="0" name="RM" width="-1"/>
+          <column type="field" hidden="0" name="POP2004" width="-1"/>
+          <column type="field" hidden="0" name="DENSDEMO" width="-1"/>
+          <column type="actions" hidden="1" width="-1"/>
+        </columns>
       </attributetableconfig>
       <editform>.</editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
       <editforminitfilepath></editforminitfilepath>
-      <editforminitcode><![CDATA[]]></editforminitcode>
+      <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget, "MyLineEdit")
+]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
-      <editable/>
-      <labelOnTop/>
+      <editable>
+        <field name="AREA" editable="1"/>
+        <field name="CODUF" editable="1"/>
+        <field name="DENSDEMO" editable="1"/>
+        <field name="GEOCODIGO" editable="1"/>
+        <field name="ID" editable="1"/>
+        <field name="MESORREGIA" editable="1"/>
+        <field name="MICRORREGI" editable="1"/>
+        <field name="NOME" editable="1"/>
+        <field name="NOMECAPS" editable="1"/>
+        <field name="POP2004" editable="1"/>
+        <field name="REGIAO" editable="1"/>
+        <field name="RM" editable="1"/>
+        <field name="UF" editable="1"/>
+      </editable>
+      <labelOnTop>
+        <field name="AREA" labelOnTop="0"/>
+        <field name="CODUF" labelOnTop="0"/>
+        <field name="DENSDEMO" labelOnTop="0"/>
+        <field name="GEOCODIGO" labelOnTop="0"/>
+        <field name="ID" labelOnTop="0"/>
+        <field name="MESORREGIA" labelOnTop="0"/>
+        <field name="MICRORREGI" labelOnTop="0"/>
+        <field name="NOME" labelOnTop="0"/>
+        <field name="NOMECAPS" labelOnTop="0"/>
+        <field name="POP2004" labelOnTop="0"/>
+        <field name="REGIAO" labelOnTop="0"/>
+        <field name="RM" labelOnTop="0"/>
+        <field name="UF" labelOnTop="0"/>
+      </labelOnTop>
       <widgets/>
       <conditionalstyles>
         <rowstyles/>
-        <fieldstyles/>
+        <fieldstyles>
+          <fieldstyle fieldname="NOME"/>
+        </fieldstyles>
       </conditionalstyles>
       <expressionfields/>
-      <previewExpression></previewExpression>
+      <previewExpression>ID</previewExpression>
       <mapTip></mapTip>
     </maplayer>
   </projectlayers>
   <layerorder>
     <layer id="munic_brasil_dc85ad32_2456_4467_bef8_850681a293b3"/>
-    <layer id="EMPRESAS_GRUPO_6491fc08_b750_444c_a226_db801195c12e"/>
+    <layer id="EMPRESAS_GRUPO_04ccc8f6_4f61_4538_ad5f_991afdc93705"/>
+    <layer id="EMPRESAS_GRUPO_6d93ed4e_4a2c_485f_bdaf_6b95c3b279ea"/>
+    <layer id="Heatmap_de_Faturamento_3222ba3e_6d5e_4e59_9891_d0931db48a1c"/>
   </layerorder>
   <properties>
-    <Measure>
-      <Ellipsoid type="QString">WGS84</Ellipsoid>
-    </Measure>
-    <Measurement>
-      <DistanceUnits type="QString">meters</DistanceUnits>
-      <AreaUnits type="QString">m2</AreaUnits>
-    </Measurement>
-    <PositionPrecision>
-      <Automatic type="bool">true</Automatic>
-      <DecimalPlaces type="int">2</DecimalPlaces>
-    </PositionPrecision>
     <Gui>
-      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
-      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
-      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
-      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
       <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
+      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
+      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
       <CanvasColorRedPart type="int">255</CanvasColorRedPart>
+      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
+      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
       <SelectionColorRedPart type="int">255</SelectionColorRedPart>
     </Gui>
-    <Paths>
-      <Absolute type="bool">false</Absolute>
-    </Paths>
-    <SpatialRefSys>
-      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
-    </SpatialRefSys>
+    <Measurement>
+      <AreaUnits type="QString">m2</AreaUnits>
+      <DistanceUnits type="QString">meters</DistanceUnits>
+    </Measurement>
     <Legend>
       <filterByMap type="bool">true</filterByMap>
     </Legend>
+    <Paths>
+      <Absolute type="bool">false</Absolute>
+    </Paths>
+    <Measure>
+      <Ellipsoid type="QString">WGS84</Ellipsoid>
+    </Measure>
+    <PositionPrecision>
+      <DecimalPlaces type="int">2</DecimalPlaces>
+      <Automatic type="bool">true</Automatic>
+    </PositionPrecision>
     <PAL>
-      <SearchMethod type="int">0</SearchMethod>
-      <ShowingAllLabels type="bool">false</ShowingAllLabels>
-      <ShowingCandidates type="bool">false</ShowingCandidates>
-      <CandidatesPoint type="int">16</CandidatesPoint>
-      <CandidatesLine type="int">50</CandidatesLine>
-      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
       <DrawRectOnly type="bool">false</DrawRectOnly>
+      <ShowingAllLabels type="bool">false</ShowingAllLabels>
+      <SearchMethod type="int">0</SearchMethod>
+      <ShowingCandidates type="bool">false</ShowingCandidates>
+      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
       <CandidatesPolygon type="int">30</CandidatesPolygon>
       <DrawOutlineLabels type="bool">true</DrawOutlineLabels>
+      <CandidatesLine type="int">50</CandidatesLine>
+      <CandidatesPoint type="int">16</CandidatesPoint>
     </PAL>
+    <SpatialRefSys>
+      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
+      <ProjectCRSProj4String type="QString">+proj=longlat +datum=WGS84 +no_defs</ProjectCRSProj4String>
+      <ProjectCRSID type="int">3452</ProjectCRSID>
+      <ProjectCrs type="QString">EPSG:4326</ProjectCrs>
+    </SpatialRefSys>
   </properties>
   <visibility-presets/>
   <transformContext/>
+  <projectMetadata>
+    <identifier></identifier>
+    <parentidentifier></parentidentifier>
+    <language></language>
+    <type></type>
+    <title></title>
+    <abstract></abstract>
+    <links/>
+    <author></author>
+    <creation></creation>
+  </projectMetadata>
   <Annotations/>
   <Layouts/>
 </qgis>

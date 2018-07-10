@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Theme>
+	<name>Tarefa2-8</name>
+	<randomColors>1</randomColors>
+	<iconMapping>
+		<ConstantMapping_string><value>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</value>
+</ConstantMapping_string>
+	</iconMapping>
+	<useMeters>1</useMeters>
+	<heightMapping>
+		<BucketFieldMapping_int_double>
+			<field>Faturamento_2017</field>
+			<discrete>1</discrete>
+			<buckets>
+				<Bucket_int_double>
+					<minBound>663</minBound>
+					<maxBound>10528</maxBound>
+					<value>14224.4</value>
+				</Bucket_int_double>
+				<Bucket_int_double>
+					<minBound>10529</minBound>
+					<maxBound>20395</maxBound>
+					<value>366279</value>
+				</Bucket_int_double>
+				<Bucket_int_double>
+					<minBound>20396</minBound>
+					<maxBound>30261</maxBound>
+					<value>718333</value>
+				</Bucket_int_double>
+				<Bucket_int_double>
+					<minBound>30262</minBound>
+					<maxBound>40128</maxBound>
+					<value>1070390</value>
+				</Bucket_int_double>
+				<Bucket_int_double>
+					<minBound>40129</minBound>
+					<maxBound>49995</maxBound>
+					<value>1422440</value>
+				</Bucket_int_double>
+			</buckets>
+		</BucketFieldMapping_int_double>
+	</heightMapping>
+</Theme>
+</kml>
