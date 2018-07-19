@@ -61,3 +61,4 @@ AIA/previous_application.csv
 AIA/sample_submission.csv
 
 */.ipynb_checkpoints/
+.DS_Store
