@@ -46,19 +46,7 @@ venv/
 test*
 .DS_Store
 .DS_Store
-AIA/application_test.csv
-AIA/application_train.csv
-AIA/application_train40.csv
-AIA/application_train_40cols.csv
-AIA/application_train_T1.csv
-AIA/bureau.csv
-AIA/bureau_balance.csv
-AIA/credit_card_balance.csv
-AIA/HomeCredit_columns_description.csv
-AIA/installments_payments.csv
-AIA/POS_CASH_balance.csv
-AIA/previous_application.csv
-AIA/sample_submission.csv
+AIA/*.csv
 
 */.ipynb_checkpoints/
 .DS_Store
