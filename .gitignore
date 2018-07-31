@@ -44,6 +44,14 @@ venv/
 
 #tests
 test*
+<<<<<<< HEAD
+=======
+.DS_Store
+.DS_Store
+AIA/*.csv
+
+*/.ipynb_checkpoints/
+>>>>>>> f17f7ce687c25481caa9497da2f2b03b507e0676
 .DS_Store
 AIA/*.csv
 */.ipynb_checkpoints/
