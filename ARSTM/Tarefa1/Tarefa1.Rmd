@@ -1,0 +1,111 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+•	Explore as rotinas Exemplo Rede.R e Exemplo Rede Two Mode.R . Rode os códigos na plataforma R utilizando como base as tabelas Rede One Mode_Tarefa Aula 1_Paulista T4.xlsx e Rede Two Mode_Tarefa Aula 1_Paulista T4.xlsx. (atenção: não são as mesmas bases trabalhadas em sala). 
+
+•	Faça pequenas modificações na tabela e veja seus resultados.
+
+•	Inclua outras análises em seu código (usando as extensões sna, network ou igraph) e comente os resultados (seja criativo!).
+
+•	Compile as saídas dos códigos (conteúdo das variáveis, gráficos, tabelas) em um documento Word (usando o modelo deste documento) e comente seus resultados (principalmente as medidas de centralidade), análises, potenciais implicações gerenciais, etc, conforme discutido em sala na Aula 1.
+
+•	Desafio: Baseado na tabela da Rede Two Mode desta tarefa, faça uma análise de agrupamento (cluster analysis) do tipo hierárquico aglomerativo (dendrograma) das pessoas ou dos produtos adquiridos por elas, levando em consideração apenas a estrutura de relações entre elas. Comente como implementou e discuta os resultados, comparando com a rede construída. Utilize a plataforma R e o script de exemplo de uso de Cluster Analysis em R.
+
+Dica: após a seleção dos grupos, desenhe a rede e represente os nós das pessoas (ou produtos) com cores de acordo com o grupo correspondente.
+
+```{r message=FALSE, include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014") 
+```
+
+```{r message=FALSE, warning=TRUE, include=FALSE}
+#Load required packages
+if(!require(network)) {
+  install.packages("network")
+  library(network)
+}
+
+if(!require(sna)) {
+  install.packages("sna")
+  library(sna)
+}
+
+if(!require(rgl)) {
+  install.packages("rgl")
+  library(rgl)
+}
+
+if(!require(ggdendro)) {
+  install.packages("ggdendro")
+  library(ggdendro)
+}
+
+```
+
+```{r}
+# carregando os arquivos
+#Rede_One_Mode <- read_excel("Rede One Mode_Tarefa Aula 1_Paulista T4.xlsx")
+#Rede_Two_Mode <- read_excel("Rede Two Mode_Tarefa Aula 1_Paulista T4.xlsx")
+
+Rede_One_Mode <- read.csv(file = "Rede One Mode_Tarefa Aula 1_Paulista T4.csv", 
+                          header = TRUE)
+Rede_Two_Mode <- read.csv(file = "Rede Two Mode_Tarefa Aula 1_Paulista T4.csv", 
+                          header = TRUE)
+  
+```
+
+Explore as rotinas Exemplo Rede.R e Exemplo Rede Two Mode.R . Rode os códigos na plataforma R utilizando como base as tabelas Rede One Mode_Tarefa Aula 1_Paulista T4.xlsx e Rede Two Mode_Tarefa Aula 1_Paulista T4.xlsx. (atenção: não são as mesmas bases trabalhadas em sala). 
+
+```{r}
+# explorando Rede One Mode
+Rede_One_Mode
+grede_one_mode <- Rede_One_Mode[,2:17]
+grede_one_mode
+rownames(grede_one_mode) <- Rede_One_Mode[,1]
+grede_one_mode
+
+degree(grede_one_mode,gmode="graph",cmode="indegree")
+closeness(grede_one_mode,gmode="graph")
+betweenness(grede_one_mode,gmode="graph")
+
+gplot(grede_one_mode,gmode="graph",displaylabels = TRUE,edge.col="gray",usearrows=FALSE)
+
+gplot3d(grede_one_mode)
+
+
+```
+
+```{r}
+# Explorando Rede Two Mode
+Rede_Two_Mode
+grede_two_mode <- Rede_Two_Mode[,2:12]
+grede_two_mode
+rownames(grede_two_mode) <- Rede_Two_Mode[,1]
+
+degree(grede_two_mode,gmode="twomode",cmode="indegree")
+closeness(grede_two_mode,gmode="twomode")
+betweenness(grede_two_mode,gmode="twomode")
+
+gplot(grede_two_mode,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE)
+
+# Aprimorando a representacao da rede
+gplot(grede_two_mode,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(gcompras,gmode="twomode")*3)
+
+gplot3d(grede_two_mode,gmode = "twomode")
+
+```
+
+```{r}
+# Implementa o algoritmo hier?rquico e apresenta o dendrograma
+hc <- hclust(dist(grede_two_mode), "complete")  # explorar com outros m?todos de dist?ncia
+p <- ggdendrogram(hc, rotate=FALSE)
+print(p)
+ggdendrogram(hc, rotate=TRUE)
+
+```
