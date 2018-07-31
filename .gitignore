@@ -34,5 +34,17 @@ vignettes/*.pdf
 
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
+
+# Key files
 *.key
+
+#Python Virtual Env
+venv/
+.idea/
+
+#tests
+test*
 .DS_Store
+AIA/*.csv
+*/.ipynb_checkpoints/
+*.csv
