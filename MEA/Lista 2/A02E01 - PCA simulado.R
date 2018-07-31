@@ -13,7 +13,7 @@ w<-as.data.frame(cbind(x1,x2,x3,x4))
 
 #Questao 1.b Calcule as matrizes de correlação para os objetos x e w, ao compará-las, o que você conclui?
 #?corrplot
-#install.packages("corrplot")
+install.packages("corrplot")
 library(corrplot)
 head(x)
 head(w)
