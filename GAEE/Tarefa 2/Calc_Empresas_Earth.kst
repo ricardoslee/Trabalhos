@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Theme>
+	<name>Calc_Empresas_Earth</name>
+	<nameMapping>
+		<SimpleFieldMapping_string><field>GEOCODE_administrative_area_level_2</field>
+</SimpleFieldMapping_string>
+	</nameMapping>
+	<colorMapping>
+		<ConstantMapping_int><value>-1184275</value>
+</ConstantMapping_int>
+	</colorMapping>
+	<iconMapping>
+		<ConstantMapping_string><value>-1</value>
+</ConstantMapping_string>
+	</iconMapping>
+	<useMeters>1</useMeters>
+	<heightMapping>
+		<ContinuousFieldMapping_int_double>
+			<field>SUM_FATURAMENTO</field>
+			<clamp>224</clamp>
+			<minInput>3124</minInput>
+			<maxInput>1004524</maxInput>
+			<minOutput>2552.01</minOutput>
+			<maxOutput>255201</maxOutput>
+		</ContinuousFieldMapping_int_double>
+	</heightMapping>
+</Theme>
+</kml>

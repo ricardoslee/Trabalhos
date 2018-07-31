@@ -1,0 +1,98 @@
+---
+title: "Tarefa 3"
+author: Gustavo Hotta (A56865193), Rafael Furlan (A56871487), Ricardo Squassina Lee
+  (A56843646)
+date: "7/21/2018"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+rm(list = ls())
+cat("\014") 
+setwd("~/Tresors/zz-pessoal/FGV/git/Trabalhos/GAEE/Tarefa 3")
+```
+
+```{r}
+if(!require(readr)) {
+  install.packages("readr")
+  library(readr)
+}
+if(!require(rgdal)) {
+  install.packages("rgdal")
+  library(rgdal)
+}
+```
+
+
+```{r}
+#Lendo os arquivos base do trabalho
+#Importando arquivos Basico_UF
+Basico_RJ <- read_delim("Basico_RJ.csv", 
+    ";", escape_double = FALSE, locale = locale(encoding = "WINDOWS-1252"), 
+    trim_ws = TRUE)
+Basico_RS <- read_delim("Basico_RS.csv", 
+    ";", escape_double = FALSE, locale = locale(encoding = "WINDOWS-1252"), 
+    trim_ws = TRUE)
+Basico_SP1 <- read_delim("Basico_SP1.csv", 
+    ";", escape_double = FALSE, locale = locale(encoding = "WINDOWS-1252"), 
+    trim_ws = TRUE)
+Basico_SP2 <- read_delim("Basico_SP2.csv", 
+    ";", escape_double = FALSE, locale = locale(encoding = "WINDOWS-1252"), 
+    trim_ws = TRUE)
+
+#Importando arquivos Responsavel01_UF
+Responsavel01_RJ <- read_delim("Responsavel01_RJ.csv", 
+    ";", escape_double = FALSE, locale = locale(encoding = "WINDOWS-1252"), 
+    trim_ws = TRUE)
+Responsavel01_RS <- read_delim("Responsavel01_RS.csv", 
+    ";", escape_double = FALSE, locale = locale(encoding = "WINDOWS-1252"), 
+    trim_ws = TRUE)
+Responsavel01_SP1 <- read_delim("Responsavel01_SP1.csv", 
+    ";", escape_double = FALSE, locale = locale(encoding = "WINDOWS-1252"), 
+    trim_ws = TRUE)
+Responsavel01_SP2 <- read_delim("Responsavel01_SP2.csv", 
+    ";", escape_double = FALSE, locale = locale(encoding = "WINDOWS-1252"), 
+    trim_ws = TRUE)
+
+#Abrindo os shapfiles relativos aos estados do RJ, RS, SP
+shapeRJ <- readOGR(dsn = "Setores Censitarios/rj_setores_censitarios/", layer = "33SEE250GC_SIR", encoding = "WINDOWS-1252")
+
+shapeRS <- readOGR(dsn = "Setores Censitarios/rs_setores_censitarios/", layer = "43SEE250GC_SIR", encoding = "WINDOWS-1252")
+
+shapeSP <- readOGR(dsn = "Setores Censitarios/sp_setores_censitarios/", layer = "35SEE250GC_SIR", encoding = "WINDOWS-1252")
+
+#Importanto arquivo com as empresas do grupo
+EmpresasGrupo <- read.delim("Empresas-Grupo.txt", encoding="UTF-8", header=TRUE, comment.char="#")
+```
+
+
+Pergunta 3
+Qual é a média e a variância de moradores em domicílios particulares permanentes dos setores censitários que contêm empresas da sua carteira de clientes? Descreva como obteve essas informações (tabelas e racional das fórmulas e procedimentos).
+
+Conforme o arquivo “Base de informações do Censo Demográfico 2010: Resultados do Universo por setor censitário” a informação de moradores em domicílios particulares permanentes está no arquivo Básico_UF. As colunas usadas foram: V003 (média do número de moradores em domicílios particulares permanentes (obtida pela divisão de Var2 por Var1) e V004 (variância do número de moradores em domicílios particulares permanentes) 
+
+```{r}
+merge(EmpresasGrupo, Basico_RJ, by.x = "GEOCODIGO",  by.y = "Cod_municipio")
+```
+
+Pergunta 4
+Qual é a média de pessoas alfabetizadas responsáveis do sexo feminino dos setores censitários que contêm empresas da sua carteira de clientes? Descreva como obteve essas informações (tabelas e racional das fórmulas e procedimentos).
+
+Conforme o arquivo “Base de informações do Censo Demográfico 2010: Resultados do Universo por setor censitário” a informação de pessoas alfabetizadas responsáveis do sexo feminino dos setores censitários está na planilha Responsavel01_UF, nas colunas V093, “Pessoas alfabetizadas responsáveis, do sexo feminino”
+
+```{r}
+
+```
+
+Pergunta 5
+Qual é a média do total do rendimento nominal mensal dos domicílios particulares permanentes dos setores censitários que contêm empresas da sua carteira de clientes? Descreva como obteve essas informações (tabelas e racional das fórmulas e procedimentos).
+
+Conforme o arquivo “Base de informações do Censo Demográfico 2010: Resultados do Universo por setor censitário” a informação de moradores em domicílios particulares permanentes está no arquivo Básico_UF. A coluna V005 mostra o “Valor do rendimento nominal médio mensal das pessoas responsáveis por domicílios particulares permanentes (com e sem rendimento)”
+
+```{r}
+
+```
