@@ -41,13 +41,17 @@ if(!require(gpclib)) {
   library(gpclib)
 }
 
+if(!require(rgdal)) {
+  install.packages("rgdal")
+  library(rgdal)
+}
 ```
 
 ```{r message=FALSE}
 crime_mg<- readOGR(dsn = "crime_mg", layer = "crime_mg",verbose = TRUE)
 names(crime_mg)
 gpclibPermit()
-Mapa_Municipios <- fortify(Mapa_Municipios, region = "CODMUNI")
+Mapa_Municipios <- fortify(crime_mg, region = "CODMUNI")
 ```
 
 Pergunta 1
@@ -61,7 +65,10 @@ ap <- as.data.frame(cbind(crime_mg$MUNIC,crime_mg$AREA,crime_mg$INDICE94,
                           crime_mg$POP_MAS,crime_mg$POP_TOT,crime_mg$URBLEVEL,
                           crime_mg$PIB_PC))
 
-lm(crime_mg$AREA ~ crime_mg$INDICE94, data=ap)
+step(lm(crime_mg$AREA ~ ., data=ap))
+#lm(crime_mg$AREA ~ ., data=ap)
+
+lm(formula = crime_mg$AREA ~ V1 + V2 + V7 + V9, data = ap)
 
 ```
 
