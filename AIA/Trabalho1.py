@@ -24,4 +24,19 @@ df40 = pd.read_csv('application_train_40c.csv',index_col=0)
 
 df40.shape
 
-df40a = pd.get_dumies(df40)
+df40a = pd.get_dummies(df40)
+
+df40a.shape
+
+df40a.corr()
+
+df_bureau = pd.read_csv('bureau.csv',)
+
+df_bureau.head()
+
+df_bureau.info(null_counts=True)
+
+df_bureau.loc[:,['SK_ID_CURR','AMT_CREDIT_MAX_OVERDUE']]
+
+for i in df_bureau.SK_ID_CURR:
+    df_bureau.AMT_CREDIT_MAX_OVERDUE.mean()
