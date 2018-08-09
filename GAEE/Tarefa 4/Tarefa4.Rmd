@@ -16,14 +16,19 @@ cat("\014")
 
 ```{r message=FALSE, warning=TRUE, include=FALSE}
 #Load required packages
-if(!require(ggmap)) {
-  install.packages("ggmap")
-  library(ggmap)
+if(!require(maps)) {
+  install.packages("maps")
+  library(maps)
 }
 
-if(!require(spgwr)) {
-  install.packages("spgwr")
-  library(spgwr)
+if(!require(maptools)) {
+  install.packages("maptools")
+  library(maptools)
+}
+
+if(!require(sp)) {
+  install.packages("sp")
+  library(sp)
 }
 
 if(!require(spdep)) {
@@ -31,9 +36,39 @@ if(!require(spdep)) {
   library(spdep)
 }
 
-if(!require(maptools)) {
-  install.packages("maptools")
-  library(maptools)
+if(!require(ggmap)) {
+  install.packages("gstat")
+  library(ggmap)
+}
+
+if(!require(splancs)) {
+  install.packages("splancs")
+  library(splancs)
+}
+
+if(!require(spatstat)) {
+  install.packages("spatstat")
+  library(spatstat)
+}
+
+if(!require(RColorBrewer)) {
+  install.packages("RColorBrewer")
+  library(RColorBrewer)
+}
+
+if(!require(classInt)) {
+  install.packages("classInt")
+  library(classInt)
+}
+
+if(!require(spgwr)) {
+  install.packages("spgwr")
+  library(spgwr)
+}
+
+if(!require(ggmap)) {
+  install.packages("ggmap")
+  library(ggmap)
 }
 
 if(!require(gpclib)) {
@@ -50,40 +85,81 @@ if(!require(rgdal)) {
 ```{r message=FALSE}
 crime_mg<- readOGR(dsn = "crime_mg", layer = "crime_mg",verbose = TRUE)
 names(crime_mg)
-gpclibPermit()
-Mapa_Municipios <- fortify(crime_mg, region = "CODMUNI")
+summary(crime_mg)
 ```
+```{r}
+plot(crime_mg,add=TRUE)
+
+ggmapplot(crime_mg)
+
+```
+
 
 Pergunta 1
 Qual das variáveis quantitativas apresentadas no shapefile crime_mg apresenta maior auto-correlação espacial? Descreva como implementou a matriz de vizinhança. Apresente o I de Moran e o mapa de auto-correlação espacial local (LISA map) da variável escolhida e também de pelo menos outras 3 variáveis.
 Obs: desconsidere as variáveis Codmuni, ID, X_coord e Y_coord nessa análise.
 
 ```{r}
-
-names(crime_mg@data)
-#ap <- as.data.frame(crime_mg@data)
-  
-ap <- as.data.frame(cbind(crime_mg$MUNIC,crime_mg$AREA,crime_mg$INDICE94,
+ap <- as.data.frame(cbind(crime_mg$MUNIC, crime_mg$AREA, crime_mg$INDICE94,
                           crime_mg$INDICE95, crime_mg$GINI_91, crime_mg$POP_94,
-                          crime_mg$POP_RUR,crime_mg$POP_URB, crime_mg$POP_FEM,
-                          crime_mg$POP_MAS,crime_mg$POP_TOT,crime_mg$URBLEVEL,
+                          crime_mg$POP_RUR, crime_mg$POP_URB, crime_mg$POP_FEM,
+                          crime_mg$POP_MAS, crime_mg$POP_TOT, crime_mg$URBLEVEL,
                           crime_mg$PIB_PC))
+colnames(ap) <- c("ID",names(crime_mg@data[3:15]))
 
-#colnames(ap) <- names(crime_mg@data[3:15])
+head(ap)
 
+lm.ap <- step(lm(crime_mg$AREA ~ ., data=ap))
+lm.ap
+summary(lm.ap)
 
-step(lm(crime_mg$GINI_91 ~ ., data=ap))
-#lm(crime_mg$AREA ~ ., data=ap)
+lm(formula = crime_mg$AREA ~ INDICE94 + POP_94 + POP_RUR + POP_FEM + 
+    POP_MAS + POP_TOT + URBLEVEL, data = ap)
 
-step(lm(formula = crime_mg$AREA ~ V1 + V2 + V7 + V10, data = ap))
-
+SST <- sum((ap$AREA - mean(ap$AREA))^2)
 
 ```
 
 Pergunta 2
 Implemente o modelo espacial auto-regressivo (SAR) da variável Indice95 (índice de criminalidade em 1995 de Minas Gerais) a partir de apenas uma variável independente (não pode ser Indice94, Codmuni, ID, X_coord nem Y_coord). Apresente o resultado da regressão linear simples e da regressão linear espacial. Apresente as equações e interprete seus coeficientes.
 
+Regrssão linear simples
 ```{r}
+lm.ap <- step(lm(crime_mg$INDICE95 ~ ., data=ap))
+lm.ap
+summary(lm.ap)
+
+lm(formula = crime_mg$INDICE95 ~ INDICE94 + GINI_91 + URBLEVEL, 
+    data = ap)
+```
+Regressão linear espacial - SAR
+```{r}
+coords <- cbind(crime_mg$X_COORD,crime_mg$Y_COORD)
+colnames(coords) <- c("X","Y")
+
+############################################################################
+# SAR - Spatial Autoregressive lag model ###################################
+# (k nearest neighbours [k from AIC Gaussian minimisation]) ################
+############################################################################
+
+kGauss <- round(bwGauss * length(ap[,1]))
+ 
+# create spatial weights using k nearest neighbours (knearneigh command)
+# and convert to a W matrix style (knn2nb and nb2listw commands)
+myknn <- knearneigh(coords,k=kGauss,longlat=FALSE,RANN=FALSE)
+mynb <- knn2nb(myknn,sym=TRUE)
+mylistw <- nb2listw(mynb,style="W")
+
+# "lagsarlm" is the function that implements SAR Lag model in R
+sar.ap <- lagsarlm(crime_mg$INDICE95 ~ INDICE94 + GINI_91 +
+                     URBLEVEL,data=ap,mylistw,method="Matrix")
+  
+# store RSS and R2 of the SAR lag model
+SARk_SSE <- sar.ap$SSE
+r2_SARk <- 1 - (SARk_SSE/SST)
+r2_SARk
+
+summary(sar.ap)
 
 
 ```
@@ -102,7 +178,17 @@ Implemente a regressão espacial GWR da variável Indice95 (índice de criminali
 Obs: Sugere-se fazer essa atividade no ArcGIS ou no R.
 
 ```{r}
+bwGauss <- gwr.sel(crime_mg$INDICE95 ~ INDICE94 + GINI_91 + URBLEVEL,data=ap,coords=coords,adapt=TRUE,method="aic",
+                   gweight=gwr.Gauss,verbose=FALSE)
 
+gwr.ap <- gwr(crime_mg$INDICE95 ~ INDICE94 + GINI_91 +
+                 URBLEVEL, data=ap,coords=coords,bandwidth=bwGauss,
+               gweight=gwr.Gauss,adapt=bwGauss,hatmatrix=TRUE)
+gwr.ap
+ 
+GWR_SSE <- gwr.ap$results$rss
+r2_GWR <- 1 - (GWR_SSE/SST)
+r2_GWR
 
 ```
 
@@ -110,7 +196,8 @@ Pergunta 5
 Para essa variável que você escolheu, o modelo espacial GWR apresentou ganhos significantes com relação ao modelo linear simples? Justifique sua resposta.
 
 ```{r}
-
+r2_SARk
+r2_GWR
 
 ```
 
