@@ -3,7 +3,7 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-•	Explore as rotinas Exemplo Rede.R e Exemplo Rede Two Mode.R . Rode os códigos na plataforma R utilizando como base as tabelas Rede One Mode_Tarefa Aula 1_Paulista T4.xlsx e Rede Two Mode_Tarefa Aula 1_Paulista T4.xlsx. (atenção: não são as mesmas bases trabalhadas em sala). 
+•	Explore as rotinas Exemplo Rede.R e Exemplo Rede Two Mode.R . Rode os códigos na plataforma R utilizando como base as tabelas Rede One Mode_Tarefa Aula 1_Paulista T4.xlsx e Rede Two Mode_Tarefa Aula 1_Paulista T4.xlsx. (atenção: não são as mesmas bases trabalhadas em sala).
 
 •	Faça pequenas modificações na tabela e veja seus resultados.
 
@@ -23,6 +23,11 @@ cat("\014")
 
 ```{r message=FALSE, warning=TRUE, include=FALSE}
 #Load required packages
+if(!require(igraph)) {
+  install.packages("igraph")
+  library(igraph)
+}
+
 if(!require(network)) {
   install.packages("network")
   library(network)
@@ -43,7 +48,14 @@ if(!require(ggdendro)) {
   library(ggdendro)
 }
 
+if(!require(gtools)) {
+  install.packages("gtools")
+  library(gtools)
+}
+
 ```
+
+Lendo os arquivos
 
 ```{r}
 # carregando os arquivos
@@ -53,6 +65,7 @@ if(!require(ggdendro)) {
 Rede_One_Mode <- read.csv(file = "Rede One Mode_Tarefa Aula 1_Paulista T4.csv", 
                           header = TRUE)
 Rede_Two_Mode <- read.csv(file = "Rede Two Mode_Tarefa Aula 1_Paulista T4.csv", 
+                          encoding = "UTF-8",
                           header = TRUE)
   
 ```
@@ -67,9 +80,9 @@ grede_one_mode
 rownames(grede_one_mode) <- Rede_One_Mode[,1]
 grede_one_mode
 
-degree(grede_one_mode,gmode="graph",cmode="indegree")
-closeness(grede_one_mode,gmode="graph")
-betweenness(grede_one_mode,gmode="graph")
+sna::degree(grede_one_mode,gmode="graph",cmode="indegree")
+sna::closeness(grede_one_mode,gmode="graph")
+sna::betweenness(grede_one_mode,gmode="graph")
 
 gplot(grede_one_mode,gmode="graph",displaylabels = TRUE,edge.col="gray",usearrows=FALSE)
 
@@ -85,17 +98,17 @@ grede_two_mode <- Rede_Two_Mode[,2:12]
 grede_two_mode
 rownames(grede_two_mode) <- Rede_Two_Mode[,1]
 
-degree(grede_two_mode,gmode="twomode",cmode="indegree")
-closeness(grede_two_mode,gmode="twomode")
-betweenness(grede_two_mode,gmode="twomode")
+sna::degree(grede_two_mode,gmode="twomode",cmode="indegree")
+sna::closeness(grede_two_mode,gmode="twomode")
+sna::betweenness(grede_two_mode,gmode="twomode")
 
 gplot(grede_two_mode,gmode="twomode",displaylabels = TRUE,
       edge.col="gray",label.cex = 0.7,usearrows=FALSE)
 
 # Aprimorando a representacao da rede
 gplot(grede_two_mode,gmode="twomode",displaylabels = TRUE,
-      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
-      vertex.cex = closeness(gcompras,gmode="twomode")*3)
+      edge.col="gray",label.cex = 0.4,usearrows=FALSE,
+      vertex.cex = sna::closeness(grede_two_mode,gmode="twomode")*4)
 
 gplot3d(grede_two_mode,gmode = "twomode")
 
@@ -104,8 +117,47 @@ gplot3d(grede_two_mode,gmode = "twomode")
 ```{r}
 # Implementa o algoritmo hier?rquico e apresenta o dendrograma
 hc <- hclust(dist(grede_two_mode), "complete")  # explorar com outros m?todos de dist?ncia
-p <- ggdendrogram(hc, rotate=FALSE)
-print(p)
+ggdendrogram(hc, rotate=FALSE,labels = TRUE)
 ggdendrogram(hc, rotate=TRUE)
+
+hc_single <- hclust(dist(grede_two_mode), method = "single")  # explorar com outros m?todos de dist?ncia
+ggdendrogram(hc_single, rotate=FALSE,labels = TRUE)
+
+hc_wardD <- hclust(dist(grede_two_mode), method = "ward.D" )  # explorar com outros m?todos de dist?ncia
+ggdendrogram(hc_wardD, rotate=FALSE,labels = TRUE)
+
+hc_average <- hclust(dist(grede_two_mode), method = "average" )  # explorar com outros m?todos de dist?ncia
+ggdendrogram(hc_average, rotate=FALSE,labels = TRUE)
+
+
+```
+
+Faça pequenas modificações na tabela e veja seus resultados.
+
+```{r}
+grede_one_mode_a <- grede_one_mode
+grede_one_mode_a$A <- 1
+grede_one_mode_a
+
+sna::degree(grede_one_mode_a,gmode="graph",cmode="indegree")
+sna::closeness(grede_one_mode_a,gmode="graph")
+sna::betweenness(grede_one_mode_a,gmode="graph")
+
+gplot(grede_one_mode_a,gmode="graph",displaylabels = TRUE,edge.col="gray",usearrows=FALSE)
+
+```
+
+```{r}
+
+grede_two_mode_a <- make_graph(edges = c(grede_one_mode$A--grede_one_mode$B--grede_one_mode$C--grede_one_mode$D--grede_one_mode$E--grede_one_mode$F--grede_one_mode$G--grede_one_mode$H--grede_one_mode$I--grede_one_mode$J--grede_one_mode$K--grede_one_mode$L--grede_one_mode$M--grede_one_mode$N--grede_one_mode$O--grede_one_mode$P)+1,n = 5)
+
+plot(grede_two_mode_a)
+
+```
+
+
+```{r}
+plot(network(grede_two_mode))
+plot.igraph(grede_two_mode)
 
 ```
