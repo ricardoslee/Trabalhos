@@ -154,7 +154,7 @@ Apresente um mapa contendo os municípios do Brasil de acordo com o faturamento 
 [ copie a View do ArcView ou o mapa do QGIS para o documento Word – não se esqueça de trazer a legenda (table of contents) da View ]
 
 ```{r}
-ggmap(mapa) + geom_density2d(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[1], y = EMPRESAS_GRUPO$GEOCODE[2]), color="blue", alpha=0.5, na.rm = TRUE)
+ggmap(mapa) + geom_density2d(data = EMPRESAS_GRUPO, aes(x = EMPRESAS_GRUPO$GEOCODE[,1], y = EMPRESAS_GRUPO$GEOCODE[,2]), color="blue", alpha=0.5, na.rm = TRUE)
 ```
 
 Pergunta 6
