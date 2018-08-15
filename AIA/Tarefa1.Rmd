@@ -1,0 +1,403 @@
+---
+title: "Análise de Redes Sociais e Text Mining - Tarefa 1"
+author: "Rafael Gustavo Furlan, Ricardo Squassina Lee"
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+•	Explore as rotinas Exemplo Rede.R e Exemplo Rede Two Mode.R . Rode os códigos na plataforma R utilizando como base as tabelas Rede One Mode_Tarefa Aula 1_Paulista T4.xlsx e Rede Two Mode_Tarefa Aula 1_Paulista T4.xlsx. (atenção: não são as mesmas bases trabalhadas em sala).
+
+•	Faça pequenas modificações na tabela e veja seus resultados.
+
+•	Inclua outras análises em seu código (usando as extensões sna, network ou igraph) e comente os resultados (seja criativo!).
+
+•	Compile as saídas dos códigos (conteúdo das variáveis, gráficos, tabelas) em um documento Word (usando o modelo deste documento) e comente seus resultados (principalmente as medidas de centralidade), análises, potenciais implicações gerenciais, etc, conforme discutido em sala na Aula 1.
+
+•	Desafio: Baseado na tabela da Rede Two Mode desta tarefa, faça uma análise de agrupamento (cluster analysis) do tipo hierárquico aglomerativo (dendrograma) das pessoas ou dos produtos adquiridos por elas, levando em consideração apenas a estrutura de relações entre elas. Comente como implementou e discuta os resultados, comparando com a rede construída. Utilize a plataforma R e o script de exemplo de uso de Cluster Analysis em R.
+
+Dica: após a seleção dos grupos, desenhe a rede e represente os nós das pessoas (ou produtos) com cores de acordo com o grupo correspondente.
+
+```{r message=FALSE, include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014") 
+```
+
+```{r message=FALSE, warning=TRUE, include=FALSE}
+#Load required packages
+if(!require(igraph)) {
+  install.packages("igraph")
+  library(igraph)
+}
+
+if(!require(network)) {
+  install.packages("network")
+  library(network)
+}
+
+if(!require(sna)) {
+  install.packages("sna")
+  library(sna)
+}
+
+if(!require(rgl)) {
+  install.packages("rgl")
+  library(rgl)
+}
+
+if(!require(ggdendro)) {
+  install.packages("ggdendro")
+  library(ggdendro)
+}
+
+if(!require(ggplot2)) {
+  install.packages("ggplot2")
+  library(ggplot2)
+}
+
+if(!require(gtools)) {
+  install.packages("gtools")
+  library(gtools)
+}
+
+if(!require(ape)) {
+  install.packages("ape")
+  library(ape)
+}
+
+```
+
+Lendo os arquivos
+
+```{r}
+# carregando os arquivos
+#Rede_One_Mode <- read_excel("Rede One Mode_Tarefa Aula 1_Paulista T4.xlsx")
+#Rede_Two_Mode <- read_excel("Rede Two Mode_Tarefa Aula 1_Paulista T4.xlsx")
+
+Rede_One_Mode <- read.csv(file = "Rede One Mode_Tarefa Aula 1_Paulista T4.csv", 
+                          header = TRUE)
+Rede_Two_Mode <- read.csv(file = "Rede Two Mode_Tarefa Aula 1_Paulista T4.csv", 
+                          encoding = "UTF-8",
+                          header = TRUE)
+  
+```
+
+Explore as rotinas Exemplo Rede.R e Exemplo Rede Two Mode.R . Rode os códigos na plataforma R utilizando como base as tabelas Rede One Mode_Tarefa Aula 1_Paulista T4.xlsx e Rede Two Mode_Tarefa Aula 1_Paulista T4.xlsx. (atenção: não são as mesmas bases trabalhadas em sala). 
+
+```{r}
+# explorando Rede One Mode
+Rede_One_Mode
+grede_one_mode <- Rede_One_Mode[,2:17]
+grede_one_mode
+rownames(grede_one_mode) <- Rede_One_Mode[,1]
+grede_one_mode
+
+print("sna::degree")
+sna::degree(grede_one_mode,gmode="graph",cmode="indegree")
+print("sna::closeness")
+sna::closeness(grede_one_mode,gmode="graph")
+print("sna::betweenness")
+sna::betweenness(grede_one_mode,gmode="graph")
+
+gplot(grede_one_mode,gmode="graph",displaylabels = TRUE,edge.col="gray",usearrows=FALSE)
+
+#gplot3d(grede_one_mode)
+
+
+```
+
+```{r}
+# Explorando Rede Two Mode
+Rede_Two_Mode
+grede_two_mode <- Rede_Two_Mode[,2:12]
+grede_two_mode
+rownames(grede_two_mode) <- Rede_Two_Mode[,1]
+
+print("sna::degree")
+sna::degree(grede_two_mode,gmode="twomode",cmode="indegree")
+print("sna::closeness")
+sna::closeness(grede_two_mode,gmode="twomode")
+print("sna::betweenness")
+sna::betweenness(grede_two_mode,gmode="twomode")
+
+gplot(grede_two_mode,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE)
+
+# Aprimorando a representacao da rede
+gplot(grede_two_mode,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.4,usearrows=FALSE,
+      vertex.cex = sna::closeness(grede_two_mode,gmode="twomode")*4)
+
+#gplot3d(grede_two_mode,gmode = "twomode")
+
+```
+
+
+Faça pequenas modificações na tabela e veja seus resultados.
+
+```{r}
+grede_one_mode_a <- grede_one_mode
+grede_one_mode_a$A <- 1
+grede_one_mode_a
+
+sna::degree(grede_one_mode_a,gmode="graph",cmode="indegree")
+sna::closeness(grede_one_mode_a,gmode="graph")
+sna::betweenness(grede_one_mode_a,gmode="graph")
+
+gplot(grede_one_mode_a,gmode="graph",displaylabels = TRUE,edge.col="gray",usearrows=FALSE)
+
+```
+
+Exercicio de transformação de grede_one_mode, coluna A somente, com ligações criadas aleatóriamente, para observar o comportamnto do grafo.
+
+```{r}
+
+grede_two_mode_a <- make_graph(edges = c(grede_one_mode$A--grede_one_mode$B++grede_one_mode$C--grede_one_mode$D--grede_one_mode$E--grede_one_mode$F--grede_one_mode$G--grede_one_mode$H--grede_one_mode$I--grede_one_mode$J--grede_one_mode$K--grede_one_mode$L--grede_one_mode$M--grede_one_mode$N--grede_one_mode$O--grede_one_mode$P)+1,n = 5)
+
+plot(grede_two_mode_a,gmode = "twomode")
+
+```
+
+
+```{r}
+######################### igraph - One-Mode
+# gera a um objeto graph
+g1 <- graph.adjacency(as.matrix(grede_one_mode), weighted=NULL, mode = "directed")
+summary(g1)
+
+layout1 <- layout.fruchterman.reingold(g1)
+layout2 <- layout.circle(g1)
+layout3 <- layout.sphere(g1)
+layout4 <- layout.random(g1)
+layout5 <- layout.reingold.tilford(g1)
+layout6 <- layout.kamada.kawai(g1)
+layout7 <- layout.lgl(g1)
+
+
+# plot a gragh using the parameters in the layout
+plot(g1, layout=layout1)
+plot(g1, layout=layout2)
+plot(g1, layout=layout3)
+plot(g1, layout=layout4)
+plot(g1, layout=layout5)
+plot(g1, layout=layout6)
+plot(g1, layout=layout7)
+
+```
+
+
+```{r}
+######################### igraph - Two-Mode
+# gera a um objeto graph
+g2 <- graph_from_incidence_matrix(data.matrix(grede_two_mode))
+summary(g2)
+
+layout1 <- layout_(,fruchterman.reingold)
+layout2 <- layout.circle(g2)
+layout3 <- layout.sphere(g2)
+layout4 <- layout.random(g2)
+layout5 <- layout.reingold.tilford(g2)
+layout6 <- layout.kamada.kawai(g2)
+layout7 <- layout.lgl(g2)
+
+
+# plot a gragh using the parameters in the layout
+plot(g2, layout=layout1)
+plot(g2, layout=layout2)
+plot(g2, layout=layout3)
+plot(g2, layout=layout4)
+plot(g2, layout=layout5)
+plot(g2, layout=layout6)
+plot(g2, layout=layout7)
+
+```
+
+
+Compile as saídas dos códigos (conteúdo das variáveis, gráficos, tabelas) em um documento Word (usando o modelo deste documento) e comente seus resultados (principalmente as medidas de centralidade), análises, potenciais implicações gerenciais, etc, conforme discutido em sala na Aula 1.
+
+One-Mode
+```{r}
+# Explorando a rede
+sna::degree(grede_one_mode,gmode="graph",cmode="indegree")
+sna::closeness(grede_one_mode,gmode="graph")
+sna::betweenness(grede_one_mode,gmode="graph")
+sna::bicomponent.dist(grede_one_mode) # retorna os bicomponentes de um gráfico de entrada, juntamente com a distribuição de tamanho e as informações de associação.
+sna::bicomponent.dist(grede_one_mode, symmetrize = c("strong", "weak"))
+sna::components(grede_one_mode,connected="weak")
+sna::components(grede_one_mode,connected="strong")
+sna::cug.test(grede_one_mode,gtrans,cmode="size") 
+sna::cug.test(grede_one_mode,gtrans,cmode="edges") 
+sna::cug.test(grede_one_mode,gtrans,cmode="dyad.census")
+sna::diag.remove(grede_one_mode)
+sna::efficiency(grede_one_mode)
+sna::gden(grede_one_mode)
+sna::grecip(grede_one_mode)
+sna::gt(grede_one_mode)
+sna::gtrans(grede_one_mode)
+#sna::gvectorize(grede_one_mode)
+sna::infocent(grede_one_mode)
+
+```
+
+Two-Mode
+```{r}
+# Explorando a rede
+sna::degree(grede_two_mode,gmode="graph",cmode="indegree")
+sna::closeness(grede_two_mode,gmode="graph")
+sna::betweenness(grede_two_mode,gmode="graph")
+sna::bicomponent.dist(grede_two_mode) # retorna os bicomponentes de um gráfico de entrada, juntamente com a distribuição de tamanho e as informações de associação.
+sna::bicomponent.dist(grede_two_mode, symmetrize = c("strong", "weak"))
+sna::components(grede_two_mode,connected="weak")
+sna::components(grede_two_mode,connected="strong")
+sna::cug.test(grede_two_mode,gtrans,cmode="size") 
+sna::cug.test(grede_two_mode,gtrans,cmode="edges") 
+sna::cug.test(grede_two_mode,gtrans,cmode="dyad.census")
+sna::diag.remove(grede_two_mode)
+sna::efficiency(grede_two_mode)
+sna::gden(grede_two_mode)
+sna::grecip(grede_two_mode)
+sna::gt(grede_two_mode)
+sna::gtrans(grede_two_mode)
+#sna::gvectorize(grede_two_mode)
+sna::infocent(grede_two_mode)
+
+```
+Desafio: Baseado na tabela da Rede Two Mode desta tarefa, faça uma análise de agrupamento (cluster analysis) do tipo hierárquico aglomerativo (dendrograma) das pessoas ou dos produtos adquiridos por elas, levando em consideração apenas a estrutura de relações entre elas. Comente como implementou e discuta os resultados, comparando com a rede construída. Utilize a plataforma R e o script de exemplo de uso de Cluster Analysis em R.
+
+```{r}
+# Implementa o algoritmo hierárquico e apresenta o dendrograma
+hc <- hclust(dist(grede_two_mode), "complete")  # explorar com outros métodos de distância
+
+ggdendrogram(hc, rotate=TRUE,labels = TRUE)  + labs(title = "Dendogram hclust method = complete")
+
+ggdendrogram(hc, rotate=FALSE,labels = TRUE)  + labs(title = "Dendogram hclust method = complete")
+
+phylo_tree = as.phylo(hc)
+graph_edges = phylo_tree$edge
+graph_net = graph.edgelist(graph_edges)
+plot(graph_net)
+graph_layout = layout.auto(graph_net)
+nobs = length(hc$labels)
+{
+  plot(graph_layout[,1], graph_layout[,2], type = "n", axes = FALSE,
+     xlab = "", ylab = "")
+  segments(
+    x0 = graph_layout[graph_edges[,1],1], 
+    y0 = graph_layout[graph_edges[,1],2],
+    x1 = graph_layout[graph_edges[,2],1],
+    y1 = graph_layout[graph_edges[,2],2],
+    col = "#dcdcdc55", lwd = 3.5
+    )
+  text(graph_layout[1:nobs,1], graph_layout[1:nobs,2],
+       phylo_tree$tip.label, cex = 1, xpd = TRUE, font = 1)
+}
+```
+
+
+```{r}
+hc_single <- hclust(dist(grede_two_mode), method = "single")
+ggdendrogram(hc_single, rotate=FALSE,labels = TRUE) + labs(title = "Dendogram hclust method = single")
+
+phylo_tree = as.phylo(hc_single)
+graph_edges = phylo_tree$edge
+graph_net = graph.edgelist(graph_edges)
+plot(graph_net)
+graph_layout = layout.auto(graph_net)
+nobs = length(hc_single$labels)
+{
+  plot(graph_layout[,1], graph_layout[,2], type = "n", axes = FALSE,
+     xlab = "", ylab = "")
+  segments(
+    x0 = graph_layout[graph_edges[,1],1], 
+    y0 = graph_layout[graph_edges[,1],2],
+    x1 = graph_layout[graph_edges[,2],1],
+    y1 = graph_layout[graph_edges[,2],2],
+    col = "#dcdcdc55", lwd = 3.5
+    )
+  text(graph_layout[1:nobs,1], graph_layout[1:nobs,2],
+       phylo_tree$tip.label, cex = 1, xpd = TRUE, font = 1)
+}
+
+```
+
+```{r}
+hc_wardD <- hclust(dist(grede_two_mode), method = "ward.D" )
+ggdendrogram(hc_wardD, rotate=FALSE,labels = TRUE) + labs(title = "Dendogram hclust method = ward.D")
+
+phylo_tree = as.phylo(hc_wardD)
+graph_edges = phylo_tree$edge
+graph_net = graph.edgelist(graph_edges)
+plot(graph_net)
+graph_layout = layout.auto(graph_net)
+nobs = length(hc_wardD$labels)
+{
+  plot(graph_layout[,1], graph_layout[,2], type = "n", axes = FALSE,
+     xlab = "", ylab = "")
+  segments(
+    x0 = graph_layout[graph_edges[,1],1], 
+    y0 = graph_layout[graph_edges[,1],2],
+    x1 = graph_layout[graph_edges[,2],1],
+    y1 = graph_layout[graph_edges[,2],2],
+    col = "#dcdcdc55", lwd = 3.5
+    )
+  text(graph_layout[1:nobs,1], graph_layout[1:nobs,2],
+       phylo_tree$tip.label, cex = 1, xpd = TRUE, font = 1)
+}
+
+```
+
+```{r}
+hc_average <- hclust(dist(grede_two_mode), method = "average" )
+ggdendrogram(hc_average, rotate=FALSE,labels = TRUE) + labs(title = "Dendogram hclust method = average")
+
+phylo_tree = as.phylo(hc_average)
+graph_edges = phylo_tree$edge
+graph_net = graph.edgelist(graph_edges)
+plot(graph_net)
+graph_layout = layout.auto(graph_net)
+nobs = length(hc_average$labels)
+{
+  plot(graph_layout[,1], graph_layout[,2], type = "n", axes = FALSE,
+     xlab = "", ylab = "")
+  segments(
+    x0 = graph_layout[graph_edges[,1],1], 
+    y0 = graph_layout[graph_edges[,1],2],
+    x1 = graph_layout[graph_edges[,2],1],
+    y1 = graph_layout[graph_edges[,2],2],
+    col = "#dcdcdc55", lwd = 3.5
+    )
+  text(graph_layout[1:nobs,1], graph_layout[1:nobs,2],
+       phylo_tree$tip.label, cex = 1, xpd = TRUE, font = 1)
+}
+
+```
+
+```{r}
+hc_median <- hclust(dist(grede_two_mode), method = "median" )
+ggdendrogram(hc_median, rotate=FALSE,labels = TRUE) + labs(title = "Dendogram hclust method = median")
+
+phylo_tree = as.phylo(hc_median)
+graph_edges = phylo_tree$edge
+graph_net = graph.edgelist(graph_edges)
+plot(graph_net)
+graph_layout = layout.auto(graph_net)
+nobs = length(hc$labels)
+{
+  plot(graph_layout[,1], graph_layout[,2], type = "n", axes = FALSE,
+     xlab = "", ylab = "")
+  segments(
+    x0 = graph_layout[graph_edges[,1],1], 
+    y0 = graph_layout[graph_edges[,1],2],
+    x1 = graph_layout[graph_edges[,2],1],
+    y1 = graph_layout[graph_edges[,2],2],
+    col = "#dcdcdc55", lwd = 3.5
+    )
+  text(graph_layout[1:nobs,1], graph_layout[1:nobs,2],
+       phylo_tree$tip.label, cex = 1, xpd = TRUE, font = 1)
+}
+
+```
