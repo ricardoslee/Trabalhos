@@ -1,5 +1,5 @@
 ---
-title: "Tarefa4 - GeoAnalise e Estatistica Espacial"
+title: "Tarefa4 - GeoAnálise e Estatística Espacial"
 author: "Gustavo Hotta - A56865193, Rafael Furlan - A56871487, Ricardo Squassina Lee - A56843646"
 output:
   html_document:
@@ -99,7 +99,9 @@ if(!require(ncf)) {
 
 ```
 
-Leio o Shapefile crime_mg:
+---
+
+Lendo o Shapefile crime_mg:
 
 ```{r Preparacao dos dados - Leitura do Shapefile, message=FALSE}
 crime_mg<- readOGR(dsn = "crime_mg", layer = "crime_mg",verbose = TRUE, use_iconv = TRUE, p4s = "+proj=longlat +ellps=WGS84")
@@ -107,21 +109,22 @@ names(crime_mg)
 summary(crime_mg)
 ```
 
-Mapa de Minas Gerais com os municipios, como no shapefile, sem tema:
+Mapa de Minas Gerais com os municípios, como no shapefile, sem tema:
+
 ```{r plot do mapa de Minas Gerais sem tema}
 
 tmap::qtm(crime_mg,title = "Mapa de Minas Gerais")
 
 ```
 
+---
+
+### Pergunta 1
+#### Qual das variáveis quantitativas apresentadas no shapefile crime_mg apresenta maior auto-correlação espacial? Descreva como implementou a matriz de vizinhanca. Apresente o I de Moran e o mapa de auto-correlação espacial local (LISA map) da variável escolhida e também de pelo menos outras 3 variáveis.
+##### Obs: desconsidere as variáveis Codmuni, ID, X_coord e Y_coord nessa analise.
 
 
-Pergunta 1
-Qual das variáveis quantitativas apresentadas no shapefile crime_mg apresenta maior auto-correlação espacial? Descreva como implementou a matriz de vizinhança. Apresente o I de Moran e o mapa de auto-correlação espacial local (LISA map) da variável escolhida e também de pelo menos outras 3 variáveis.
-Obs: desconsidere as variáveis Codmuni, ID, X_coord e Y_coord nessa análise.
-
-
-Calculo de Moran's I para vericação da auto-correlação espacial das variáveis usamos a metodologia Rainha (queen) na matriz de vizinhanca:
+Calculo de Moran's I para verificação da auto-correlação espacial das variáveis. Aqui usamos a metodologia Rainha (queen) na matriz de vizinhança:
 
 ```{r calculo do Moran I}
 
@@ -129,19 +132,19 @@ crime_mg_nb = poly2nb(crime_mg, queen=TRUE, row.names=crime_mg$X_COORD)
 
 crime_mg_w <- nb2listw(crime_mg_nb, style="W")
 
-cmg_munic <- crime_mg$MUNIC
-cmg_area <- crime_mg$AREA
-cmg_indice94 <- crime_mg$INDICE94
-cmg_indice95 <- crime_mg$INDICE95
-cmg_gini_91 <- crime_mg$GINI_91
-cmg_pop_94 <- crime_mg$POP_94
-cmg_pop_rur <- crime_mg$POP_RUR
-cmg_pop_urb <- crime_mg$POP_URB
-cmg_pop_fem <- crime_mg$POP_FEM
-cmg_pop_mas <- crime_mg$POP_MAS
-cmg_pop_tot <- crime_mg$POP_TOT
-cmg_urblevel <- crime_mg$URBLEVEL
-cmg_pib_pc <- crime_mg$PIB_PC
+cmg_munic <- as.numeric(crime_mg$MUNIC)
+cmg_area <- as.numeric(crime_mg$AREA)
+cmg_indice94 <- as.numeric(crime_mg$INDICE94)
+cmg_indice95 <- as.numeric(crime_mg$INDICE95)
+cmg_gini_91 <- as.numeric(crime_mg$GINI_91)
+cmg_pop_94 <- as.numeric(crime_mg$POP_94)
+cmg_pop_rur <- as.numeric(crime_mg$POP_RUR)
+cmg_pop_urb <- as.numeric(crime_mg$POP_URB)
+cmg_pop_fem <- as.numeric(crime_mg$POP_FEM)
+cmg_pop_mas <- as.numeric(crime_mg$POP_MAS)
+cmg_pop_tot <- as.numeric(crime_mg$POP_TOT)
+cmg_urblevel <- as.numeric(crime_mg$URBLEVEL)
+cmg_pib_pc <- as.numeric(crime_mg$PIB_PC)
 
 moran_i_munic <- moran(cmg_munic,crime_mg_w, length(crime_mg_nb), Szero(crime_mg_w))
 moran_i_area <- moran(cmg_area,crime_mg_w, length(crime_mg_nb), Szero(crime_mg_w))
@@ -159,6 +162,7 @@ moran_i_pib_pc <- moran(cmg_pib_pc,crime_mg_w, length(crime_mg_nb), Szero(crime_
 ```
 
 Mostrando todas as auto-correlações:
+
 ```{r apresentacao das autocorrelacoes em ordem decrescente}
 moran <- c("label","i")
 label <- c("moran_i_munic",
@@ -197,9 +201,9 @@ moran[order(moran$moran_i,decreasing = TRUE),]
 
 ```
 
-Mostrando Moran's I das variáveis AREA, INDICE94 e INDICE95, que possuem os maiores I:
+Mostrando Moran's I das variáveis AREA, INDICE94 e INDICE95, que possuem os maiores I, e POP_URB, que possui o menor:
 
-```{r plot do Moran I para as variaveis com maior I}
+```{r plot do Moran I para as variaveis com maiores e menor I}
 {
   moran.plot(x = cmg_area,listw = crime_mg_w,labels = FALSE)
   title("Moran's I de AREA")
@@ -207,6 +211,8 @@ Mostrando Moran's I das variáveis AREA, INDICE94 e INDICE95, que possuem os mai
   title("Moran's I de INDICE94")
   moran.plot(x = cmg_indice95,listw = crime_mg_w,labels = FALSE)
   title("Moran's I de INDICE95")
+  moran.plot(x = cmg_pop_urb,listw = crime_mg_w,labels = FALSE)
+  title("Moran's I de POP_URB")
 }
 
 ```
@@ -214,29 +220,35 @@ Mostrando Moran's I das variáveis AREA, INDICE94 e INDICE95, que possuem os mai
 Calculando LISA
 
 Verificando a média de links entre vizinhos:
+
 ```{r identificando media de vizinhos no dataset}
 crime_mg_nb
 ```
-Como a média de links é 5.7, passamos como parâmetro para o lisa que serão 6 vizinhos:
 
-```{r calculo do LISA para as variaveis AREA - INDICE94 - INDICE95}
+Como a média de links é 5.7, passamos este valor como parâmetro com o comando "mean(card(crime_mg_nb))" para o cálculo do LISA para as variáveis AREA - INDICE94 - INDICE95 - POP_URB:
 
-LISA_AREA <- lisa(x = crime_mg$X_COORD, y = crime_mg$Y_COORD, z = crime_mg$AREA, neigh = 5.7)
-LISA_INDICE94 <- lisa(x = crime_mg$X_COORD, y = crime_mg$Y_COORD, z = crime_mg$INDICE94, neigh = 5.7)
-LISA_INDICE95 <- lisa(x = crime_mg$X_COORD, y = crime_mg$Y_COORD, z = crime_mg$INDICE95, neigh = 5.7)
+```{r calculo do LISA para as variaveis AREA - INDICE94 - INDICE95 - POP_URB}
+
+LISA_AREA <- lisa(x = crime_mg$X_COORD, y = crime_mg$Y_COORD, z = crime_mg$AREA, neigh = mean(card(crime_mg_nb)))
+LISA_INDICE94 <- lisa(x = crime_mg$X_COORD, y = crime_mg$Y_COORD, z = crime_mg$INDICE94, neigh = mean(card(crime_mg_nb)))
+LISA_INDICE95 <- lisa(x = crime_mg$X_COORD, y = crime_mg$Y_COORD, z = crime_mg$INDICE95, neigh = mean(card(crime_mg_nb)))
+LISA_POP_URB <- lisa(x = crime_mg$X_COORD, y = crime_mg$Y_COORD, z = as.numeric(crime_mg$POP_URB), neigh = mean(card(crime_mg_nb)))
 
 ```
 
 Plot dos mapas LISA:
+
 ```{r plot dos mapas LISA}
 
 crime_mg$LISA_AREA_p <- LISA_AREA$p
 crime_mg$LISA_INDICE94_p <- LISA_INDICE94$p
 crime_mg$LISA_INDICE95_p <- LISA_INDICE95$p
+crime_mg$LISA_POP_URB_p <- LISA_POP_URB$p
 
 crime_mg$LISA_AREA_corr <- LISA_AREA$correlation
 crime_mg$LISA_INDICE94_corr <- LISA_INDICE94$correlation
 crime_mg$LISA_INDICE95_corr <- LISA_INDICE95$correlation
+crime_mg$LISA_POP_URB_corr <- LISA_POP_URB$correlation
 
 tmap::tm_shape(crime_mg, simplify = 1) + 
   tmap::tm_polygons() +
@@ -256,11 +268,17 @@ tmap::tm_shape(crime_mg) +
   tmap::tm_fill(c("LISA_INDICE95_p","LISA_INDICE95_corr"), midpoint = 0) + 
   tmap::tm_style("natural") 
 
+tmap::tm_shape(crime_mg) +
+  tmap::tm_polygons() +
+  tmap::tm_shape(crime_mg, simplify = 1) +
+  tmap::tm_fill(c("LISA_POP_URB_p","LISA_POP_URB_corr"), midpoint = 0) + 
+  tmap::tm_style("natural") 
+
 ```
 
-Fizemos também a implementação dos mapas LISA no GeoDa, e estes foram diferentes do apresentado aqui. Abaixo, os gráficos gerados no GeoDa:
+Fizemos também a implementação dos mapas LISA no GeoDa e estes foram diferentes do apresentado aqui. Abaixo, os gráficos gerados no GeoDa:
 
-```{r}
+```{r Graficos GeoDa}
 knitr::include_graphics("MoransI-Geoda-Area.png")
 knitr::include_graphics("LISA Significance - Geoda - Area.png")
 knitr::include_graphics("LISA Cluster - Geoda - Area.png")
@@ -272,14 +290,21 @@ knitr::include_graphics("LISA Cluster - Geoda - INDICE94.png")
 knitr::include_graphics("MoransI-Geoda-INDICE95.png")
 knitr::include_graphics("LISA Significance - Geoda - INDICE95.png")
 knitr::include_graphics("LISA Cluster - Geoda - INDICE95.png")
+
+knitr::include_graphics("MoransI-Geoda-POP_URB.png")
+knitr::include_graphics("LISA Significance - Geoda - POP_URB.png")
+knitr::include_graphics("LISA Cluster - Geoda - POP_URB.png")
+
 ```
 
+---
 
-Pergunta 2
-Implemente o modelo espacial auto-regressivo (SAR) da variável Indice95 (índice de criminalidade em 1995 de Minas Gerais) a partir de apenas uma variável independente (não pode ser Indice94, Codmuni, ID, X_coord nem Y_coord). Apresente o resultado da regressão linear simples e da regressão linear espacial. Apresente as equações e interprete seus coeficientes.
+#### Pergunta 2
+##### Implemente o modelo espacial auto-regressivo (SAR) da variável Indice95 (índice de criminalidade em 1995 de Minas Gerais) a partir de apenas uma variável independente (não pode ser Indice94, Codmuni, ID, X_coord nem Y_coord). Apresente o resultado da regressão linear simples e da regressão linear espacial. Apresente as equações e interprete seus coeficientes.
 
-Regrssão linear simples
-```{r regressao linear simples}
+Regressão linear simples:
+
+```{r regressao linear simples - com SAR}
 ap <- as.data.frame(cbind(crime_mg$MUNIC, crime_mg$AREA, crime_mg$INDICE94,
                           crime_mg$INDICE95, crime_mg$GINI_91, crime_mg$POP_94,
                           crime_mg$POP_RUR, crime_mg$POP_URB, crime_mg$POP_FEM,
@@ -295,7 +320,7 @@ summary(lmK)
 
 ```
 
-Regressão linear espacial - SAR
+Regressao linear espacial - SAR
 
 ```{r regressao linear espacial - SAR}
 
@@ -309,7 +334,7 @@ colnames(ap) <- c("ID",names(crime_mg@data[4:15]))
 crime_mg_nb = poly2nb(crime_mg, queen=TRUE, row.names=crime_mg$X_COORD)
 crime_mg_w <- nb2listw(crime_mg_nb, style="W")
 
-sar.ap <- lagsarlm(crime_mg$INDICE95 ~ URBLEVEL,data=ap,crime_mg_w,method="Matrix")
+sar.ap <- lagsarlm(crime_mg$INDICE95 ~ URBLEVEL,data=ap,crime_mg_w,method="eigen")
   
 SARk_SSE <- sar.ap$SSE
 
@@ -322,22 +347,44 @@ summary(sar.ap)
 
 ```
 
+---
 
-Pergunta 3
-Para essa variável que você escolheu, o modelo espacial SAR apresentou ganhos significantes com relação ao modelo linear simples? Justifique sua resposta.
-Obs: Sugere-se fazer essa atividade no GeoDA ou no R.
+#### Pergunta 3
+##### Para essa variável que você escolheu, o modelo espacial SAR apresentou ganhos significantes com relação ao modelo linear simples? Justifique sua resposta.
+##### Obs: Sugere-se fazer essa atividade no GeoDA ou no R.
 
 ```{r comparacao de SAR e LM}
-cat("Rˆ2 SAR: ",r2_SARk, "\n")
-cat("Rˆ2 LM:",summary(lmK)$adj.r.squared,"\n")
+cat("Rˆ2 SAR: ",r2_SARk)
+cat("Rˆ2 LM:",summary(lmK)$adj.r.squared)
 ```
 
 O modelo espacial SAR apresentou ganho de 8% versus o modelo linear simples.
 
+---
 
-Pergunta 4
-Implemente a regressão espacial GWR da variável Indice95 (índice de criminalidade em 1995 de Minas Gerais) a partir de apenas uma variável independente (não pode ser Indice94, Codmuni, ID, X_coord nem Y_coord). Apresente o resultado da regressão linear simples e da regressão linear espacial por GWR. Apresente medidas da distribuição dos coeficientes (min, Q1, Q2, Q3, máx), e da distribuição do R2 (min, Q1, Q2, Q3, máx) e apresente os resultados globais da regressão (R2 global, basicamente).
-Obs: Sugere-se fazer essa atividade no ArcGIS ou no R.
+#### Pergunta 4
+##### Implemente a regressão espacial GWR da variável Indice95 (índice de criminalidade em 1995 de Minas Gerais) a partir de apenas uma variável independente (não pode ser Indice94, Codmuni, ID, X_coord nem Y_coord). Apresente o resultado da regressão linear simples e da regressão linear espacial por GWR. Apresente medidas da distribuição dos coeficientes (min, Q1, Q2, Q3, max), e da distribuição do R2 (min, Q1, Q2, Q3, max) e apresente os resultados globais da regressão (R2 global, basicamente).
+##### Obs: Sugere-se fazer essa atividade no ArcGIS ou no R.
+
+Regressão linear simples:
+
+```{r regressao linear simples - com GWR}
+ap <- as.data.frame(cbind(crime_mg$MUNIC, crime_mg$AREA, crime_mg$INDICE94,
+                          crime_mg$INDICE95, crime_mg$GINI_91, crime_mg$POP_94,
+                          crime_mg$POP_RUR, crime_mg$POP_URB, crime_mg$POP_FEM,
+                          crime_mg$POP_MAS, crime_mg$POP_TOT, crime_mg$URBLEVEL,
+                          crime_mg$PIB_PC))
+colnames(ap) <- c("ID",names(crime_mg@data[4:15]))
+
+head(ap)
+
+lmK <- lm(formula = crime_mg$INDICE95 ~ URBLEVEL, data = ap)
+
+summary(lmK)
+
+```
+
+Regressão linear GWR:
 
 ```{r calculo do modelo de regressao GWR}
 
@@ -364,23 +411,38 @@ r2_GWR
 
 ```
 
+```{r}
 
-Pergunta 5
-Para essa variável que você escolheu, o modelo espacial GWR apresentou ganhos significantes com relação ao modelo linear simples? Justifique sua resposta.
+cat("Coeficientes LM:",summary(lmK)$coefficients, "\n")
+cat("Rˆ2 LM:",summary(lmK)$adj.r.squared, "\n")
+
+cat("Coeficientes GWR:",summary(gwr.ap$lm$coefficients), "\n")
+cat("Rˆ2 GWR:",r2_GWR, "\n")
+
+```
+
+---
+
+#### Pergunta 5
+##### Para essa variável que você escolheu, o modelo espacial GWR apresentou ganhos significantes com relação ao modelo linear simples? Justifique sua resposta.
 
 ```{r comparacao de SAR e GWR}
 
+cat("Rˆ2 LM:",summary(lmK)$adj.r.squared, "\n")
 cat("Rˆ2 SAR: ",r2_SARk, "\n")
 cat("Rˆ2 GWR: ",r2_GWR, "\n")
 
 ```
-GWR Aumenta 15% o ganho em relação ao SAR.
+Sim, GWR Aumenta 15% o ganho em relação ao SAR, que já era 8% maior que o modelo simples.
 
+---
 
-Pergunta 6
-Implemente um modelo de regressão linear multivariado stepwise da variável Indice95 (significante a 5% ou 10%, utilize o que achar melhor). Depois, “promova-o” a um modelo SAR. Apresente os resultados comparados (equação, R2). Qual modelo você escolheria como final? Se desejar, apresente mapas que sustente sua justificativa.
+#### Pergunta 6
+##### Implemente um modelo de regressão linear multivariado stepwise da variável Indice95 (significante a 5% ou 10%, utilize o que achar melhor). Depois, “promova-o” a um modelo SAR. Apresente os resultados comparados (equaçãoo, R2). Qual modelo você escolheria como final? Se desejar, apresente mapas que sustente sua justificativa.
 
-```{r implementaçao do modelo multivariado stepwise - regressao simples}
+Implementação do modelo multivariado stepwise - regressão simples:
+
+```{r implementacao do modelo multivariado stepwise - regressao simples}
 
 ap <- as.data.frame(cbind(crime_mg$MUNIC, crime_mg$AREA, crime_mg$INDICE94,
                           crime_mg$INDICE95, crime_mg$GINI_91, crime_mg$POP_94,
@@ -399,7 +461,9 @@ lmKmv <- lm(formula = crime_mg$INDICE95 ~ INDICE94 + GINI_91 + URBLEVEL,
 summary(lmKmv)
 ```
 
-```{r implementaçao do modelo multivariado stepwise - regressao SAR}
+Implementação do modelo multivariado stepwise - regressão SAR
+
+```{r implementacao do modelo multivariado stepwise - regressao SAR}
 
 ap <- as.data.frame(cbind(crime_mg$MUNIC, crime_mg$AREA, crime_mg$INDICE94,
                           crime_mg$INDICE95, crime_mg$GINI_91, crime_mg$POP_94,
@@ -409,7 +473,7 @@ ap <- as.data.frame(cbind(crime_mg$MUNIC, crime_mg$AREA, crime_mg$INDICE94,
 colnames(ap) <- c("ID",names(crime_mg@data[4:15]))
 
 sarmv.ap <- lagsarlm(crime_mg$INDICE95 ~ INDICE94 + GINI_91 +
-                     URBLEVEL,data=ap,crime_mg_w,method="Matrix")
+                     URBLEVEL,data=ap,crime_mg_w,method="eigen")
   
 SARkmv_SSE <- sarmv.ap$SSE
 
@@ -422,18 +486,26 @@ summary(sarmv.ap)
 
 ```
 
+Comparação dos modelos Multi-variados de SAR e LM:
+
 ```{r comparacao de SAR e LM Multi-variado}
 cat("Rˆ2 SAR: ",r2_SARk, "\n")
 cat("Rˆ2 LM:",summary(lmK)$adj.r.squared,"\n")
+
 cat("Rˆ2 SAR MV: ",r2_SARkmv, "\n")
 cat("Rˆ2 LM MV:",summary(lmKmv)$adj.r.squared,"\n")
 ```
-No modelo multivariado o ganho é de 1% do modelo linear simples para o modelo SAR, porém o ganho foi de +37% com relacao ao modelo original univariado.
 
-Pergunta 7 (bônus)
-Promova o modelo final linear da Pergunta 6 a um modelo GWR. Apresente os resultados comparados (equação, R2). Qual modelo você escolheria como final? Se desejar, apresente mapas que sustente sua justificativa.
+No modelo multivariado o ganho é de 1% sobre o modelo linear simples para o modelo SAR, porém o ganho foi de +37% com relação ao modelo original univariado.
 
-```{r implementaçao do modelo multivariado stepwise - regressao GWR}
+---
+
+#### Pergunta 7 (bônus)
+##### Promova o modelo final linear da Pergunta 6 a um modelo GWR. Apresente os resultados comparados (equação, R2). Qual modelo você escolheria como final? Se desejar, apresente mapas que sustente sua justificativa.
+
+Implementação do modelo multivariado stepwise - regressão GWR
+
+```{r implementacao do modelo multivariado stepwise - regressao GWR}
 
 bwGaussMV <- gwr.sel(crime_mg$INDICE95 ~ INDICE94 + GINI_91 + URBLEVEL,data=ap,coords=coords,adapt=TRUE,method="aic",
                    gweight=gwr.Gauss,verbose=FALSE)
@@ -452,22 +524,26 @@ r2_GWR_MV
 ```
 
 Comparando os resultados finais:
+
 ```{r comparacao de GWR - SAR - LM Multi-variado}
 cat("Rˆ2 GWR: ",r2_GWR, "\n")
 cat("Rˆ2 SAR: ",r2_SARk, "\n")
 cat("Rˆ2 LM:",summary(lmK)$adj.r.squared,"\n")
+
 cat("Rˆ2 GWR MV: ",r2_GWR_MV, "\n")
 cat("Rˆ2 SAR MV: ",r2_SARkmv, "\n")
 cat("Rˆ2 LM MV:",summary(lmKmv)$adj.r.squared,"\n")
 ```
-Notamos que o modelo GWR tambem e' beneficiado por uma analise multivariada, tendo aumentado 27%, passando de 48.1% para 75%.
 
+Notamos que o modelo GWR tambem é beneficiado por uma análise multivariada, tendo aumentado 27%, passando de 48.1% para 75%.
 
-Tarefa 8 (bônus 2)
-Produza um mapa de alta qualidade do shapefile crime_mg utilizando a extensão tmap. Os dois grupos que produzirem os melhores mapas ganharão 0,5 ponto adicional na nota da atividade.
-Apresente o código completo e o mapa produzido em sua resposta.
+---
 
-```{r plotando mapas com tmap}
+#### Tarefa 8 (bônus 2)
+##### Produza um mapa de alta qualidade do shapefile crime_mg utilizando a extensão tmap. Os dois grupos que produzirem os melhores mapas ganharão 0,5 ponto adicional na nota da atividade.
+##### Apresente o codigo completo e o mapa produzido em sua resposta.
+
+```{r plotando mapas com tmap, message=FALSE, warning=FALSE}
 
 ani_map <- tmap::tm_shape(crime_mg, simplify = 1) + 
   tmap::tm_fill() +
@@ -475,10 +551,14 @@ ani_map <- tmap::tm_shape(crime_mg, simplify = 1) +
   tmap::tm_fill(c("INDICE94","INDICE95")) +
   tmap::tm_style(style = "natural", legend.outside = TRUE) +
   tmap::tm_facets(free.scales.symbol.size = FALSE, nrow=1,ncol=1) +
-  tmap::tm_layout(main.title = "Evolução do Indice de Criminalidade de 94-95") +
+  tmap::tm_layout(main.title = "Evolucao do Indice de Criminalidade de 94-95") +
   tmap::tm_polygons()
 
-tmap_animation(ani_map, loop = TRUE, delay=100, filename = "CRIME_MG.gif")
+tmap_animation(ani_map, loop = TRUE, delay=200, filename = "CRIME_MG.gif")
+
+```
+
+```{r Inclui o grafico gerado no trabalho, message=FALSE, warning=FALSE}
 
 knitr::include_graphics("CRIME_MG.gif")
 
