@@ -1,0 +1,141 @@
+---
+title: "Analise de Redes Sociais e Text Mining - Trabalho 4"
+author: "Ricardo Squassina Lee"
+date: "8/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Realizar uma análise de sentimento. Para a análise de sentimento criar: 
+a.	word cloud, 
+b.	word cloud positiva, 
+c.	word cloud negativa, 
+d.	semantic network, 
+e.	dendrograma, 
+f.	word cloud bigram
+
+
+```{r Iniciando o ambiente, message=FALSE, warning=FALSE}
+rm(list = ls())
+cat("\014")
+```
+
+```{r Carregando as bibliotecas}
+if(!require(tidytext)) {
+  install.packages("tidytext")
+  library(tidytext)
+}
+if(!require(dplyr)) {
+  install.packages("dplyr")
+  library(dplyr)
+}
+if(!require(stringr)) {
+  install.packages("stringr")
+  library(stringr)
+}
+if(!require(tm)) {
+  install.packages("tm")
+  library(tm)
+}
+if(!require(tidyr)) {
+  install.packages("tidyr")
+  library(tidyr)
+}
+
+```
+
+## Leitura do Texto
+
+Para o trabalho foi escohido o Debate Presidencial apresentado na TV Bandeirantes. Como foi feita a transcrição automática, o texto contém imperfeições. Mantivemos estas imperfeições para estudar o impacto na análise do texto e do sentimento. O único ajuste feito foi no nome dos candidatos.
+
+```{r Lendo o arquivo de texto escolhido}
+txt <- readLines("DebBandPres2018.txt",encoding = "UTF-8")
+
+```
+
+## Preparação do dataframe antes da análise
+
+```{r preparando o dataframe para analise}
+txt_df <- data_frame(text = txt)
+
+txt_token <- unnest_tokens(txt_df, 
+                           input = "text", 
+                           output = "word",
+                           token = "words",
+                           to_lower = TRUE,
+                           drop = TRUE)
+
+```
+
+## Remoção das stop words
+
+```{r removendo stopwords}
+
+stop_words <- data_frame(tm::stopwords(kind="pt-BR"))
+colnames(stop_words) <- "word"
+
+txt_words <- anti_join(txt_token, stop_words, by = c("word","word"))
+
+```
+
+
+```{r contando a frequencia das palavras}
+txt_count <- count(txt_words, word, sort=TRUE)
+txt_count
+```
+
+Analisando bigramas para identificar necessidade
+```{r}
+txt_bigramas <- unnest_tokens(tbl = txt_df,
+                              input = text,
+                              output = bigram,
+                              token = "ngrams",
+                              to_lower = TRUE,
+                              n = 2,
+                              drop = TRUE)
+
+txt_bigramas_sep <- separate(txt_bigramas, bigram, sep =" ", c("p1","p2"))
+
+txt_bigramas_filt <- filter(filter(txt_bigramas_sep,!p1 %in% stop_words$word),!p2 %in% stop_words$word)
+
+txt_bigramas_cont <- count(txt_bigramas_filt, p1, p2, sort = TRUE)
+txt_bigramas_cont
+
+```
+
+```{r contando a frequencia dos bigramas}
+
+txt_bigramas_u <- unite(txt_bigramas_filt, bigram, p1, p2, sep = " ")
+
+txt_bcount <- count(txt_bigramas_u, bigram, sort=TRUE)
+txt_bcount
+```
+
+
+Pela listagem acima, notamos que as palavras importantes do debate estão repetidas entre 20 e 50 vezes, por isso filtramos por estes valores.
+
+
+```{r filtrando as palavras importantes}
+txt_analise <- filter(txt_count , 50 > n & n > 20)
+txt_analise_bigramas <- filter(txt_bcount , 22 > n & n > 5)
+
+```
+
+
+
+bigram_tf_idf %>% group_by(book) %>% top_n(12,tf_idf) %>% ungroup() %>%
+  mutate(bigram=reorder(bigram,tf_idf)) %>% 
+  ggplot(aes(x=bigram, y=tf_idf)) + geom_col(show.legend=FALSE) + 
+    facet_wrap(~book, scales="free_y", ncol=3) + coord_flip() + 
+    labs(y="tf-idf bigram to novel", x=NULL)
+    
+```{r}
+
+ggplot2::ggplot()
+
+
+```
+
