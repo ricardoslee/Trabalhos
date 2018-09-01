@@ -11,7 +11,8 @@
 # inicializa o ambiente
 rm(list = ls())
 cat("\014")
-setwd("./git/Trabalhos/ARSTM/Tarefa4")
+#setwd("./git/Trabalhos/ARSTM/Tarefa4")
+setwd("~/Tresors/zz-pessoal/FGV/git/Trabalhos/ARSTM/Tarefa4")
 getwd()
 
 # carrega as bibliotecas
