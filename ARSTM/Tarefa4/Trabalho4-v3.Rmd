@@ -1,0 +1,1013 @@
+---
+title: "Analise de Redes Sociais e Text Mining - Trabalho 4"
+author: "Ricardo Squassina Lee"
+date: "8/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Realizar uma análise de sentimento. Para a análise de sentimento criar: 
+a.	word cloud, 
+b.	word cloud positiva, 
+c.	word cloud negativa, 
+d.	semantic network, 
+e.	dendrograma, 
+f.	word cloud bigram
+
+
+```{r Iniciando o ambiente, message=FALSE, warning=FALSE}
+rm(list = ls())
+cat("\014")
+```
+
+```{r Carregando as bibliotecas}
+if(!require(tidytext)) {
+  install.packages("tidytext")
+  library(tidytext)
+}
+if(!require(dplyr)) {
+  install.packages("dplyr")
+  library(dplyr)
+}
+if(!require(stringr)) {
+  install.packages("stringr")
+  library(stringr)
+}
+if(!require(tm)) {
+  install.packages("tm")
+  library(tm)
+}
+if(!require(tidyr)) {
+  install.packages("tidyr")
+  library(tidyr)
+}
+if(!require(gutenbergr)) {
+  install.packages("gutenbergr")
+  library(gutenbergr)
+}
+if(!require(scales)) {
+  install.packages("scales")
+  library(scales)
+}
+if(!require(ggplot2)) {
+  install.packages("ggplot2")
+  library(ggplot2)
+}
+if(!require(wordcloud)) {
+  install.packages("wordcloud")
+  library(wordcloud)
+}
+if(!require(reshape2)) {
+  install.packages("reshape2")
+  library(reshape2)
+}
+if(!require(igraph)) {
+  install.packages("igraph")
+  library(igraph)
+}
+if(!require(ggraph)) {
+  install.packages("ggraph")
+  library(ggraph)
+}
+if(!require(widyr)) {
+  install.packages("widyr")
+  library(widyr)
+}
+
+```
+
+## Leitura do Texto
+
+Para o trabalho foram escohidos textos relativos à Segunda Guerra Mundial.
+
+```{r Lendo o arquivo de texto escolhido}
+France <- gutenberg_download(c(17813, 16437, 45542, 18483,9975), meta_fields = "title")
+Dardanelles <- gutenberg_download(c(11008, 11513, 15896, 3306, 35119), meta_fields = "title")
+#Russia <- gutenberg_download(c(46191, 10967, 22523, 10972, 53482), meta_fields = "title")
+Russia <- gutenberg_download(c(46191, 10967, 22523, 10972), meta_fields = "title")
+
+
+france_books <- France %>%
+  group_by(gutenberg_id) %>%
+  mutate(linenumber = row_number()) %>%
+  ungroup()
+
+dardanelles_books <- Dardanelles %>%
+  group_by(gutenberg_id) %>%
+  mutate(linenumber = row_number()) %>%
+  ungroup()
+
+russia_books <- Russia %>%
+  group_by(gutenberg_id) %>%
+  mutate(linenumber = row_number()) %>%
+  ungroup()
+
+```
+
+## Separando as palavras contidas nos textos que estão sendo analisados e removendo as "stop words"
+
+```{r preparando para analise}
+
+#france_tidy <- anti_join(unnest_tokens(france_books,
+#                                    word,
+#                                    text), 
+#                      stop_words)
+
+#dardanelles_tidy <- anti_join(unnest_tokens(dardanelles_books,
+#                                    word,
+#                                    text), 
+#                      stop_words)
+
+#russia_tidy <- anti_join(unnest_tokens(russia_books,
+#                                    word,
+#                                    text), 
+#                      stop_words)
+
+
+france_tidy <- france_books %>% 
+  unnest_tokens(input=text,
+                output="word",
+                to_lower=TRUE,
+                drop=TRUE) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  anti_join(stop_words, by=c("word"="word")) 
+
+dardanelles_tidy <- dardanelles_books %>% 
+  unnest_tokens(input=text,
+                output="word",
+                to_lower=TRUE,
+                drop=TRUE) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  anti_join(stop_words, by=c("word"="word"))
+
+russia_tidy <- russia_books %>% 
+  unnest_tokens(input=text,
+                output="word",
+                to_lower=TRUE,
+                drop=TRUE) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  anti_join(stop_words, by=c("word"="word"))
+
+```
+
+## Contando as palavras para uma primeira análise da frequência:
+
+```{r contando a frequencia das palavras}
+count(france_tidy, word, sort=TRUE)
+count(dardanelles_tidy, word, sort=TRUE)
+count(russia_tidy, word, sort=TRUE)
+
+```
+
+## Analisando a frequência das palavras nos conjuntos de texto
+```{r}
+
+# Frequency as per the book
+#frequency <- bind_rows(mutate(france_tidy, subject = "France"), 
+#                       mutate(dardanelles_tidy, subject = "Dardanelles"),
+#                       mutate(russia_tidy, subject = "Russia")) %>% 
+#  mutate(word = str_extract(word, "[a-z']+")) %>%
+#  count(subject, word) %>%
+#  group_by(subject) %>%
+#  mutate(proportion = n / sum(n)) %>% 
+#  select(-n) %>% 
+#  spread(subject, proportion) %>% 
+#  gather(subject, proportion,`Personal Narratives`:`WWII Fiction`)
+
+# Frequency step-by-step
+binded_texts <- bind_rows(mutate(france_tidy, subject = "France"), 
+                          mutate(dardanelles_tidy, subject = "Dardanelles"),
+                          mutate(russia_tidy, subject = "Russia"))
+
+counted_texts <- count(binded_texts, subject, word)
+
+grouped_texts <- group_by(counted_texts,subject)
+
+grouped_texts_by_proportion <- mutate(grouped_texts, proportion = n / sum(n))
+
+selected_texts <- select(grouped_texts_by_proportion,-n)
+
+spreaded_text <- spread(selected_texts, subject, proportion)
+
+frequency <- gather(spreaded_text,subject, proportion,`Dardanelles`:`France`)
+
+```
+
+## Gerando o gráfico
+```{r contando a frequencia dos bigramas}
+
+ggplot(frequency, aes(x = proportion, y = `Russia`, color = abs(`Russia` - proportion))) +
+  geom_abline(color = "gray40", lty = 2) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  scale_color_gradient(limits = c(0, 0.001), low = "darkslategray4", high = "gray75") +
+  facet_wrap(~subject, ncol = 2) +
+  theme(legend.position="none") +
+  labs(y = "Russia", x = NULL)
+```
+
+## Teste de Correlação entre os textos
+
+```{r filtrando as palavras importantes}
+cor.test(data = frequency[frequency$subject == "Dardanelles",],
+         ~ proportion + `Russia`)
+
+cor.test(data = frequency[frequency$subject == "France",],
+         ~ proportion + `Russia`)
+
+```
+
+## Sentiment Analysis
+
+```{r}
+france_sentiment <- france_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(title, index = linenumber %/% 80, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative)
+
+ggplot(france_sentiment, aes(index, sentiment, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~title, ncol = 2, scales = "free_x")
+
+```
+
+```{r}
+dardanelles_sentiment <- dardanelles_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(title, index = linenumber %/% 80, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative)
+
+ggplot(dardanelles_sentiment, aes(index, sentiment, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~title, ncol = 2, scales = "free_x")
+
+```
+
+```{r}
+russia_sentiment <- russia_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(title, index = linenumber %/% 80, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative)
+
+ggplot(russia_sentiment, aes(index, sentiment, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~title, ncol = 2, scales = "free_x")
+
+```
+
+
+```{r}
+france_tidy %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+
+```
+
+```{r}
+dardanelles_tidy %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+
+```
+
+```{r}
+russia_tidy %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+
+```
+
+```{r}
+france_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("gray20", "gray80"),
+                   max.words = 50)
+
+```
+
+```{r}
+dardanelles_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("gray20", "gray80"),
+                   max.words = 50)
+
+```
+
+```{r}
+russia_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("gray20", "gray80"),
+                   max.words = 50)
+
+```
+
+
+```{r}
+france_book_words <- france_books %>%
+  unnest_tokens(input=text,
+                          output="word",
+                          to_lower=TRUE,
+                          drop=TRUE) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  anti_join(stop_words, by=c("word"="word")) %>%
+  count(title, word, sort = TRUE) %>%
+  ungroup()
+
+france_total_words <- france_book_words %>% 
+  group_by(title) %>% 
+  summarize(total = sum(n))
+
+france_book_words <- left_join(france_book_words, france_total_words)
+
+ggplot(france_book_words, aes(n/total, fill = title)) +
+  geom_histogram(show.legend = FALSE, bins = 25) +
+  xlim(NA, 0.0009) +
+  facet_wrap(~title, ncol = 2, scales = "free_y")
+
+```
+
+```{r}
+dardanelles_book_words <- dardanelles_books %>%
+  unnest_tokens(input=text,
+                          output="word",
+                          to_lower=TRUE,
+                          drop=TRUE) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  anti_join(stop_words, by=c("word"="word")) %>%
+  count(title, word, sort = TRUE) %>%
+  ungroup()
+
+dardanelles_total_words <- dardanelles_book_words %>% 
+  group_by(title) %>% 
+  summarize(total = sum(n))
+
+dardanelles_book_words <- left_join(dardanelles_book_words, dardanelles_total_words)
+
+ggplot(dardanelles_book_words, aes(n/total, fill = title)) +
+  geom_histogram(show.legend = FALSE, bins = 25) +
+  xlim(NA, 0.0009) +
+  facet_wrap(~title, ncol = 2, scales = "free_y")
+
+```
+
+
+```{r}
+russia_book_words <- russia_books %>%
+  unnest_tokens(input=text,
+                          output="word",
+                          to_lower=TRUE,
+                          drop=TRUE) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  anti_join(stop_words, by=c("word"="word")) %>%
+  count(title, word, sort = TRUE) %>%
+  ungroup()
+
+russia_total_words <- russia_book_words %>% 
+  group_by(title) %>% 
+  summarize(total = sum(n))
+
+russia_book_words <- left_join(russia_book_words, russia_total_words)
+
+ggplot(russia_book_words, aes(n/total, fill = title)) +
+  geom_histogram(show.legend = FALSE, bins = 25) +
+  xlim(NA, 0.0009) +
+  facet_wrap(~title, ncol = 2, scales = "free_y")
+
+```
+
+
+```{r}
+france_freq_by_rank <- france_book_words %>% 
+  group_by(title) %>% 
+  mutate(rank = row_number(), 
+         `term frequency` = n/total)
+
+
+france_rank_subset <- france_freq_by_rank %>% 
+  filter(rank < 500,
+         rank > 10)
+
+france_lm <- lm(log10(`term frequency`) ~ log10(rank), data = france_rank_subset)
+
+france_freq_by_rank %>% 
+  ggplot(aes(rank, `term frequency`, color = title)) + 
+  geom_abline(intercept = france_lm$coefficients[1], slope = france_lm$coefficients[2], color = "gray50", linetype = 2) +
+  geom_line(size = 1.1, alpha = 0.8, show.legend = FALSE) + 
+  scale_x_log10() +
+  scale_y_log10()
+
+```
+
+
+```{r}
+dardanelles_freq_by_rank <- dardanelles_book_words %>% 
+  group_by(title) %>% 
+  mutate(rank = row_number(), 
+         `term frequency` = n/total)
+
+dardanelles_rank_subset <- dardanelles_freq_by_rank %>% 
+  filter(rank < 500,
+         rank > 10)
+
+dardanelles_lm <- lm(log10(`term frequency`) ~ log10(rank), data = dardanelles_rank_subset)
+dardanelles_lm$coefficients[1]
+
+dardanelles_freq_by_rank %>% 
+  ggplot(aes(rank, `term frequency`, color = title)) + 
+  geom_abline(intercept = dardanelles_lm$coefficients[1], slope = dardanelles_lm$coefficients[2], color = "gray50", linetype = 2) +
+  geom_line(size = 1.1, alpha = 0.8, show.legend = FALSE) + 
+  scale_x_log10() +
+  scale_y_log10()
+
+
+```
+
+
+
+```{r}
+russia_freq_by_rank <- russia_book_words %>% 
+  group_by(title) %>% 
+  mutate(rank = row_number(), 
+         `term frequency` = n/total)
+
+russia_rank_subset <- russia_freq_by_rank %>% 
+  filter(rank < 500,
+         rank > 10)
+
+russia_lm <- lm(log10(`term frequency`) ~ log10(rank), data = russia_rank_subset)
+
+russia_freq_by_rank %>% 
+  ggplot(aes(rank, `term frequency`, color = title)) + 
+  geom_abline(intercept = russia_lm$coefficients[1], slope = russia_lm$coefficients[2], color = "gray50", linetype = 2) +
+  geom_line(size = 1.1, alpha = 0.8, show.legend = FALSE) + 
+  scale_x_log10() +
+  scale_y_log10()
+
+
+```
+
+
+```{r}
+france_book_words <- france_book_words %>%
+  bind_tf_idf(word, title, n)
+
+france_book_words %>%
+  select(-total) %>%
+  arrange(desc(tf_idf))
+
+france_book_words %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(title) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  ggplot(aes(word, tf_idf, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~title, ncol = 2, scales = "free") +
+  coord_flip()
+
+```
+
+
+```{r}
+dardanelles_book_words <- dardanelles_book_words %>%
+  bind_tf_idf(word, title, n)
+
+dardanelles_book_words %>%
+  select(-total) %>%
+  arrange(desc(tf_idf))
+
+dardanelles_book_words %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(title) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  ggplot(aes(word, tf_idf, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~title, ncol = 2, scales = "free") +
+  coord_flip()
+
+```
+
+
+
+```{r}
+russia_book_words <- russia_book_words %>%
+  bind_tf_idf(word, title, n)
+
+russia_book_words %>%
+  select(-total) %>%
+  arrange(desc(tf_idf))
+
+russia_book_words %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(title) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  ggplot(aes(word, tf_idf, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~title, ncol = 2, scales = "free") +
+  coord_flip()
+
+```
+
+```{r}
+france_bigrams <- france_books %>%
+  unnest_tokens(bigram, text, token = "ngrams", n = 2)
+
+france_bigrams %>%
+  count(bigram, sort = TRUE)
+
+france_bigrams_separated <- france_bigrams %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+france_bigrams_filtered <- france_bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+france_bigram_counts <- france_bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE)
+
+france_bigrams_united <- france_bigrams_filtered %>%
+  unite(bigram, word1, word2, sep = " ")
+
+france_bigram_tf_idf <- france_bigrams_united %>%
+  count(title, bigram) %>%
+  bind_tf_idf(bigram, title, n) %>%
+  arrange(desc(tf_idf))
+
+france_bigram_tf_idf %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(bigram = factor(bigram, levels = rev(unique(bigram)))) %>% 
+  group_by(title) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  ggplot(aes(bigram, tf_idf, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~title, ncol = 2, scales = "free") +
+  coord_flip()
+
+
+```
+
+
+```{r}
+dardanelles_bigrams <- dardanelles_books %>%
+  unnest_tokens(bigram, text, token = "ngrams", n = 2)
+
+dardanelles_bigrams %>%
+  count(bigram, sort = TRUE)
+
+dardanelles_bigrams_separated <- dardanelles_bigrams %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+dardanelles_bigrams_filtered <- dardanelles_bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+dardanelles_bigram_counts <- dardanelles_bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE)
+
+dardanelles_bigrams_united <- dardanelles_bigrams_filtered %>%
+  unite(bigram, word1, word2, sep = " ")
+
+dardanelles_bigram_tf_idf <- dardanelles_bigrams_united %>%
+  count(title, bigram) %>%
+  bind_tf_idf(bigram, title, n) %>%
+  arrange(desc(tf_idf))
+
+dardanelles_bigram_tf_idf %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(bigram = factor(bigram, levels = rev(unique(bigram)))) %>% 
+  group_by(title) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  ggplot(aes(bigram, tf_idf, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~title, ncol = 2, scales = "free") +
+  coord_flip()
+
+```
+
+
+```{r}
+russia_bigrams <- russia_books %>%
+  unnest_tokens(bigram, text, token = "ngrams", n = 2)
+
+russia_bigrams %>%
+  count(bigram, sort = TRUE)
+
+russia_bigrams_separated <- russia_bigrams %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+russia_bigrams_filtered <- russia_bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+russia_bigram_counts <- russia_bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE)
+
+russia_bigrams_united <- russia_bigrams_filtered %>%
+  unite(bigram, word1, word2, sep = " ")
+
+russia_bigram_tf_idf <- russia_bigrams_united %>%
+  count(title, bigram) %>%
+  bind_tf_idf(bigram, title, n) %>%
+  arrange(desc(tf_idf))
+
+russia_bigram_tf_idf %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(bigram = factor(bigram, levels = rev(unique(bigram)))) %>% 
+  group_by(title) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  ggplot(aes(bigram, tf_idf, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~title, ncol = 2, scales = "free") +
+  coord_flip()
+
+```
+
+
+
+```{r}
+france_bigrams_separated %>%
+  filter(word1 == "not") %>%
+  count(word1, word2, sort = TRUE)
+
+france_not_words <- france_bigrams_separated %>%
+  filter(word1 == "not") %>%
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word")) %>%
+  count(word2, score, sort = TRUE) %>%
+  ungroup()
+
+france_not_words %>%
+  mutate(contribution = n * score) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n * score, fill = n * score > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\"") +
+  ylab("Sentiment score * number of occurrences") +
+  coord_flip()
+
+negation_words <- c("not", "no", "never", "without")
+
+france_negated_words <- france_bigrams_separated %>%
+  filter(word1 %in% negation_words) %>%
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word")) %>%
+  count(word1, word2, score, sort = TRUE) %>%
+  ungroup()
+
+france_negated_words %>%
+  mutate(contribution = n * score) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n * score, fill = n * score > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\"") +
+  ylab("Sentiment score * number of occurrences") +
+  coord_flip()
+```
+
+```{r}
+dardanelles_bigrams_separated %>%
+  filter(word1 == "not") %>%
+  count(word1, word2, sort = TRUE)
+
+dardanelles_not_words <- dardanelles_bigrams_separated %>%
+  filter(word1 == "not") %>%
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word")) %>%
+  count(word2, score, sort = TRUE) %>%
+  ungroup()
+
+dardanelles_not_words %>%
+  mutate(contribution = n * score) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n * score, fill = n * score > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\"") +
+  ylab("Sentiment score * number of occurrences") +
+  coord_flip()
+
+negation_words <- c("not", "no", "never", "without")
+
+dardanelles_negated_words <- dardanelles_bigrams_separated %>%
+  filter(word1 %in% negation_words) %>%
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word")) %>%
+  count(word1, word2, score, sort = TRUE) %>%
+  ungroup()
+
+dardanelles_negated_words %>%
+  mutate(contribution = n * score) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n * score, fill = n * score > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\"") +
+  ylab("Sentiment score * number of occurrences") +
+  coord_flip()
+```
+
+
+```{r}
+russia_bigrams_separated %>%
+  filter(word1 == "not") %>%
+  count(word1, word2, sort = TRUE)
+
+russia_not_words <- russia_bigrams_separated %>%
+  filter(word1 == "not") %>%
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word")) %>%
+  count(word2, score, sort = TRUE) %>%
+  ungroup()
+
+russia_not_words %>%
+  mutate(contribution = n * score) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n * score, fill = n * score > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\"") +
+  ylab("Sentiment score * number of occurrences") +
+  coord_flip()
+
+negation_words <- c("not", "no", "never", "without")
+
+russia_negated_words <- russia_bigrams_separated %>%
+  filter(word1 %in% negation_words) %>%
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word")) %>%
+  count(word1, word2, score, sort = TRUE) %>%
+  ungroup()
+
+russia_negated_words %>%
+  mutate(contribution = n * score) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n * score, fill = n * score > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\"") +
+  ylab("Sentiment score * number of occurrences") +
+  coord_flip()
+```
+
+
+```{r}
+france_bigram_graph <- france_bigram_counts %>%
+  drop_na() %>%
+  filter(n > 20) %>%
+  graph_from_data_frame()
+
+france_bigram_graph
+
+set.seed(2018)
+
+ggraph(france_bigram_graph, layout = "fr") +
+  geom_edge_link() +
+  geom_node_point() +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(france_bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+
+```
+
+```{r}
+dardanelles_bigram_graph <- dardanelles_bigram_counts %>%
+  drop_na() %>%
+  filter(n > 20) %>%
+  graph_from_data_frame()
+
+dardanelles_bigram_graph
+
+set.seed(2018)
+
+ggraph(dardanelles_bigram_graph, layout = "fr") +
+  geom_edge_link() +
+  geom_node_point() +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(dardanelles_bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+
+```
+
+
+```{r}
+russia_bigram_graph <- russia_bigram_counts %>%
+  drop_na() %>%
+  filter(n > 20) %>%
+  graph_from_data_frame()
+
+russia_bigram_graph
+
+set.seed(2018)
+
+ggraph(russia_bigram_graph, layout = "fr") +
+  geom_edge_link() +
+  geom_node_point() +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(russia_bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+
+```
+
+```{r}
+france_section_words <- france_books %>%
+  mutate(section = row_number() %/% 10) %>%
+  filter(section > 0) %>%
+  unnest_tokens(word, text) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  filter(!word %in% stop_words$word)
+
+france_section_words
+
+france_word_pairs <- france_section_words %>%
+  pairwise_count(word, section, sort = TRUE)
+
+france_word_pairs
+
+france_word_cors <- france_section_words %>%
+  group_by(word) %>%
+  filter(n() >= 20) %>%
+  pairwise_cor(word, section, sort = TRUE)
+
+france_word_cors
+
+france_word_cors %>%
+  filter(item1 %in% c("lorraine", "lancashire", "fusiliers", "von")) %>%
+  group_by(item1) %>%
+  top_n(6) %>%
+  ungroup() %>%
+  mutate(item2 = reorder(item2, correlation)) %>%
+  ggplot(aes(item2, correlation)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ item1, scales = "free") +
+  coord_flip()
+
+set.seed(2018)
+
+france_word_cors %>%
+  filter(correlation > .25) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void()
+
+```
+
+```{r}
+dardanelles_section_words <- dardanelles_books %>%
+  mutate(section = row_number() %/% 10) %>%
+  filter(section > 0) %>%
+  unnest_tokens(word, text) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  filter(!word %in% stop_words$word)
+
+dardanelles_section_words
+
+dardanelles_word_pairs <- dardanelles_section_words %>%
+  pairwise_count(word, section, sort = TRUE)
+
+dardanelles_word_pairs
+
+dardanelles_word_cors <- dardanelles_section_words %>%
+  group_by(word) %>%
+  filter(n() >= 20) %>%
+  pairwise_cor(word, section, sort = TRUE)
+
+dardanelles_word_cors
+
+dardanelles_word_cors %>%
+  filter(item1 %in% c("edges", "morocco", "jhill", "gilt")) %>%
+  group_by(item1) %>%
+  top_n(6) %>%
+  ungroup() %>%
+  mutate(item2 = reorder(item2, correlation)) %>%
+  ggplot(aes(item2, correlation)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ item1, scales = "free") +
+  coord_flip()
+
+set.seed(2018)
+
+dardanelles_word_cors %>%
+  filter(correlation > .25) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void()
+
+```
+
+```{r}
+russia_section_words <- russia_books %>%
+  mutate(section = row_number() %/% 10) %>%
+  filter(section > 0) %>%
+  unnest_tokens(word, text) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  filter(!word %in% stop_words$word)
+
+russia_section_words
+
+russia_word_pairs <- russia_section_words %>%
+  pairwise_count(word, section, sort = TRUE)
+
+russia_word_pairs
+
+russia_word_cors <- russia_section_words %>%
+  group_by(word) %>%
+  filter(n() >= 20) %>%
+  pairwise_cor(word, section, sort = TRUE)
+
+russia_word_cors
+
+russia_word_cors %>%
+  filter(item1 %in% c("padenga", "revolutionary", "comrade", "lieut")) %>%
+  group_by(item1) %>%
+  top_n(6) %>%
+  ungroup() %>%
+  mutate(item2 = reorder(item2, correlation)) %>%
+  ggplot(aes(item2, correlation)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ item1, scales = "free") +
+  coord_flip()
+
+set.seed(2018)
+
+russia_word_cors %>%
+  filter(correlation > .25) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void()
+
+```
+
+
+
+
+
+
+
+
+

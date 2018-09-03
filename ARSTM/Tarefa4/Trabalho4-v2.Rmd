@@ -1,0 +1,176 @@
+---
+title: "Analise de Redes Sociais e Text Mining - Trabalho 4"
+author: "Ricardo Squassina Lee"
+date: "8/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Realizar uma análise de sentimento. Para a análise de sentimento criar: 
+a.	word cloud, 
+b.	word cloud positiva, 
+c.	word cloud negativa, 
+d.	semantic network, 
+e.	dendrograma, 
+f.	word cloud bigram
+
+
+```{r Iniciando o ambiente, message=FALSE, warning=FALSE}
+rm(list = ls())
+cat("\014")
+```
+
+```{r Carregando as bibliotecas}
+if(!require(tidytext)) {
+  install.packages("tidytext")
+  library(tidytext)
+}
+if(!require(dplyr)) {
+  install.packages("dplyr")
+  library(dplyr)
+}
+if(!require(stringr)) {
+  install.packages("stringr")
+  library(stringr)
+}
+if(!require(tm)) {
+  install.packages("tm")
+  library(tm)
+}
+if(!require(tidyr)) {
+  install.packages("tidyr")
+  library(tidyr)
+}
+if(!require(gutenbergr)) {
+  install.packages("gutenbergr")
+  library(gutenbergr)
+}
+if(!require(scales)) {
+  install.packages("scales")
+  library(scales)
+}
+if(!require(ggplot2)) {
+  install.packages("ggplot2")
+  library(ggplot2)
+}
+
+```
+
+## Leitura do Texto
+
+Para o trabalho foram escohidos textos relativos à Primeira Guerra Mundial (ou Primeira Grande Guerra), o Projeto Manhantan e livros de ficção com temática da Segunda Guerra Mundial.
+
+```{r Lendo o arquivo de texto escolhido}
+manhatan_project <- gutenberg_download(c(548, 277, 279, 278)) # The Manhatan Project
+personal_narratives <- gutenberg_download(c(7190, 21806, 8423)) # Personal Narratives
+wwii_fiction <- gutenberg_download(c(32672, 32652, 32880, 32900, 32591)) # WWII Fiction
+```
+
+## Separando as palavras contidas nos textos que estão sendo analisados e removendo as "stop words"
+
+```{r preparando para analise}
+
+tidy_manhatan_project <- anti_join(unnest_tokens(manhatan_project,
+                                    word,
+                                    text), 
+                      stop_words)
+
+tidy_personal_narratives <- anti_join(unnest_tokens(personal_narratives,
+                                    word,
+                                    text), 
+                      stop_words)
+
+tidy_wwii_fiction <- anti_join(unnest_tokens(wwii_fiction,
+                                    word,
+                                    text), 
+                      stop_words)
+
+```
+
+## Contando as palavras para uma primeira análise da frequência:
+
+```{r contando a frequencia das palavras}
+count(tidy_manhatan_project, word, sort=TRUE)
+count(tidy_personal_narratives, word, sort=TRUE)
+count(tidy_wwii_fiction, word, sort=TRUE)
+
+```
+
+## Analisando a frequência das palavras nos conjuntos de texto
+```{r}
+
+# Frequency as per the book
+#frequency <- bind_rows(mutate(tidy_manhatan_project, subject = "The Manhatan Project"), 
+#                       mutate(tidy_personal_narratives, subject = "Personal Narratives"),
+#                       mutate(tidy_wwii_fiction, subject = "WWII Fiction")) %>% 
+#  mutate(word = str_extract(word, "[a-z']+")) %>%
+#  count(subject, word) %>%
+#  group_by(subject) %>%
+#  mutate(proportion = n / sum(n)) %>% 
+#  select(-n) %>% 
+#  spread(subject, proportion) %>% 
+#  gather(subject, proportion,`Personal Narratives`:`WWII Fiction`)
+
+# Frequency step-by-step
+binded_texts <- bind_rows(mutate(tidy_manhatan_project, subject = "The Manhatan Project"), 
+                          mutate(tidy_personal_narratives, subject = "Personal Narratives"),
+                          mutate(tidy_wwii_fiction, subject = "WWII Fiction"))
+
+mutated_texts <- mutate(binded_texts,word = str_extract(word, "[a-z']+"))
+
+counted_texts <- count(mutated_texts, subject, word)
+
+grouped_texts <- group_by(counted_texts,subject)
+
+grouped_texts_by_proportion <- mutate(grouped_texts, proportion = n / sum(n))
+
+selected_texts <- select(grouped_texts_by_proportion,-n)
+
+spreaded_text <- spread(selected_texts, subject, proportion)
+
+frequency <- gather(spreaded_text,subject, proportion,`Personal Narratives`:`The Manhatan Project`)
+
+```
+
+## Gerando o gráfico
+```{r contando a frequencia dos bigramas}
+
+ggplot(frequency, aes(x = proportion, y = `WWII Fiction`, color = abs(`WWII Fiction` - proportion))) +
+  geom_abline(color = "gray40", lty = 2) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  scale_color_gradient(limits = c(0, 0.001), low = "darkslategray4", high = "gray75") +
+  facet_wrap(~subject, ncol = 2) +
+  theme(legend.position="none") +
+  labs(y = "WWII Fiction", x = NULL)
+```
+
+## Teste de Correlação entre os textos
+
+```{r filtrando as palavras importantes}
+cor.test(data = frequency[frequency$subject == "The Manhatan Project",],
+         ~ proportion + `WWII Fiction`)
+
+
+```
+
+
+
+bigram_tf_idf %>% group_by(book) %>% top_n(12,tf_idf) %>% ungroup() %>%
+  mutate(bigram=reorder(bigram,tf_idf)) %>% 
+  ggplot(aes(x=bigram, y=tf_idf)) + geom_col(show.legend=FALSE) + 
+    facet_wrap(~book, scales="free_y", ncol=3) + coord_flip() + 
+    labs(y="tf-idf bigram to novel", x=NULL)
+    
+```{r}
+
+ggplot2::ggplot()
+
+
+```
+
