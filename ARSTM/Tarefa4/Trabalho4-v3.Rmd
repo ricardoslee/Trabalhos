@@ -23,7 +23,7 @@ rm(list = ls())
 cat("\014")
 ```
 
-```{r Carregando as bibliotecas}
+```{r Carregando as bibliotecas, message=FALSE, warning=FALSE}
 if(!require(tidytext)) {
   install.packages("tidytext")
   library(tidytext)
@@ -83,7 +83,7 @@ if(!require(widyr)) {
 
 Para o trabalho foram escohidos textos relativos à Segunda Guerra Mundial.
 
-```{r Lendo o arquivo de texto escolhido}
+```{r Lendo os arquivos de textos escolhidos}
 France <- gutenberg_download(c(17813, 16437, 45542, 18483,9975), meta_fields = "title")
 Dardanelles <- gutenberg_download(c(11008, 11513, 15896, 3306, 35119), meta_fields = "title")
 #Russia <- gutenberg_download(c(46191, 10967, 22523, 10972, 53482), meta_fields = "title")
@@ -111,29 +111,14 @@ russia_books <- Russia %>%
 
 ```{r preparando para analise}
 
-#france_tidy <- anti_join(unnest_tokens(france_books,
-#                                    word,
-#                                    text), 
-#                      stop_words)
-
-#dardanelles_tidy <- anti_join(unnest_tokens(dardanelles_books,
-#                                    word,
-#                                    text), 
-#                      stop_words)
-
-#russia_tidy <- anti_join(unnest_tokens(russia_books,
-#                                    word,
-#                                    text), 
-#                      stop_words)
-
-
 france_tidy <- france_books %>% 
   unnest_tokens(input=text,
                 output="word",
                 to_lower=TRUE,
                 drop=TRUE) %>%
   mutate(word=str_extract(word,"[a-z']+")) %>%
-  anti_join(stop_words, by=c("word"="word")) 
+  anti_join(stop_words, by=c("word"="word")) %>%
+  drop_na()
 
 dardanelles_tidy <- dardanelles_books %>% 
   unnest_tokens(input=text,
@@ -141,7 +126,8 @@ dardanelles_tidy <- dardanelles_books %>%
                 to_lower=TRUE,
                 drop=TRUE) %>%
   mutate(word=str_extract(word,"[a-z']+")) %>%
-  anti_join(stop_words, by=c("word"="word"))
+  anti_join(stop_words, by=c("word"="word")) %>%
+  drop_na()
 
 russia_tidy <- russia_books %>% 
   unnest_tokens(input=text,
@@ -149,21 +135,22 @@ russia_tidy <- russia_books %>%
                 to_lower=TRUE,
                 drop=TRUE) %>%
   mutate(word=str_extract(word,"[a-z']+")) %>%
-  anti_join(stop_words, by=c("word"="word"))
+  anti_join(stop_words, by=c("word"="word")) %>%
+  drop_na()
 
 ```
 
 ## Contando as palavras para uma primeira análise da frequência:
 
-```{r contando a frequencia das palavras}
-count(france_tidy, word, sort=TRUE)
-count(dardanelles_tidy, word, sort=TRUE)
-count(russia_tidy, word, sort=TRUE)
+```{r contando a frequencia das palavras, message=FALSE, warning=FALSE}
+count(france_tidy, word, sort=TRUE) %>% top_n(10)
+count(dardanelles_tidy, word, sort=TRUE) %>% top_n(10)
+count(russia_tidy, word, sort=TRUE) %>% top_n(10)
 
 ```
 
 ## Analisando a frequência das palavras nos conjuntos de texto
-```{r}
+```{r analise frequencia das palavras}
 
 # Frequency as per the book
 #frequency <- bind_rows(mutate(france_tidy, subject = "France"), 
@@ -196,8 +183,9 @@ frequency <- gather(spreaded_text,subject, proportion,`Dardanelles`:`France`)
 
 ```
 
-## Gerando o gráfico
-```{r contando a frequencia dos bigramas}
+## Gráfico de proporção das palavras dos livros sobre a França e Dardanelles vs. Russia:
+
+```{r grafico de proporcao, message=FALSE, warning=FALSE}
 
 ggplot(frequency, aes(x = proportion, y = `Russia`, color = abs(`Russia` - proportion))) +
   geom_abline(color = "gray40", lty = 2) +
@@ -213,7 +201,7 @@ ggplot(frequency, aes(x = proportion, y = `Russia`, color = abs(`Russia` - propo
 
 ## Teste de Correlação entre os textos
 
-```{r filtrando as palavras importantes}
+```{r teste de correlacao}
 cor.test(data = frequency[frequency$subject == "Dardanelles",],
          ~ proportion + `Russia`)
 
@@ -222,9 +210,11 @@ cor.test(data = frequency[frequency$subject == "France",],
 
 ```
 
-## Sentiment Analysis
+## Análise de Sentimentos
 
-```{r}
+### Análise de sentimentos dos livros da França:
+
+```{r analise de sentimento - franca, message=FALSE, warning=FALSE}
 france_sentiment <- france_tidy %>%
   inner_join(get_sentiments("bing")) %>%
   count(title, index = linenumber %/% 80, sentiment) %>%
@@ -237,7 +227,9 @@ ggplot(france_sentiment, aes(index, sentiment, fill = title)) +
 
 ```
 
-```{r}
+### Análise de sentimentos dos livros de Dardonelles:
+
+```{r analise de sentimento - dardanelles, message=FALSE, warning=FALSE}
 dardanelles_sentiment <- dardanelles_tidy %>%
   inner_join(get_sentiments("bing")) %>%
   count(title, index = linenumber %/% 80, sentiment) %>%
@@ -250,7 +242,9 @@ ggplot(dardanelles_sentiment, aes(index, sentiment, fill = title)) +
 
 ```
 
-```{r}
+### Análise de sentimentos dos livros da Rússia:
+
+```{r analise de sentimento - russia, message=FALSE, warning=FALSE}
 russia_sentiment <- russia_tidy %>%
   inner_join(get_sentiments("bing")) %>%
   count(title, index = linenumber %/% 80, sentiment) %>%
@@ -263,8 +257,11 @@ ggplot(russia_sentiment, aes(index, sentiment, fill = title)) +
 
 ```
 
+## Nuvens de Palavras
 
-```{r}
+### Nuvem de palavras dos livros da França:
+
+```{r word cloud - franca, message=FALSE, warning=FALSE}
 france_tidy %>%
   anti_join(stop_words) %>%
   count(word) %>%
@@ -272,7 +269,9 @@ france_tidy %>%
 
 ```
 
-```{r}
+### Nuvem de palavras dos livros de Dardanelles:
+
+```{r word cloud - dardanelles, message=FALSE, warning=FALSE}
 dardanelles_tidy %>%
   anti_join(stop_words) %>%
   count(word) %>%
@@ -280,7 +279,9 @@ dardanelles_tidy %>%
 
 ```
 
-```{r}
+### Nuvem de palavras dos livros da Rússia:
+
+```{r word cloud - russia, message=FALSE, warning=FALSE}
 russia_tidy %>%
   anti_join(stop_words) %>%
   count(word) %>%
@@ -288,7 +289,9 @@ russia_tidy %>%
 
 ```
 
-```{r}
+### Nuvem de palavras com divisão dos sentimentos dos livros da França:
+
+```{r word cloud com sentimento - franca, message=FALSE, warning=FALSE}
 france_tidy %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
@@ -298,7 +301,9 @@ france_tidy %>%
 
 ```
 
-```{r}
+### Nuvem de palavras com divisão dos sentimentos dos livros de Dardanelles:
+
+```{r word cloud com sentimento - dardanelles, message=FALSE, warning=FALSE}
 dardanelles_tidy %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
@@ -308,7 +313,9 @@ dardanelles_tidy %>%
 
 ```
 
-```{r}
+### Nuvem de palavras com divisão dos sentimentos dos livros da Rússia:
+
+```{r word cloud com sentimento - russia, message=FALSE, warning=FALSE}
 russia_tidy %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
@@ -318,8 +325,11 @@ russia_tidy %>%
 
 ```
 
+## Análise da frquência de palavras nos diferentes livros:
 
-```{r}
+### França:
+
+```{r palavras mais frequentes - franca, message=FALSE, warning=FALSE}
 france_book_words <- france_books %>%
   unnest_tokens(input=text,
                           output="word",
@@ -343,7 +353,9 @@ ggplot(france_book_words, aes(n/total, fill = title)) +
 
 ```
 
-```{r}
+### Dardanelles:
+
+```{r palavras mais frequentes - dardanelles, message=FALSE, warning=FALSE}
 dardanelles_book_words <- dardanelles_books %>%
   unnest_tokens(input=text,
                           output="word",
@@ -367,8 +379,9 @@ ggplot(dardanelles_book_words, aes(n/total, fill = title)) +
 
 ```
 
+### Rússia
 
-```{r}
+```{r palavras mais frequentes - russia, message=FALSE, warning=FALSE}
 russia_book_words <- russia_books %>%
   unnest_tokens(input=text,
                           output="word",
@@ -392,9 +405,13 @@ ggplot(russia_book_words, aes(n/total, fill = title)) +
 
 ```
 
+## Análise da comparação da frequência dos termos nos livros:
 
-```{r}
+### França
+
+```{r comparacao frquencia dos termos - franca, message=FALSE, warning=FALSE}
 france_freq_by_rank <- france_book_words %>% 
+  drop_na() %>%
   group_by(title) %>% 
   mutate(rank = row_number(), 
          `term frequency` = n/total)
@@ -415,9 +432,11 @@ france_freq_by_rank %>%
 
 ```
 
+### Dardanelles:
 
-```{r}
+```{r comparacao frquencia dos termos - dardanelles, message=FALSE, warning=FALSE}
 dardanelles_freq_by_rank <- dardanelles_book_words %>% 
+  drop_na() %>%
   group_by(title) %>% 
   mutate(rank = row_number(), 
          `term frequency` = n/total)
@@ -427,7 +446,6 @@ dardanelles_rank_subset <- dardanelles_freq_by_rank %>%
          rank > 10)
 
 dardanelles_lm <- lm(log10(`term frequency`) ~ log10(rank), data = dardanelles_rank_subset)
-dardanelles_lm$coefficients[1]
 
 dardanelles_freq_by_rank %>% 
   ggplot(aes(rank, `term frequency`, color = title)) + 
@@ -439,10 +457,11 @@ dardanelles_freq_by_rank %>%
 
 ```
 
+### Rússia:
 
-
-```{r}
+```{r comparacao frquencia dos termos - russia, message=FALSE, warning=FALSE}
 russia_freq_by_rank <- russia_book_words %>% 
+  drop_na() %>%
   group_by(title) %>% 
   mutate(rank = row_number(), 
          `term frequency` = n/total)
@@ -463,8 +482,11 @@ russia_freq_by_rank %>%
 
 ```
 
+## TF-IDF (Term Frequency - Inverse Document Frequency)
 
-```{r}
+### França
+
+```{r palavras mais usadas por livro - franca, message=FALSE, warning=FALSE}
 france_book_words <- france_book_words %>%
   bind_tf_idf(word, title, n)
 
@@ -486,8 +508,9 @@ france_book_words %>%
 
 ```
 
+### Dardanelles
 
-```{r}
+```{r palavras mais usadas por livro - dardanelles}
 dardanelles_book_words <- dardanelles_book_words %>%
   bind_tf_idf(word, title, n)
 
@@ -509,9 +532,9 @@ dardanelles_book_words %>%
 
 ```
 
+### Rússia:
 
-
-```{r}
+```{r palavras mais usadas por livro - russia, message=FALSE, warning=FALSE}
 russia_book_words <- russia_book_words %>%
   bind_tf_idf(word, title, n)
 
@@ -533,7 +556,11 @@ russia_book_words %>%
 
 ```
 
-```{r}
+## Análise de Bigramas
+
+### França:
+
+```{r analise de bigramas - franca, message=FALSE, warning=FALSE}
 france_bigrams <- france_books %>%
   unnest_tokens(bigram, text, token = "ngrams", n = 2)
 
@@ -570,11 +597,22 @@ france_bigram_tf_idf %>%
   facet_wrap(~title, ncol = 2, scales = "free") +
   coord_flip()
 
+france_bigram_counts %>%
+  drop_na() %>%
+  filter(n >= 15) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "royalblue") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE,
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
 
 ```
 
+### Dardanelles:
 
-```{r}
+```{r analise de bigramas - dardanelles, message=FALSE, warning=FALSE}
 dardanelles_bigrams <- dardanelles_books %>%
   unnest_tokens(bigram, text, token = "ngrams", n = 2)
 
@@ -611,10 +649,22 @@ dardanelles_bigram_tf_idf %>%
   facet_wrap(~title, ncol = 2, scales = "free") +
   coord_flip()
 
+dardanelles_bigram_counts %>%
+  drop_na() %>%
+  filter(n >= 15) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "royalblue") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE,
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
 ```
 
+### Rússia
 
-```{r}
+```{r analise de bigramas - russia, message=FALSE, warning=FALSE}
 russia_bigrams <- russia_books %>%
   unnest_tokens(bigram, text, token = "ngrams", n = 2)
 
@@ -651,11 +701,24 @@ russia_bigram_tf_idf %>%
   facet_wrap(~title, ncol = 2, scales = "free") +
   coord_flip()
 
+russia_bigram_counts %>%
+  drop_na() %>%
+  filter(n >= 20) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "royalblue") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE,
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
 ```
 
+## Análise de Sentimentos dos Bigramas
 
+### França
 
-```{r}
+```{r anaslise de sentimento dos bigramas - franca, message=FALSE, warning=FALSE}
 france_bigrams_separated %>%
   filter(word1 == "not") %>%
   count(word1, word2, sort = TRUE)
@@ -697,7 +760,9 @@ france_negated_words %>%
   coord_flip()
 ```
 
-```{r}
+### Dardanelles
+
+```{r anaslise de sentimento dos bigramas - dardanelles, message=FALSE, warning=FALSE}
 dardanelles_bigrams_separated %>%
   filter(word1 == "not") %>%
   count(word1, word2, sort = TRUE)
@@ -739,8 +804,9 @@ dardanelles_negated_words %>%
   coord_flip()
 ```
 
+### Rússia: 
 
-```{r}
+```{r anaslise de sentimento dos bigramas - russia, message=FALSE, warning=FALSE}
 russia_bigrams_separated %>%
   filter(word1 == "not") %>%
   count(word1, word2, sort = TRUE)
@@ -782,11 +848,14 @@ russia_negated_words %>%
   coord_flip()
 ```
 
+## Impressão de grafos dos bigramas:
 
-```{r}
+### França
+
+```{r grafos dos bigramas - franca}
 france_bigram_graph <- france_bigram_counts %>%
   drop_na() %>%
-  filter(n > 20) %>%
+  filter(n > 10) %>%
   graph_from_data_frame()
 
 france_bigram_graph
@@ -808,12 +877,15 @@ ggraph(france_bigram_graph, layout = "fr") +
   geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
   theme_void()
 
+
 ```
 
-```{r}
+### Dardanelles:
+
+```{r grafos dos bigramas - dardanelles, message=FALSE, warning=FALSE}
 dardanelles_bigram_graph <- dardanelles_bigram_counts %>%
   drop_na() %>%
-  filter(n > 20) %>%
+  filter(n > 10) %>%
   graph_from_data_frame()
 
 dardanelles_bigram_graph
@@ -837,11 +909,12 @@ ggraph(dardanelles_bigram_graph, layout = "fr") +
 
 ```
 
+### Rússia:
 
-```{r}
+```{r grafos dos bigramas - russia, message=FALSE, warning=FALSE}
 russia_bigram_graph <- russia_bigram_counts %>%
   drop_na() %>%
-  filter(n > 20) %>%
+  filter(n > 10) %>%
   graph_from_data_frame()
 
 russia_bigram_graph
@@ -865,7 +938,11 @@ ggraph(russia_bigram_graph, layout = "fr") +
 
 ```
 
-```{r}
+## Correlação dos Bigramas
+
+### França:
+
+```{r graficos de correlacao dos bigramas - franca, message=FALSE, warning=FALSE}
 france_section_words <- france_books %>%
   mutate(section = row_number() %/% 10) %>%
   filter(section > 0) %>%
@@ -876,11 +953,13 @@ france_section_words <- france_books %>%
 france_section_words
 
 france_word_pairs <- france_section_words %>%
-  pairwise_count(word, section, sort = TRUE)
+  pairwise_count(word, section, sort = TRUE) %>%
+  drop_na()
 
 france_word_pairs
 
 france_word_cors <- france_section_words %>%
+  na.omit() %>%
   group_by(word) %>%
   filter(n() >= 20) %>%
   pairwise_cor(word, section, sort = TRUE)
@@ -909,9 +988,21 @@ france_word_cors %>%
   geom_node_text(aes(label = name), repel = TRUE) +
   theme_void()
 
+france_word_cors %>%
+  filter(correlation > .25) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation, edge_width = correlation), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
 ```
 
-```{r}
+### Dardanelles:
+
+```{r graficos de correlacao dos bigramas - dardanelles, message=FALSE, warning=FALSE}
 dardanelles_section_words <- dardanelles_books %>%
   mutate(section = row_number() %/% 10) %>%
   filter(section > 0) %>%
@@ -922,11 +1013,13 @@ dardanelles_section_words <- dardanelles_books %>%
 dardanelles_section_words
 
 dardanelles_word_pairs <- dardanelles_section_words %>%
-  pairwise_count(word, section, sort = TRUE)
+  pairwise_count(word, section, sort = TRUE) %>%
+  drop_na()
 
 dardanelles_word_pairs
 
 dardanelles_word_cors <- dardanelles_section_words %>%
+  na.omit() %>%
   group_by(word) %>%
   filter(n() >= 20) %>%
   pairwise_cor(word, section, sort = TRUE)
@@ -950,14 +1043,26 @@ dardanelles_word_cors %>%
   filter(correlation > .25) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +
-  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_edge_link(aes(edge_alpha = correlation, edge_width = correlation), show.legend = FALSE) +
   geom_node_point(color = "lightblue", size = 5) +
   geom_node_text(aes(label = name), repel = TRUE) +
   theme_void()
 
+dardanelles_word_cors %>%
+  filter(correlation > .25) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation, edge_width = correlation), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
 ```
 
-```{r}
+### Rússia:
+
+```{r graficos de correlacao dos bigramas - russia, message=FALSE, warning=FALSE}
 russia_section_words <- russia_books %>%
   mutate(section = row_number() %/% 10) %>%
   filter(section > 0) %>%
@@ -968,11 +1073,13 @@ russia_section_words <- russia_books %>%
 russia_section_words
 
 russia_word_pairs <- russia_section_words %>%
-  pairwise_count(word, section, sort = TRUE)
+  pairwise_count(word, section, sort = TRUE) %>%
+  drop_na()
 
 russia_word_pairs
 
 russia_word_cors <- russia_section_words %>%
+  na.omit() %>%
   group_by(word) %>%
   filter(n() >= 20) %>%
   pairwise_cor(word, section, sort = TRUE)
@@ -999,6 +1106,16 @@ russia_word_cors %>%
   geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
   geom_node_point(color = "lightblue", size = 5) +
   geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void()
+
+russia_word_cors %>%
+  filter(correlation > .25) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation, edge_width = correlation), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
   theme_void()
 
 ```
