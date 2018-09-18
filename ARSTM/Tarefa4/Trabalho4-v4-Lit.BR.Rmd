@@ -1,0 +1,1150 @@
+---
+title: "Analise de Redes Sociais e Text Mining - Trabalho 4"
+author: "Ricardo Squassina Lee"
+date: "8/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Realizar uma análise de sentimento. Para a análise de sentimento criar: 
+a.	word cloud, 
+b.	word cloud positiva, 
+c.	word cloud negativa, 
+d.	semantic network, 
+e.	dendrograma, 
+f.	word cloud bigram
+
+
+```{r Iniciando o ambiente, message=FALSE, warning=FALSE}
+rm(list = ls())
+cat("\014")
+```
+
+```{r Carregando as bibliotecas, message=FALSE, warning=FALSE}
+if(!require(tidytext)) {
+  install.packages("tidytext")
+  library(tidytext)
+}
+if(!require(dplyr)) {
+  install.packages("dplyr")
+  library(dplyr)
+}
+if(!require(stringr)) {
+  install.packages("stringr")
+  library(stringr)
+}
+if(!require(tm)) {
+  install.packages("tm")
+  library(tm)
+}
+if(!require(tidyr)) {
+  install.packages("tidyr")
+  library(tidyr)
+}
+if(!require(gutenbergr)) {
+  install.packages("gutenbergr")
+  library(gutenbergr)
+}
+if(!require(scales)) {
+  install.packages("scales")
+  library(scales)
+}
+if(!require(ggplot2)) {
+  install.packages("ggplot2")
+  library(ggplot2)
+}
+if(!require(wordcloud)) {
+  install.packages("wordcloud")
+  library(wordcloud)
+}
+if(!require(reshape2)) {
+  install.packages("reshape2")
+  library(reshape2)
+}
+if(!require(igraph)) {
+  install.packages("igraph")
+  library(igraph)
+}
+if(!require(ggraph)) {
+  install.packages("ggraph")
+  library(ggraph)
+}
+if(!require(widyr)) {
+  install.packages("widyr")
+  library(widyr)
+}
+if(!require(ggdendro)) {
+  install.packages("ggdendro")
+  library(ggdendro)
+}
+
+```
+
+## Leitura do Texto
+
+Para o trabalho foram escohidos textos de José de Alencar, Eça de Queirós e Gil Vicente.
+
+```{r Lendo os arquivos de textos escolhidos}
+JoseDeAlencar <- gutenberg_download(c(44540, 29040, 38496), meta_fields = c("title","author"))
+EcaDeQueirós <- gutenberg_download(c(18220, 23145, 16384), meta_fields = c("title","author"))
+GilVicente <- gutenberg_download(c(28399, 24129,21287), meta_fields = c("title","author"))
+
+Encoding(JoseDeAlencar$text) <- "latin1" 
+Encoding(EcaDeQueirós$text) <- "latin1" 
+Encoding(GilVicente$text) <- "latin1" 
+
+JA_books <- JoseDeAlencar %>%
+  group_by(gutenberg_id) %>%
+  mutate(linenumber = row_number()) %>%
+  ungroup()
+
+EQ_books <- EcaDeQueirós %>%
+  group_by(gutenberg_id) %>%
+  mutate(linenumber = row_number()) %>%
+  ungroup()
+
+GV_books <- GilVicente %>%
+  group_by(gutenberg_id) %>%
+  mutate(linenumber = row_number()) %>%
+  ungroup()
+
+```
+
+## Separando as palavras contidas nos textos que estão sendo analisados e removendo as "stop words"
+
+```{r preparando para analise}
+
+#rm(stop_words)
+stop_words_pt <- as.data.frame(stopwords(kind = "pt"))
+colnames(stop_words_pt) <- "word"
+
+JA_tidy <- JA_books %>% 
+  unnest_tokens(input=text,
+                output="word",
+                to_lower=TRUE,
+                drop=TRUE) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  anti_join(stop_words, by=c("word"="word")) %>%
+  anti_join(stop_words_pt, by=c("word"="word")) %>%
+  drop_na()
+
+EQ_tidy <- EQ_books %>% 
+  unnest_tokens(input=text,
+                output="word",
+                to_lower=TRUE,
+                drop=TRUE) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  anti_join(stop_words, by=c("word"="word")) %>%
+  anti_join(stop_words_pt, by=c("word"="word")) %>%
+  drop_na()
+
+GV_tidy <- GV_books %>% 
+  unnest_tokens(input=text,
+                output="word",
+                to_lower=TRUE,
+                drop=TRUE) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  anti_join(stop_words, by=c("word"="word")) %>%
+  anti_join(stop_words_pt, by=c("word"="word")) %>%
+  drop_na()
+
+```
+
+## Contando as palavras para uma primeira análise da frequência:
+
+```{r contando a frequencia das palavras, message=FALSE, warning=FALSE}
+count(JA_tidy, word, sort=TRUE) %>% top_n(10)
+count(EQ_tidy, word, sort=TRUE) %>% top_n(10)
+count(GV_tidy, word, sort=TRUE) %>% top_n(10)
+
+```
+
+## Analisando a frequência das palavras nos conjuntos de texto
+```{r analise frequencia das palavras}
+
+# Frequency as per the book
+#frequency <- bind_rows(mutate(JA_tidy, subject = "JA"), 
+#                       mutate(EQ_tidy, subject = "EQ"),
+#                       mutate(GV_tidy, subject = "GV")) %>% 
+#  mutate(word = str_extract(word, "[a-z']+")) %>%
+#  count(subject, word) %>%
+#  group_by(subject) %>%
+#  mutate(proportion = n / sum(n)) %>% 
+#  select(-n) %>% 
+#  spread(subject, proportion) %>% 
+#  gather(subject, proportion,`Personal Narratives`:`WWII Fiction`)
+
+# Frequency step-by-step
+binded_texts <- bind_rows(mutate(JA_tidy, subject = "JA"), 
+                          mutate(EQ_tidy, subject = "EQ"),
+                          mutate(GV_tidy, subject = "GV"))
+
+counted_texts <- count(binded_texts, subject, word)
+
+grouped_texts <- group_by(counted_texts,subject)
+
+grouped_texts_by_proportion <- mutate(grouped_texts, proportion = n / sum(n))
+
+selected_texts <- select(grouped_texts_by_proportion,-n)
+
+spreaded_text <- spread(selected_texts, subject, proportion)
+
+frequency <- gather(spreaded_text,key = subject, value = proportion,`GV`:`JA`, na.rm = TRUE)
+
+```
+
+```{r dendograma}
+#hc <- hclust(dist(grouped_texts,method = "euclidean"), method = "average")
+
+
+```
+
+
+## Gráfico de proporção das palavras dos livros sobre a José de Alencar e EQ vs. GV:
+
+```{r grafico de proporcao, message=FALSE, warning=FALSE}
+
+ggplot(frequency, aes(x = proportion, y = EQ, color = abs(EQ - proportion))) +
+  geom_abline(color = "gray40", lty = 2) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  scale_color_gradient(limits = c(0, 0.001), low = "darkslategray4", high = "gray75") +
+  facet_wrap(~subject, ncol = 2) +
+  theme(legend.position="none") +
+  labs(y = "EQ", x = NULL)
+```
+
+## Teste de Correlação entre os textos
+
+```{r teste de correlacao}
+cor.test(data = frequency[frequency$subject == "JA",],
+         ~ proportion + `EQ`)
+
+cor.test(data = frequency[frequency$subject == "GV",],
+         ~ proportion + `EQ`)
+
+```
+
+## Análise de Sentimentos
+
+### Análise de sentimentos dos livros da José de Alencar:
+
+```{r analise de sentimento - franca, message=FALSE, warning=FALSE}
+JA_sentiment <- JA_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(title, index = linenumber %/% 80, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative)
+
+ggplot(JA_sentiment, aes(index, sentiment, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~title, ncol = 2, scales = "free_x")
+
+```
+
+### Análise de sentimentos dos livros de Dardonelles:
+
+```{r analise de sentimento - EQ, message=FALSE, warning=FALSE}
+EQ_sentiment <- EQ_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(title, index = linenumber %/% 80, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative)
+
+ggplot(EQ_sentiment, aes(index, sentiment, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~title, ncol = 2, scales = "free_x")
+
+```
+
+### Análise de sentimentos dos livros da Gil Vicente:
+
+```{r analise de sentimento - GV, message=FALSE, warning=FALSE}
+GV_sentiment <- GV_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(title, index = linenumber %/% 80, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative)
+
+ggplot(GV_sentiment, aes(index, sentiment, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~title, ncol = 2, scales = "free_x")
+
+```
+
+## Nuvens de Palavras
+
+### Nuvem de palavras dos livros da José de Alencar:
+
+```{r word cloud - franca, message=FALSE, warning=FALSE}
+JA_tidy %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+
+```
+
+### Nuvem de palavras dos livros de Eça de Queirós:
+
+```{r word cloud - EQ, message=FALSE, warning=FALSE}
+EQ_tidy %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+
+```
+
+### Nuvem de palavras dos livros da Gil Vicente:
+
+```{r word cloud - GV, message=FALSE, warning=FALSE}
+GV_tidy %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+
+```
+
+### Nuvem de palavras com divisão dos sentimentos dos livros da José de Alencar:
+
+```{r word cloud com sentimento - franca, message=FALSE, warning=FALSE}
+JA_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("gray20", "gray80"),
+                   max.words = 50)
+
+```
+
+### Nuvem de palavras com divisão dos sentimentos dos livros de EQ:
+
+```{r word cloud com sentimento - EQ, message=FALSE, warning=FALSE}
+EQ_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("gray20", "gray80"),
+                   max.words = 50)
+
+```
+
+### Nuvem de palavras com divisão dos sentimentos dos livros da Gil Vicente:
+
+```{r word cloud com sentimento - GV, message=FALSE, warning=FALSE}
+GV_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("gray20", "gray80"),
+                   max.words = 50)
+
+```
+
+## Análise da frquência de palavras nos diferentes livros:
+
+### José de Alencar:
+
+```{r palavras mais frequentes - franca, message=FALSE, warning=FALSE}
+JA_book_words <- JA_books %>%
+  unnest_tokens(input=text,
+                          output="word",
+                          to_lower=TRUE,
+                          drop=TRUE) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  anti_join(stop_words, by=c("word"="word")) %>%
+  count(title, word, sort = TRUE) %>%
+  ungroup()
+
+JA_total_words <- JA_book_words %>% 
+  group_by(title) %>% 
+  summarize(total = sum(n))
+
+JA_book_words <- left_join(JA_book_words, JA_total_words)
+
+ggplot(JA_book_words, aes(n/total, fill = title)) +
+  geom_histogram(show.legend = FALSE, bins = 25) +
+  xlim(NA, 0.0009) +
+  facet_wrap(~title, ncol = 2, scales = "free_y")
+
+```
+
+Eça de Queirós:
+
+```{r palavras mais frequentes - EQ, message=FALSE, warning=FALSE}
+EQ_book_words <- EQ_books %>%
+  unnest_tokens(input=text,
+                          output="word",
+                          to_lower=TRUE,
+                          drop=TRUE) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  anti_join(stop_words, by=c("word"="word")) %>%
+  count(title, word, sort = TRUE) %>%
+  ungroup()
+
+EQ_total_words <- EQ_book_words %>% 
+  group_by(title) %>% 
+  summarize(total = sum(n))
+
+EQ_book_words <- left_join(EQ_book_words, EQ_total_words)
+
+ggplot(EQ_book_words, aes(n/total, fill = title)) +
+  geom_histogram(show.legend = FALSE, bins = 25) +
+  xlim(NA, 0.0009) +
+  facet_wrap(~title, ncol = 2, scales = "free_y")
+
+```
+
+### Gil Vicente
+
+```{r palavras mais frequentes - GV, message=FALSE, warning=FALSE}
+GV_book_words <- GV_books %>%
+  unnest_tokens(input=text,
+                          output="word",
+                          to_lower=TRUE,
+                          drop=TRUE) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  anti_join(stop_words, by=c("word"="word")) %>%
+  count(title, word, sort = TRUE) %>%
+  ungroup()
+
+GV_total_words <- GV_book_words %>% 
+  group_by(title) %>% 
+  summarize(total = sum(n))
+
+GV_book_words <- left_join(GV_book_words, GV_total_words)
+
+ggplot(GV_book_words, aes(n/total, fill = title)) +
+  geom_histogram(show.legend = FALSE, bins = 25) +
+  xlim(NA, 0.0009) +
+  facet_wrap(~title, ncol = 2, scales = "free_y")
+
+```
+
+## Análise da comparação da frequência dos termos nos livros:
+
+### José de Alencar
+
+```{r comparacao frquencia dos termos - franca, message=FALSE, warning=FALSE}
+JA_freq_by_rank <- JA_book_words %>% 
+  drop_na() %>%
+  group_by(title) %>% 
+  mutate(rank = row_number(), 
+         `term frequency` = n/total)
+
+
+JA_rank_subset <- JA_freq_by_rank %>% 
+  filter(rank < 500,
+         rank > 10)
+
+JA_lm <- lm(log10(`term frequency`) ~ log10(rank), data = JA_rank_subset)
+
+JA_freq_by_rank %>% 
+  ggplot(aes(rank, `term frequency`, color = title)) + 
+  geom_abline(intercept = JA_lm$coefficients[1], slope = JA_lm$coefficients[2], color = "gray50", linetype = 2) +
+  geom_line(size = 1.1, alpha = 0.8, show.legend = FALSE) + 
+  scale_x_log10() +
+  scale_y_log10()
+
+```
+
+Eça de Queirós:
+
+```{r comparacao frquencia dos termos - EQ, message=FALSE, warning=FALSE}
+EQ_freq_by_rank <- EQ_book_words %>% 
+  drop_na() %>%
+  group_by(title) %>% 
+  mutate(rank = row_number(), 
+         `term frequency` = n/total)
+
+EQ_rank_subset <- EQ_freq_by_rank %>% 
+  filter(rank < 500,
+         rank > 10)
+
+EQ_lm <- lm(log10(`term frequency`) ~ log10(rank), data = EQ_rank_subset)
+
+EQ_freq_by_rank %>% 
+  ggplot(aes(rank, `term frequency`, color = title)) + 
+  geom_abline(intercept = EQ_lm$coefficients[1], slope = EQ_lm$coefficients[2], color = "gray50", linetype = 2) +
+  geom_line(size = 1.1, alpha = 0.8, show.legend = FALSE) + 
+  scale_x_log10() +
+  scale_y_log10()
+
+
+```
+
+### Gil Vicente:
+
+```{r comparacao frquencia dos termos - GV, message=FALSE, warning=FALSE}
+GV_freq_by_rank <- GV_book_words %>% 
+  drop_na() %>%
+  group_by(title) %>% 
+  mutate(rank = row_number(), 
+         `term frequency` = n/total)
+
+GV_rank_subset <- GV_freq_by_rank %>% 
+  filter(rank < 500,
+         rank > 10)
+
+GV_lm <- lm(log10(`term frequency`) ~ log10(rank), data = GV_rank_subset)
+
+GV_freq_by_rank %>% 
+  ggplot(aes(rank, `term frequency`, color = title)) + 
+  geom_abline(intercept = GV_lm$coefficients[1], slope = GV_lm$coefficients[2], color = "gray50", linetype = 2) +
+  geom_line(size = 1.1, alpha = 0.8, show.legend = FALSE) + 
+  scale_x_log10() +
+  scale_y_log10()
+
+
+```
+
+## TF-IDF (Term Frequency - Inverse Document Frequency)
+
+### José de Alencar
+
+```{r palavras mais usadas por livro - franca, message=FALSE, warning=FALSE}
+JA_book_words <- JA_book_words %>%
+  bind_tf_idf(word, title, n)
+
+JA_book_words %>%
+  select(-total) %>%
+  arrange(desc(tf_idf))
+
+JA_book_words %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(title) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  ggplot(aes(word, tf_idf, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~title, ncol = 2, scales = "free") +
+  coord_flip()
+
+```
+
+Eça de Queirós
+
+```{r palavras mais usadas por livro - EQ}
+EQ_book_words <- EQ_book_words %>%
+  bind_tf_idf(word, title, n)
+
+EQ_book_words %>%
+  select(-total) %>%
+  arrange(desc(tf_idf))
+
+EQ_book_words %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(title) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  ggplot(aes(word, tf_idf, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~title, ncol = 2, scales = "free") +
+  coord_flip()
+
+```
+
+### Gil Vicente:
+
+```{r palavras mais usadas por livro - GV, message=FALSE, warning=FALSE}
+GV_book_words <- GV_book_words %>%
+  bind_tf_idf(word, title, n)
+
+GV_book_words %>%
+  select(-total) %>%
+  arrange(desc(tf_idf))
+
+GV_book_words %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+  group_by(title) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  ggplot(aes(word, tf_idf, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~title, ncol = 2, scales = "free") +
+  coord_flip()
+
+```
+
+## Análise de Bigramas
+
+### José de Alencar:
+
+```{r analise de bigramas - franca, message=FALSE, warning=FALSE}
+JA_bigrams <- JA_books %>%
+  unnest_tokens(bigram, text, token = "ngrams", n = 2)
+
+JA_bigrams %>%
+  count(bigram, sort = TRUE)
+
+JA_bigrams_separated <- JA_bigrams %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+JA_bigrams_filtered <- JA_bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+JA_bigram_counts <- JA_bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE)
+
+JA_bigrams_united <- JA_bigrams_filtered %>%
+  unite(bigram, word1, word2, sep = " ")
+
+JA_bigram_tf_idf <- JA_bigrams_united %>%
+  count(title, bigram) %>%
+  bind_tf_idf(bigram, title, n) %>%
+  arrange(desc(tf_idf))
+
+JA_bigram_tf_idf %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(bigram = factor(bigram, levels = rev(unique(bigram)))) %>% 
+  group_by(title) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  ggplot(aes(bigram, tf_idf, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~title, ncol = 2, scales = "free") +
+  coord_flip()
+
+JA_bigram_counts %>%
+  drop_na() %>%
+  filter(n >= 15) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "royalblue") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE,
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
+```
+
+Eça de Queirós:
+
+```{r analise de bigramas - EQ, message=FALSE, warning=FALSE}
+EQ_bigrams <- EQ_books %>%
+  unnest_tokens(bigram, text, token = "ngrams", n = 2)
+
+EQ_bigrams %>%
+  count(bigram, sort = TRUE)
+
+EQ_bigrams_separated <- EQ_bigrams %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+EQ_bigrams_filtered <- EQ_bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+EQ_bigram_counts <- EQ_bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE)
+
+EQ_bigrams_united <- EQ_bigrams_filtered %>%
+  unite(bigram, word1, word2, sep = " ")
+
+EQ_bigram_tf_idf <- EQ_bigrams_united %>%
+  count(title, bigram) %>%
+  bind_tf_idf(bigram, title, n) %>%
+  arrange(desc(tf_idf))
+
+EQ_bigram_tf_idf %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(bigram = factor(bigram, levels = rev(unique(bigram)))) %>% 
+  group_by(title) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  ggplot(aes(bigram, tf_idf, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~title, ncol = 2, scales = "free") +
+  coord_flip()
+
+EQ_bigram_counts %>%
+  drop_na() %>%
+  filter(n >= 15) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "royalblue") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE,
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
+```
+
+### Gil Vicente
+
+```{r analise de bigramas - GV, message=FALSE, warning=FALSE}
+GV_bigrams <- GV_books %>%
+  unnest_tokens(bigram, text, token = "ngrams", n = 2)
+
+GV_bigrams %>%
+  count(bigram, sort = TRUE)
+
+GV_bigrams_separated <- GV_bigrams %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+GV_bigrams_filtered <- GV_bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+GV_bigram_counts <- GV_bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE)
+
+GV_bigrams_united <- GV_bigrams_filtered %>%
+  unite(bigram, word1, word2, sep = " ")
+
+GV_bigram_tf_idf <- GV_bigrams_united %>%
+  count(title, bigram) %>%
+  bind_tf_idf(bigram, title, n) %>%
+  arrange(desc(tf_idf))
+
+GV_bigram_tf_idf %>%
+  arrange(desc(tf_idf)) %>%
+  mutate(bigram = factor(bigram, levels = rev(unique(bigram)))) %>% 
+  group_by(title) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  ggplot(aes(bigram, tf_idf, fill = title)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~title, ncol = 2, scales = "free") +
+  coord_flip()
+
+GV_bigram_counts %>%
+  drop_na() %>%
+  filter(n >= 20) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "royalblue") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE,
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
+```
+
+## Análise de Sentimentos dos Bigramas
+
+### José de Alencar
+
+```{r anaslise de sentimento dos bigramas - franca, message=FALSE, warning=FALSE}
+JA_bigrams_separated %>%
+  filter(word1 == "not") %>%
+  count(word1, word2, sort = TRUE)
+
+JA_not_words <- JA_bigrams_separated %>%
+  filter(word1 == "not") %>%
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word")) %>%
+  count(word2, score, sort = TRUE) %>%
+  ungroup()
+
+JA_not_words %>%
+  mutate(contribution = n * score) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n * score, fill = n * score > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\"") +
+  ylab("Sentiment score * number of occurrences") +
+  coord_flip()
+
+negation_words <- c("not", "no", "never", "without")
+
+JA_negated_words <- JA_bigrams_separated %>%
+  filter(word1 %in% negation_words) %>%
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word")) %>%
+  count(word1, word2, score, sort = TRUE) %>%
+  ungroup()
+
+JA_negated_words %>%
+  mutate(contribution = n * score) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n * score, fill = n * score > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\", \"no\", \"never\", \"without\"") +
+  ylab("Sentiment score * number of occurrences") +
+  coord_flip()
+```
+
+Eça de Queirós
+
+```{r anaslise de sentimento dos bigramas - EQ, message=FALSE, warning=FALSE}
+EQ_bigrams_separated %>%
+  filter(word1 == "not") %>%
+  count(word1, word2, sort = TRUE)
+
+EQ_not_words <- EQ_bigrams_separated %>%
+  filter(word1 == "not") %>%
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word")) %>%
+  count(word2, score, sort = TRUE) %>%
+  ungroup()
+
+EQ_not_words %>%
+  mutate(contribution = n * score) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n * score, fill = n * score > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\"") +
+  ylab("Sentiment score * number of occurrences") +
+  coord_flip()
+
+negation_words <- c("not", "no", "never", "without")
+
+EQ_negated_words <- EQ_bigrams_separated %>%
+  filter(word1 %in% negation_words) %>%
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word")) %>%
+  count(word1, word2, score, sort = TRUE) %>%
+  ungroup()
+
+EQ_negated_words %>%
+  mutate(contribution = n * score) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n * score, fill = n * score > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\", \"no\", \"never\", \"without\"") +
+  ylab("Sentiment score * number of occurrences") +
+  coord_flip()
+```
+
+### Gil Vicente: 
+
+```{r anaslise de sentimento dos bigramas - GV, message=FALSE, warning=FALSE}
+GV_bigrams_separated %>%
+  filter(word1 == "not") %>%
+  count(word1, word2, sort = TRUE)
+
+GV_not_words <- GV_bigrams_separated %>%
+  filter(word1 == "not") %>%
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word")) %>%
+  count(word2, score, sort = TRUE) %>%
+  ungroup()
+
+GV_not_words %>%
+  mutate(contribution = n * score) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n * score, fill = n * score > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\"") +
+  ylab("Sentiment score * number of occurrences") +
+  coord_flip()
+
+negation_words <- c("not", "no", "never", "without")
+
+GV_negated_words <- GV_bigrams_separated %>%
+  filter(word1 %in% negation_words) %>%
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word")) %>%
+  count(word1, word2, score, sort = TRUE) %>%
+  ungroup()
+
+GV_negated_words %>%
+  mutate(contribution = n * score) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(word2, n * score, fill = n * score > 0)) +
+  geom_col(show.legend = FALSE) +
+  xlab("Words preceded by \"not\", \"no\", \"never\", \"without\"") +
+  ylab("Sentiment score * number of occurrences") +
+  coord_flip()
+```
+
+## Impressão de grafos dos bigramas:
+
+### José de Alencar
+
+```{r grafos dos bigramas - franca}
+JA_bigram_graph <- JA_bigram_counts %>%
+  drop_na() %>%
+  filter(n > 10) %>%
+  graph_from_data_frame()
+
+JA_bigram_graph
+
+set.seed(2018)
+
+ggraph(JA_bigram_graph, layout = "fr") +
+  geom_edge_link() +
+  geom_node_point() +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(JA_bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+
+
+```
+
+### Eça de Queirós:
+
+```{r grafos dos bigramas - EQ, message=FALSE, warning=FALSE}
+EQ_bigram_graph <- EQ_bigram_counts %>%
+  drop_na() %>%
+  filter(n > 10) %>%
+  graph_from_data_frame()
+
+EQ_bigram_graph
+
+set.seed(2018)
+
+ggraph(EQ_bigram_graph, layout = "fr") +
+  geom_edge_link() +
+  geom_node_point() +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(EQ_bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+
+```
+
+### Gil Vicente:
+
+```{r grafos dos bigramas - GV, message=FALSE, warning=FALSE}
+GV_bigram_graph <- GV_bigram_counts %>%
+  drop_na() %>%
+  filter(n > 10) %>%
+  graph_from_data_frame()
+
+GV_bigram_graph
+
+set.seed(2018)
+
+ggraph(GV_bigram_graph, layout = "fr") +
+  geom_edge_link() +
+  geom_node_point() +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(GV_bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+
+```
+
+## Correlação dos Bigramas
+
+### José de Alencar:
+
+```{r graficos de correlacao dos bigramas - franca, message=FALSE, warning=FALSE}
+JA_section_words <- JA_books %>%
+  mutate(section = row_number() %/% 10) %>%
+  filter(section > 0) %>%
+  unnest_tokens(word, text) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  filter(!word %in% stop_words$word)
+
+JA_section_words
+
+JA_word_pairs <- JA_section_words %>%
+  pairwise_count(word, section, sort = TRUE) %>%
+  drop_na()
+
+JA_word_pairs
+
+JA_word_cors <- JA_section_words %>%
+  na.omit() %>%
+  group_by(word) %>%
+  filter(n() >= 20) %>%
+  pairwise_cor(word, section, sort = TRUE)
+
+JA_word_cors
+
+JA_word_cors %>%
+  filter(item1 %in% c("lorraine", "lancashire", "fusiliers", "von")) %>%
+  group_by(item1) %>%
+  top_n(6) %>%
+  ungroup() %>%
+  mutate(item2 = reorder(item2, correlation)) %>%
+  ggplot(aes(item2, correlation)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ item1, scales = "free") +
+  coord_flip()
+
+set.seed(2018)
+
+JA_word_cors %>%
+  filter(correlation > .4) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void()
+
+JA_word_cors %>%
+  filter(correlation > .4) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation, edge_width = correlation), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
+```
+
+### Eça de Queirós:
+
+```{r graficos de correlacao dos bigramas - EQ, message=FALSE, warning=FALSE}
+EQ_section_words <- EQ_books %>%
+  mutate(section = row_number() %/% 10) %>%
+  filter(section > 0) %>%
+  unnest_tokens(word, text) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  filter(!word %in% stop_words$word)
+
+EQ_section_words
+
+EQ_word_pairs <- EQ_section_words %>%
+  pairwise_count(word, section, sort = TRUE) %>%
+  drop_na()
+
+EQ_word_pairs
+
+EQ_word_cors <- EQ_section_words %>%
+  na.omit() %>%
+  group_by(word) %>%
+  filter(n() >= 20) %>%
+  pairwise_cor(word, section, sort = TRUE)
+
+EQ_word_cors
+
+EQ_word_cors %>%
+  filter(item1 %in% c("edges", "morocco", "jhill", "gilt")) %>%
+  group_by(item1) %>%
+  top_n(6) %>%
+  ungroup() %>%
+  mutate(item2 = reorder(item2, correlation)) %>%
+  ggplot(aes(item2, correlation)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ item1, scales = "free") +
+  coord_flip()
+
+set.seed(2018)
+
+EQ_word_cors %>%
+  filter(correlation > .4) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void()
+
+EQ_word_cors %>%
+  filter(correlation > .4) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation, edge_width = correlation), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
+```
+
+### Gil Vicente:
+
+```{r graficos de correlacao dos bigramas - GV, message=FALSE, warning=FALSE}
+GV_section_words <- GV_books %>%
+  mutate(section = row_number() %/% 10) %>%
+  filter(section > 0) %>%
+  unnest_tokens(word, text) %>%
+  mutate(word=str_extract(word,"[a-z']+")) %>%
+  filter(!word %in% stop_words$word)
+
+GV_section_words
+
+GV_word_pairs <- GV_section_words %>%
+  pairwise_count(word, section, sort = TRUE) %>%
+  drop_na()
+
+GV_word_pairs
+
+GV_word_cors <- GV_section_words %>%
+  na.omit() %>%
+  group_by(word) %>%
+  filter(n() >= 20) %>%
+  pairwise_cor(word, section, sort = TRUE)
+
+GV_word_cors
+
+GV_word_cors %>%
+  filter(item1 %in% c("padenga", "revolutionary", "comrade", "lieut")) %>%
+  group_by(item1) %>%
+  top_n(6) %>%
+  ungroup() %>%
+  mutate(item2 = reorder(item2, correlation)) %>%
+  ggplot(aes(item2, correlation)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ item1, scales = "free") +
+  coord_flip()
+
+set.seed(2018)
+
+GV_word_cors %>%
+  filter(correlation > .4) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void()
+
+GV_word_cors %>%
+  filter(correlation > .4) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation, edge_width = correlation), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
+```
+
+
+
+
+
+
+
+
+
