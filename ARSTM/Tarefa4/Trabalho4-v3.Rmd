@@ -76,6 +76,10 @@ if(!require(widyr)) {
   install.packages("widyr")
   library(widyr)
 }
+if(!require(ggdendro)) {
+  install.packages("ggdendro")
+  library(ggdendro)
+}
 
 ```
 
@@ -183,6 +187,13 @@ frequency <- gather(spreaded_text,subject, proportion,`Dardanelles`:`France`)
 
 ```
 
+```{r dendograma}
+hc <- hclust(dist(grouped_texts,method = "euclidean"), method = "average")
+
+
+```
+
+
 ## Gráfico de proporção das palavras dos livros sobre a França e Dardanelles vs. Russia:
 
 ```{r grafico de proporcao, message=FALSE, warning=FALSE}
@@ -256,6 +267,8 @@ ggplot(russia_sentiment, aes(index, sentiment, fill = title)) +
   facet_wrap(~title, ncol = 2, scales = "free_x")
 
 ```
+
+Notamos, pelos gráficos, que são histórias tristes, confirmando o que se espera de livros de histórias reais da Segunda Guerra Mundial.
 
 ## Nuvens de Palavras
 
@@ -755,7 +768,7 @@ france_negated_words %>%
   mutate(word2 = reorder(word2, contribution)) %>%
   ggplot(aes(word2, n * score, fill = n * score > 0)) +
   geom_col(show.legend = FALSE) +
-  xlab("Words preceded by \"not\"") +
+  xlab("Words preceded by \"not\", \"no\", \"never\", \"without\"") +
   ylab("Sentiment score * number of occurrences") +
   coord_flip()
 ```
@@ -799,7 +812,7 @@ dardanelles_negated_words %>%
   mutate(word2 = reorder(word2, contribution)) %>%
   ggplot(aes(word2, n * score, fill = n * score > 0)) +
   geom_col(show.legend = FALSE) +
-  xlab("Words preceded by \"not\"") +
+  xlab("Words preceded by \"not\", \"no\", \"never\", \"without\"") +
   ylab("Sentiment score * number of occurrences") +
   coord_flip()
 ```
@@ -843,7 +856,7 @@ russia_negated_words %>%
   mutate(word2 = reorder(word2, contribution)) %>%
   ggplot(aes(word2, n * score, fill = n * score > 0)) +
   geom_col(show.legend = FALSE) +
-  xlab("Words preceded by \"not\"") +
+  xlab("Words preceded by \"not\", \"no\", \"never\", \"without\"") +
   ylab("Sentiment score * number of occurrences") +
   coord_flip()
 ```
@@ -980,7 +993,7 @@ france_word_cors %>%
 set.seed(2018)
 
 france_word_cors %>%
-  filter(correlation > .25) %>%
+  filter(correlation > .4) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +
   geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
@@ -989,7 +1002,7 @@ france_word_cors %>%
   theme_void()
 
 france_word_cors %>%
-  filter(correlation > .25) %>%
+  filter(correlation > .4) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +
   geom_edge_link(aes(edge_alpha = correlation, edge_width = correlation), edge_colour = "cyan4") +
@@ -1040,16 +1053,16 @@ dardanelles_word_cors %>%
 set.seed(2018)
 
 dardanelles_word_cors %>%
-  filter(correlation > .25) %>%
+  filter(correlation > .4) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +
-  geom_edge_link(aes(edge_alpha = correlation, edge_width = correlation), show.legend = FALSE) +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
   geom_node_point(color = "lightblue", size = 5) +
   geom_node_text(aes(label = name), repel = TRUE) +
   theme_void()
 
 dardanelles_word_cors %>%
-  filter(correlation > .25) %>%
+  filter(correlation > .4) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +
   geom_edge_link(aes(edge_alpha = correlation, edge_width = correlation), edge_colour = "cyan4") +
@@ -1100,7 +1113,7 @@ russia_word_cors %>%
 set.seed(2018)
 
 russia_word_cors %>%
-  filter(correlation > .25) %>%
+  filter(correlation > .4) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +
   geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
@@ -1109,7 +1122,7 @@ russia_word_cors %>%
   theme_void()
 
 russia_word_cors %>%
-  filter(correlation > .25) %>%
+  filter(correlation > .4) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +
   geom_edge_link(aes(edge_alpha = correlation, edge_width = correlation), edge_colour = "cyan4") +
