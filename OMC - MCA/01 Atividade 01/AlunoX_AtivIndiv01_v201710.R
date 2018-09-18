@@ -4,10 +4,16 @@ cat("\014")
 rm(list = ls())
 
 
-d = c(0,.1,.1,.2,.6,.15,0,.05,.35,.45,.2,.1,0,.13,.57,0,0,0,1,0,0,0,0,0,1)
+d = c(.00,.10,.10,.20,.60,
+      .15,.00,.05,.35,.45,
+      .20,.10,.00,.13,.57,
+      .00,.00,.00,1.0,.00,
+      .00,.00,.00,.00,1.0)
 M = matrix(data = d, nrow = 5, ncol = 5, byrow = TRUE)
-#dimnames(M) <- list(c("site","hotpage","call center","venda","saida"),c("site","hotpage","call center","venda","saida"))
+dimnames(M) <- list(c("site","hotpage","call center","venda","saida"),c("site","hotpage","call center","venda","saida"))
 M
+
+
 
 #install.packages("markovchain")
 library(markovchain)
@@ -15,9 +21,9 @@ library(markovchain)
 dtmc <- new("markovchain",transitionMatrix=M,
             states=c("site","hotpage","call center","venda","saida"),
             name="MarkovChain para o e-commerce") 
-#dtmc
+dtmc
 
-#plot(dtmc)
+plot(dtmc)
 
 #a.1
 initialState<-c(0,1,0,0,0)
