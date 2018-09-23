@@ -1,8 +1,11 @@
 ---
 title: "Analise de Redes Sociais e Text Mining - Trabalho 4"
-author: "Ricardo Squassina Lee"
-date: "8/26/2018"
-output: html_document
+date: "26/Setembro/2018"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+author: "A56843646 Ricardo Squassina Lee, A56089622 Carlos Augusto Polato, A56865193 Gustavo Hotta, A56871487 Rafael Furlan"
 ---
 
 ```{r setup, include=FALSE}
@@ -14,8 +17,7 @@ a.	word cloud,
 b.	word cloud positiva, 
 c.	word cloud negativa, 
 d.	semantic network, 
-e.	dendrograma, 
-f.	word cloud bigram
+e.	word cloud bigram
 
 
 ```{r Iniciando o ambiente, message=FALSE, warning=FALSE}
@@ -76,11 +78,6 @@ if(!require(widyr)) {
   install.packages("widyr")
   library(widyr)
 }
-if(!require(ggdendro)) {
-  install.packages("ggdendro")
-  library(ggdendro)
-}
-
 ```
 
 ## Leitura do Texto
@@ -186,13 +183,6 @@ spreaded_text <- spread(selected_texts, subject, proportion)
 frequency <- gather(spreaded_text,subject, proportion,`Dardanelles`:`France`)
 
 ```
-
-```{r dendograma}
-hc <- hclust(dist(grouped_texts,method = "euclidean"), method = "average")
-
-
-```
-
 
 ## Gráfico de proporção das palavras dos livros sobre a França e Dardanelles vs. Russia:
 

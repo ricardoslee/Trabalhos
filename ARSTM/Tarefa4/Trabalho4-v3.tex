@@ -1,0 +1,2174 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Analise de Redes Sociais e Text Mining - Trabalho 4},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Analise de Redes Sociais e Text Mining - Trabalho 4}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{}
+    \preauthor{}\postauthor{}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{8/26/2018}
+
+
+\begin{document}
+\maketitle
+
+\hypertarget{realizar-uma-analise-de-sentimento.-para-a-analise-de-sentimento-criar}{%
+\subsection{Realizar uma análise de sentimento. Para a análise de
+sentimento
+criar:}\label{realizar-uma-analise-de-sentimento.-para-a-analise-de-sentimento-criar}}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\tightlist
+\item
+  word cloud,
+\item
+  word cloud positiva,
+\item
+  word cloud negativa,
+\item
+  semantic network,
+\item
+  word cloud bigram
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{rm}\NormalTok{(}\DataTypeTok{list =} \KeywordTok{ls}\NormalTok{())}
+\KeywordTok{cat}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}014}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(tidytext)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"tidytext"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(tidytext)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(dplyr)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(dplyr)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(stringr)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"stringr"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(stringr)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(tm)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"tm"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(tm)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(tidyr)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"tidyr"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(tidyr)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(gutenbergr)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"gutenbergr"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(gutenbergr)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(scales)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"scales"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(scales)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(ggplot2)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(ggplot2)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(wordcloud)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"wordcloud"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(wordcloud)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(reshape2)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"reshape2"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(reshape2)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(igraph)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"igraph"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(igraph)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(ggraph)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"ggraph"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(ggraph)}
+\NormalTok{\}}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{require}\NormalTok{(widyr)) \{}
+  \KeywordTok{install.packages}\NormalTok{(}\StringTok{"widyr"}\NormalTok{)}
+  \KeywordTok{library}\NormalTok{(widyr)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{leitura-do-texto}{%
+\subsection{Leitura do Texto}\label{leitura-do-texto}}
+
+Para o trabalho foram escohidos textos relativos à Segunda Guerra
+Mundial.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{France <-}\StringTok{ }\KeywordTok{gutenberg_download}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{17813}\NormalTok{, }\DecValTok{16437}\NormalTok{, }\DecValTok{45542}\NormalTok{, }\DecValTok{18483}\NormalTok{,}\DecValTok{9975}\NormalTok{), }\DataTypeTok{meta_fields =} \StringTok{"title"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Determining mirror for Project Gutenberg from http://www.gutenberg.org/robot/harvest
+\end{verbatim}
+
+\begin{verbatim}
+## Using mirror http://aleph.gutenberg.org
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Dardanelles <-}\StringTok{ }\KeywordTok{gutenberg_download}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{11008}\NormalTok{, }\DecValTok{11513}\NormalTok{, }\DecValTok{15896}\NormalTok{, }\DecValTok{3306}\NormalTok{, }\DecValTok{35119}\NormalTok{), }\DataTypeTok{meta_fields =} \StringTok{"title"}\NormalTok{)}
+\CommentTok{#Russia <- gutenberg_download(c(46191, 10967, 22523, 10972, 53482), meta_fields = "title")}
+\NormalTok{Russia <-}\StringTok{ }\KeywordTok{gutenberg_download}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{46191}\NormalTok{, }\DecValTok{10967}\NormalTok{, }\DecValTok{22523}\NormalTok{, }\DecValTok{10972}\NormalTok{), }\DataTypeTok{meta_fields =} \StringTok{"title"}\NormalTok{)}
+
+
+\NormalTok{france_books <-}\StringTok{ }\NormalTok{France }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(gutenberg_id) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{linenumber =} \KeywordTok{row_number}\NormalTok{()) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{dardanelles_books <-}\StringTok{ }\NormalTok{Dardanelles }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(gutenberg_id) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{linenumber =} \KeywordTok{row_number}\NormalTok{()) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{russia_books <-}\StringTok{ }\NormalTok{Russia }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(gutenberg_id) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{linenumber =} \KeywordTok{row_number}\NormalTok{()) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{separando-as-palavras-contidas-nos-textos-que-estao-sendo-analisados-e-removendo-as-stop-words}{%
+\subsection{Separando as palavras contidas nos textos que estão sendo
+analisados e removendo as ``stop
+words''}\label{separando-as-palavras-contidas-nos-textos-que-estao-sendo-analisados-e-removendo-as-stop-words}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_tidy <-}\StringTok{ }\NormalTok{france_books }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{unnest_tokens}\NormalTok{(}\DataTypeTok{input=}\NormalTok{text,}
+                \DataTypeTok{output=}\StringTok{"word"}\NormalTok{,}
+                \DataTypeTok{to_lower=}\OtherTok{TRUE}\NormalTok{,}
+                \DataTypeTok{drop=}\OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word=}\KeywordTok{str_extract}\NormalTok{(word,}\StringTok{"[a-z']+"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{anti_join}\NormalTok{(stop_words, }\DataTypeTok{by=}\KeywordTok{c}\NormalTok{(}\StringTok{"word"}\NormalTok{=}\StringTok{"word"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{()}
+
+\NormalTok{dardanelles_tidy <-}\StringTok{ }\NormalTok{dardanelles_books }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{unnest_tokens}\NormalTok{(}\DataTypeTok{input=}\NormalTok{text,}
+                \DataTypeTok{output=}\StringTok{"word"}\NormalTok{,}
+                \DataTypeTok{to_lower=}\OtherTok{TRUE}\NormalTok{,}
+                \DataTypeTok{drop=}\OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word=}\KeywordTok{str_extract}\NormalTok{(word,}\StringTok{"[a-z']+"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{anti_join}\NormalTok{(stop_words, }\DataTypeTok{by=}\KeywordTok{c}\NormalTok{(}\StringTok{"word"}\NormalTok{=}\StringTok{"word"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{()}
+
+\NormalTok{russia_tidy <-}\StringTok{ }\NormalTok{russia_books }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{unnest_tokens}\NormalTok{(}\DataTypeTok{input=}\NormalTok{text,}
+                \DataTypeTok{output=}\StringTok{"word"}\NormalTok{,}
+                \DataTypeTok{to_lower=}\OtherTok{TRUE}\NormalTok{,}
+                \DataTypeTok{drop=}\OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word=}\KeywordTok{str_extract}\NormalTok{(word,}\StringTok{"[a-z']+"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{anti_join}\NormalTok{(stop_words, }\DataTypeTok{by=}\KeywordTok{c}\NormalTok{(}\StringTok{"word"}\NormalTok{=}\StringTok{"word"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{contando-as-palavras-para-uma-primeira-analise-da-frequencia}{%
+\subsection{Contando as palavras para uma primeira análise da
+frequência:}\label{contando-as-palavras-para-uma-primeira-analise-da-frequencia}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{count}\NormalTok{(france_tidy, word, }\DataTypeTok{sort=}\OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{top_n}\NormalTok{(}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 2
+##    word        n
+##    <chr>   <int>
+##  1 french    599
+##  2 war       589
+##  3 day       518
+##  4 german    441
+##  5 time      422
+##  6 paris     396
+##  7 france    386
+##  8 captain   248
+##  9 germans   237
+## 10 left      222
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{count}\NormalTok{(dardanelles_tidy, word, }\DataTypeTok{sort=}\OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{top_n}\NormalTok{(}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 2
+##    word      n
+##    <chr> <int>
+##  1 ken     699
+##  2 time    444
+##  3 roy     373
+##  4 day     312
+##  5 night   294
+##  6 war     259
+##  7 left    246
+##  8 water   244
+##  9 turks   239
+## 10 front   217
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{count}\NormalTok{(russia_tidy, word, }\DataTypeTok{sort=}\OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{top_n}\NormalTok{(}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 2
+##    word          n
+##    <chr>     <int>
+##  1 russian     965
+##  2 american    798
+##  3 british     568
+##  4 russia      520
+##  5 company     480
+##  6 archangel   457
+##  7 time        434
+##  8 front       415
+##  9 soldiers    383
+## 10 day         382
+\end{verbatim}
+
+\hypertarget{analisando-a-frequencia-das-palavras-nos-conjuntos-de-texto}{%
+\subsection{Analisando a frequência das palavras nos conjuntos de
+texto}\label{analisando-a-frequencia-das-palavras-nos-conjuntos-de-texto}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Frequency as per the book}
+\CommentTok{#frequency <- bind_rows(mutate(france_tidy, subject = "France"), }
+\CommentTok{#                       mutate(dardanelles_tidy, subject = "Dardanelles"),}
+\CommentTok{#                       mutate(russia_tidy, subject = "Russia")) %>% }
+\CommentTok{#  mutate(word = str_extract(word, "[a-z']+")) %>%}
+\CommentTok{#  count(subject, word) %>%}
+\CommentTok{#  group_by(subject) %>%}
+\CommentTok{#  mutate(proportion = n / sum(n)) %>% }
+\CommentTok{#  select(-n) %>% }
+\CommentTok{#  spread(subject, proportion) %>% }
+\CommentTok{#  gather(subject, proportion,`Personal Narratives`:`WWII Fiction`)}
+
+\CommentTok{# Frequency step-by-step}
+\NormalTok{binded_texts <-}\StringTok{ }\KeywordTok{bind_rows}\NormalTok{(}\KeywordTok{mutate}\NormalTok{(france_tidy, }\DataTypeTok{subject =} \StringTok{"France"}\NormalTok{), }
+                          \KeywordTok{mutate}\NormalTok{(dardanelles_tidy, }\DataTypeTok{subject =} \StringTok{"Dardanelles"}\NormalTok{),}
+                          \KeywordTok{mutate}\NormalTok{(russia_tidy, }\DataTypeTok{subject =} \StringTok{"Russia"}\NormalTok{))}
+
+\NormalTok{counted_texts <-}\StringTok{ }\KeywordTok{count}\NormalTok{(binded_texts, subject, word)}
+
+\NormalTok{grouped_texts <-}\StringTok{ }\KeywordTok{group_by}\NormalTok{(counted_texts,subject)}
+
+\NormalTok{grouped_texts_by_proportion <-}\StringTok{ }\KeywordTok{mutate}\NormalTok{(grouped_texts, }\DataTypeTok{proportion =}\NormalTok{ n }\OperatorTok{/}\StringTok{ }\KeywordTok{sum}\NormalTok{(n))}
+
+\NormalTok{selected_texts <-}\StringTok{ }\KeywordTok{select}\NormalTok{(grouped_texts_by_proportion,}\OperatorTok{-}\NormalTok{n)}
+
+\NormalTok{spreaded_text <-}\StringTok{ }\KeywordTok{spread}\NormalTok{(selected_texts, subject, proportion)}
+
+\NormalTok{frequency <-}\StringTok{ }\KeywordTok{gather}\NormalTok{(spreaded_text,subject, proportion,}\StringTok{`}\DataTypeTok{Dardanelles}\StringTok{`}\OperatorTok{:}\StringTok{`}\DataTypeTok{France}\StringTok{`}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{grafico-de-proporcao-das-palavras-dos-livros-sobre-a-franca-e-dardanelles-vs.russia}{%
+\subsection{Gráfico de proporção das palavras dos livros sobre a França
+e Dardanelles
+vs.~Russia:}\label{grafico-de-proporcao-das-palavras-dos-livros-sobre-a-franca-e-dardanelles-vs.russia}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(frequency, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ proportion, }\DataTypeTok{y =} \StringTok{`}\DataTypeTok{Russia}\StringTok{`}\NormalTok{, }\DataTypeTok{color =} \KeywordTok{abs}\NormalTok{(}\StringTok{`}\DataTypeTok{Russia}\StringTok{`} \OperatorTok{-}\StringTok{ }\NormalTok{proportion))) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_abline}\NormalTok{(}\DataTypeTok{color =} \StringTok{"gray40"}\NormalTok{, }\DataTypeTok{lty =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.1}\NormalTok{, }\DataTypeTok{size =} \FloatTok{2.5}\NormalTok{, }\DataTypeTok{width =} \FloatTok{0.3}\NormalTok{, }\DataTypeTok{height =} \FloatTok{0.3}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ word), }\DataTypeTok{check_overlap =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{vjust =} \FloatTok{1.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_log10}\NormalTok{(}\DataTypeTok{labels =} \KeywordTok{percent_format}\NormalTok{()) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_log10}\NormalTok{(}\DataTypeTok{labels =} \KeywordTok{percent_format}\NormalTok{()) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_gradient}\NormalTok{(}\DataTypeTok{limits =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.001}\NormalTok{), }\DataTypeTok{low =} \StringTok{"darkslategray4"}\NormalTok{, }\DataTypeTok{high =} \StringTok{"gray75"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{subject, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{y =} \StringTok{"Russia"}\NormalTok{, }\DataTypeTok{x =} \OtherTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/grafico de proporcao-1.pdf}
+
+\hypertarget{teste-de-correlacao-entre-os-textos}{%
+\subsection{Teste de Correlação entre os
+textos}\label{teste-de-correlacao-entre-os-textos}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ frequency[frequency}\OperatorTok{$}\NormalTok{subject }\OperatorTok{==}\StringTok{ "Dardanelles"}\NormalTok{,],}
+         \OperatorTok{~}\StringTok{ }\NormalTok{proportion }\OperatorTok{+}\StringTok{ `}\DataTypeTok{Russia}\StringTok{`}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  proportion and Russia
+## t = 51.042, df = 7470, p-value < 2.2e-16
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.4915007 0.5251281
+## sample estimates:
+##       cor 
+## 0.5085082
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ frequency[frequency}\OperatorTok{$}\NormalTok{subject }\OperatorTok{==}\StringTok{ "France"}\NormalTok{,],}
+         \OperatorTok{~}\StringTok{ }\NormalTok{proportion }\OperatorTok{+}\StringTok{ `}\DataTypeTok{Russia}\StringTok{`}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  proportion and Russia
+## t = 65.76, df = 7805, p-value < 2.2e-16
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.5826256 0.6111792
+## sample estimates:
+##       cor 
+## 0.5970915
+\end{verbatim}
+
+\hypertarget{analise-de-sentimentos}{%
+\subsection{Análise de Sentimentos}\label{analise-de-sentimentos}}
+
+\hypertarget{analise-de-sentimentos-dos-livros-da-franca}{%
+\subsubsection{Análise de sentimentos dos livros da
+França:}\label{analise-de-sentimentos-dos-livros-da-franca}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_sentiment <-}\StringTok{ }\NormalTok{france_tidy }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{get_sentiments}\NormalTok{(}\StringTok{"bing"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(title, }\DataTypeTok{index =}\NormalTok{ linenumber }\OperatorTok{%/%}\StringTok{ }\DecValTok{80}\NormalTok{, sentiment) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{spread}\NormalTok{(sentiment, n, }\DataTypeTok{fill =} \DecValTok{0}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{sentiment =}\NormalTok{ positive }\OperatorTok{-}\StringTok{ }\NormalTok{negative)}
+
+\KeywordTok{ggplot}\NormalTok{(france_sentiment, }\KeywordTok{aes}\NormalTok{(index, sentiment, }\DataTypeTok{fill =}\NormalTok{ title)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{title, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{scales =} \StringTok{"free_x"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/analise de sentimento - franca-1.pdf}
+
+\hypertarget{analise-de-sentimentos-dos-livros-de-dardonelles}{%
+\subsubsection{Análise de sentimentos dos livros de
+Dardonelles:}\label{analise-de-sentimentos-dos-livros-de-dardonelles}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_sentiment <-}\StringTok{ }\NormalTok{dardanelles_tidy }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{get_sentiments}\NormalTok{(}\StringTok{"bing"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(title, }\DataTypeTok{index =}\NormalTok{ linenumber }\OperatorTok{%/%}\StringTok{ }\DecValTok{80}\NormalTok{, sentiment) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{spread}\NormalTok{(sentiment, n, }\DataTypeTok{fill =} \DecValTok{0}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{sentiment =}\NormalTok{ positive }\OperatorTok{-}\StringTok{ }\NormalTok{negative)}
+
+\KeywordTok{ggplot}\NormalTok{(dardanelles_sentiment, }\KeywordTok{aes}\NormalTok{(index, sentiment, }\DataTypeTok{fill =}\NormalTok{ title)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{title, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{scales =} \StringTok{"free_x"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/analise de sentimento - dardanelles-1.pdf}
+
+\hypertarget{analise-de-sentimentos-dos-livros-da-russia}{%
+\subsubsection{Análise de sentimentos dos livros da
+Rússia:}\label{analise-de-sentimentos-dos-livros-da-russia}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_sentiment <-}\StringTok{ }\NormalTok{russia_tidy }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{get_sentiments}\NormalTok{(}\StringTok{"bing"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(title, }\DataTypeTok{index =}\NormalTok{ linenumber }\OperatorTok{%/%}\StringTok{ }\DecValTok{80}\NormalTok{, sentiment) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{spread}\NormalTok{(sentiment, n, }\DataTypeTok{fill =} \DecValTok{0}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{sentiment =}\NormalTok{ positive }\OperatorTok{-}\StringTok{ }\NormalTok{negative)}
+
+\KeywordTok{ggplot}\NormalTok{(russia_sentiment, }\KeywordTok{aes}\NormalTok{(index, sentiment, }\DataTypeTok{fill =}\NormalTok{ title)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{title, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{scales =} \StringTok{"free_x"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/analise de sentimento - russia-1.pdf}
+
+Notamos, pelos gráficos, que são histórias tristes, confirmando o que se
+espera de livros de histórias reais da Segunda Guerra Mundial.
+
+\hypertarget{nuvens-de-palavras}{%
+\subsection{Nuvens de Palavras}\label{nuvens-de-palavras}}
+
+\hypertarget{nuvem-de-palavras-dos-livros-da-franca}{%
+\subsubsection{Nuvem de palavras dos livros da
+França:}\label{nuvem-de-palavras-dos-livros-da-franca}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_tidy }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{anti_join}\NormalTok{(stop_words) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{with}\NormalTok{(}\KeywordTok{wordcloud}\NormalTok{(word, n, }\DataTypeTok{max.words =} \DecValTok{100}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/word cloud - franca-1.pdf}
+
+\hypertarget{nuvem-de-palavras-dos-livros-de-dardanelles}{%
+\subsubsection{Nuvem de palavras dos livros de
+Dardanelles:}\label{nuvem-de-palavras-dos-livros-de-dardanelles}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_tidy }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{anti_join}\NormalTok{(stop_words) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{with}\NormalTok{(}\KeywordTok{wordcloud}\NormalTok{(word, n, }\DataTypeTok{max.words =} \DecValTok{100}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/word cloud - dardanelles-1.pdf}
+
+\hypertarget{nuvem-de-palavras-dos-livros-da-russia}{%
+\subsubsection{Nuvem de palavras dos livros da
+Rússia:}\label{nuvem-de-palavras-dos-livros-da-russia}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_tidy }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{anti_join}\NormalTok{(stop_words) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{with}\NormalTok{(}\KeywordTok{wordcloud}\NormalTok{(word, n, }\DataTypeTok{max.words =} \DecValTok{100}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/word cloud - russia-1.pdf}
+
+\hypertarget{nuvem-de-palavras-com-divisao-dos-sentimentos-dos-livros-da-franca}{%
+\subsubsection{Nuvem de palavras com divisão dos sentimentos dos livros
+da
+França:}\label{nuvem-de-palavras-com-divisao-dos-sentimentos-dos-livros-da-franca}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_tidy }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{get_sentiments}\NormalTok{(}\StringTok{"bing"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word, sentiment, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{acast}\NormalTok{(word }\OperatorTok{~}\StringTok{ }\NormalTok{sentiment, }\DataTypeTok{value.var =} \StringTok{"n"}\NormalTok{, }\DataTypeTok{fill =} \DecValTok{0}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{comparison.cloud}\NormalTok{(}\DataTypeTok{colors =} \KeywordTok{c}\NormalTok{(}\StringTok{"gray20"}\NormalTok{, }\StringTok{"gray80"}\NormalTok{),}
+                   \DataTypeTok{max.words =} \DecValTok{50}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/word cloud com sentimento - franca-1.pdf}
+
+\hypertarget{nuvem-de-palavras-com-divisao-dos-sentimentos-dos-livros-de-dardanelles}{%
+\subsubsection{Nuvem de palavras com divisão dos sentimentos dos livros
+de
+Dardanelles:}\label{nuvem-de-palavras-com-divisao-dos-sentimentos-dos-livros-de-dardanelles}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_tidy }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{get_sentiments}\NormalTok{(}\StringTok{"bing"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word, sentiment, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{acast}\NormalTok{(word }\OperatorTok{~}\StringTok{ }\NormalTok{sentiment, }\DataTypeTok{value.var =} \StringTok{"n"}\NormalTok{, }\DataTypeTok{fill =} \DecValTok{0}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{comparison.cloud}\NormalTok{(}\DataTypeTok{colors =} \KeywordTok{c}\NormalTok{(}\StringTok{"gray20"}\NormalTok{, }\StringTok{"gray80"}\NormalTok{),}
+                   \DataTypeTok{max.words =} \DecValTok{50}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/word cloud com sentimento - dardanelles-1.pdf}
+
+\hypertarget{nuvem-de-palavras-com-divisao-dos-sentimentos-dos-livros-da-russia}{%
+\subsubsection{Nuvem de palavras com divisão dos sentimentos dos livros
+da
+Rússia:}\label{nuvem-de-palavras-com-divisao-dos-sentimentos-dos-livros-da-russia}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_tidy }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{get_sentiments}\NormalTok{(}\StringTok{"bing"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word, sentiment, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{acast}\NormalTok{(word }\OperatorTok{~}\StringTok{ }\NormalTok{sentiment, }\DataTypeTok{value.var =} \StringTok{"n"}\NormalTok{, }\DataTypeTok{fill =} \DecValTok{0}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{comparison.cloud}\NormalTok{(}\DataTypeTok{colors =} \KeywordTok{c}\NormalTok{(}\StringTok{"gray20"}\NormalTok{, }\StringTok{"gray80"}\NormalTok{),}
+                   \DataTypeTok{max.words =} \DecValTok{50}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/word cloud com sentimento - russia-1.pdf}
+
+\hypertarget{analise-da-frquencia-de-palavras-nos-diferentes-livros}{%
+\subsection{Análise da frquência de palavras nos diferentes
+livros:}\label{analise-da-frquencia-de-palavras-nos-diferentes-livros}}
+
+\hypertarget{franca}{%
+\subsubsection{França:}\label{franca}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_book_words <-}\StringTok{ }\NormalTok{france_books }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unnest_tokens}\NormalTok{(}\DataTypeTok{input=}\NormalTok{text,}
+                          \DataTypeTok{output=}\StringTok{"word"}\NormalTok{,}
+                          \DataTypeTok{to_lower=}\OtherTok{TRUE}\NormalTok{,}
+                          \DataTypeTok{drop=}\OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word=}\KeywordTok{str_extract}\NormalTok{(word,}\StringTok{"[a-z']+"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{anti_join}\NormalTok{(stop_words, }\DataTypeTok{by=}\KeywordTok{c}\NormalTok{(}\StringTok{"word"}\NormalTok{=}\StringTok{"word"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(title, word, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{france_total_words <-}\StringTok{ }\NormalTok{france_book_words }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(title) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{total =} \KeywordTok{sum}\NormalTok{(n))}
+
+\NormalTok{france_book_words <-}\StringTok{ }\KeywordTok{left_join}\NormalTok{(france_book_words, france_total_words)}
+
+\KeywordTok{ggplot}\NormalTok{(france_book_words, }\KeywordTok{aes}\NormalTok{(n}\OperatorTok{/}\NormalTok{total, }\DataTypeTok{fill =}\NormalTok{ title)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{bins =} \DecValTok{25}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlim}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\FloatTok{0.0009}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{title, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{scales =} \StringTok{"free_y"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/palavras mais frequentes - franca-1.pdf}
+
+\hypertarget{dardanelles}{%
+\subsubsection{Dardanelles:}\label{dardanelles}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_book_words <-}\StringTok{ }\NormalTok{dardanelles_books }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unnest_tokens}\NormalTok{(}\DataTypeTok{input=}\NormalTok{text,}
+                          \DataTypeTok{output=}\StringTok{"word"}\NormalTok{,}
+                          \DataTypeTok{to_lower=}\OtherTok{TRUE}\NormalTok{,}
+                          \DataTypeTok{drop=}\OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word=}\KeywordTok{str_extract}\NormalTok{(word,}\StringTok{"[a-z']+"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{anti_join}\NormalTok{(stop_words, }\DataTypeTok{by=}\KeywordTok{c}\NormalTok{(}\StringTok{"word"}\NormalTok{=}\StringTok{"word"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(title, word, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{dardanelles_total_words <-}\StringTok{ }\NormalTok{dardanelles_book_words }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(title) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{total =} \KeywordTok{sum}\NormalTok{(n))}
+
+\NormalTok{dardanelles_book_words <-}\StringTok{ }\KeywordTok{left_join}\NormalTok{(dardanelles_book_words, dardanelles_total_words)}
+
+\KeywordTok{ggplot}\NormalTok{(dardanelles_book_words, }\KeywordTok{aes}\NormalTok{(n}\OperatorTok{/}\NormalTok{total, }\DataTypeTok{fill =}\NormalTok{ title)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{bins =} \DecValTok{25}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlim}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\FloatTok{0.0009}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{title, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{scales =} \StringTok{"free_y"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/palavras mais frequentes - dardanelles-1.pdf}
+
+\hypertarget{russia}{%
+\subsubsection{Rússia}\label{russia}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_book_words <-}\StringTok{ }\NormalTok{russia_books }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unnest_tokens}\NormalTok{(}\DataTypeTok{input=}\NormalTok{text,}
+                          \DataTypeTok{output=}\StringTok{"word"}\NormalTok{,}
+                          \DataTypeTok{to_lower=}\OtherTok{TRUE}\NormalTok{,}
+                          \DataTypeTok{drop=}\OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word=}\KeywordTok{str_extract}\NormalTok{(word,}\StringTok{"[a-z']+"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{anti_join}\NormalTok{(stop_words, }\DataTypeTok{by=}\KeywordTok{c}\NormalTok{(}\StringTok{"word"}\NormalTok{=}\StringTok{"word"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(title, word, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{russia_total_words <-}\StringTok{ }\NormalTok{russia_book_words }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(title) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{total =} \KeywordTok{sum}\NormalTok{(n))}
+
+\NormalTok{russia_book_words <-}\StringTok{ }\KeywordTok{left_join}\NormalTok{(russia_book_words, russia_total_words)}
+
+\KeywordTok{ggplot}\NormalTok{(russia_book_words, }\KeywordTok{aes}\NormalTok{(n}\OperatorTok{/}\NormalTok{total, }\DataTypeTok{fill =}\NormalTok{ title)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{bins =} \DecValTok{25}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlim}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\FloatTok{0.0009}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{title, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{scales =} \StringTok{"free_y"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/palavras mais frequentes - russia-1.pdf}
+
+\hypertarget{analise-da-comparacao-da-frequencia-dos-termos-nos-livros}{%
+\subsection{Análise da comparação da frequência dos termos nos
+livros:}\label{analise-da-comparacao-da-frequencia-dos-termos-nos-livros}}
+
+\hypertarget{franca-1}{%
+\subsubsection{França}\label{franca-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_freq_by_rank <-}\StringTok{ }\NormalTok{france_book_words }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(title) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{rank =} \KeywordTok{row_number}\NormalTok{(), }
+         \StringTok{`}\DataTypeTok{term frequency}\StringTok{`}\NormalTok{ =}\StringTok{ }\NormalTok{n}\OperatorTok{/}\NormalTok{total)}
+
+
+\NormalTok{france_rank_subset <-}\StringTok{ }\NormalTok{france_freq_by_rank }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(rank }\OperatorTok{<}\StringTok{ }\DecValTok{500}\NormalTok{,}
+\NormalTok{         rank }\OperatorTok{>}\StringTok{ }\DecValTok{10}\NormalTok{)}
+
+\NormalTok{france_lm <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(}\KeywordTok{log10}\NormalTok{(}\StringTok{`}\DataTypeTok{term frequency}\StringTok{`}\NormalTok{) }\OperatorTok{~}\StringTok{ }\KeywordTok{log10}\NormalTok{(rank), }\DataTypeTok{data =}\NormalTok{ france_rank_subset)}
+
+\NormalTok{france_freq_by_rank }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(rank, }\StringTok{`}\DataTypeTok{term frequency}\StringTok{`}\NormalTok{, }\DataTypeTok{color =}\NormalTok{ title)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_abline}\NormalTok{(}\DataTypeTok{intercept =}\NormalTok{ france_lm}\OperatorTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{], }\DataTypeTok{slope =}\NormalTok{ france_lm}\OperatorTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{], }\DataTypeTok{color =} \StringTok{"gray50"}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{size =} \FloatTok{1.1}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.8}\NormalTok{, }\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{scale_x_log10}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_log10}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/comparacao frquencia dos termos - franca-1.pdf}
+
+\hypertarget{dardanelles-1}{%
+\subsubsection{Dardanelles:}\label{dardanelles-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_freq_by_rank <-}\StringTok{ }\NormalTok{dardanelles_book_words }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(title) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{rank =} \KeywordTok{row_number}\NormalTok{(), }
+         \StringTok{`}\DataTypeTok{term frequency}\StringTok{`}\NormalTok{ =}\StringTok{ }\NormalTok{n}\OperatorTok{/}\NormalTok{total)}
+
+\NormalTok{dardanelles_rank_subset <-}\StringTok{ }\NormalTok{dardanelles_freq_by_rank }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(rank }\OperatorTok{<}\StringTok{ }\DecValTok{500}\NormalTok{,}
+\NormalTok{         rank }\OperatorTok{>}\StringTok{ }\DecValTok{10}\NormalTok{)}
+
+\NormalTok{dardanelles_lm <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(}\KeywordTok{log10}\NormalTok{(}\StringTok{`}\DataTypeTok{term frequency}\StringTok{`}\NormalTok{) }\OperatorTok{~}\StringTok{ }\KeywordTok{log10}\NormalTok{(rank), }\DataTypeTok{data =}\NormalTok{ dardanelles_rank_subset)}
+
+\NormalTok{dardanelles_freq_by_rank }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(rank, }\StringTok{`}\DataTypeTok{term frequency}\StringTok{`}\NormalTok{, }\DataTypeTok{color =}\NormalTok{ title)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_abline}\NormalTok{(}\DataTypeTok{intercept =}\NormalTok{ dardanelles_lm}\OperatorTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{], }\DataTypeTok{slope =}\NormalTok{ dardanelles_lm}\OperatorTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{], }\DataTypeTok{color =} \StringTok{"gray50"}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{size =} \FloatTok{1.1}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.8}\NormalTok{, }\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{scale_x_log10}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_log10}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/comparacao frquencia dos termos - dardanelles-1.pdf}
+
+\hypertarget{russia-1}{%
+\subsubsection{Rússia:}\label{russia-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_freq_by_rank <-}\StringTok{ }\NormalTok{russia_book_words }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(title) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{rank =} \KeywordTok{row_number}\NormalTok{(), }
+         \StringTok{`}\DataTypeTok{term frequency}\StringTok{`}\NormalTok{ =}\StringTok{ }\NormalTok{n}\OperatorTok{/}\NormalTok{total)}
+
+\NormalTok{russia_rank_subset <-}\StringTok{ }\NormalTok{russia_freq_by_rank }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(rank }\OperatorTok{<}\StringTok{ }\DecValTok{500}\NormalTok{,}
+\NormalTok{         rank }\OperatorTok{>}\StringTok{ }\DecValTok{10}\NormalTok{)}
+
+\NormalTok{russia_lm <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(}\KeywordTok{log10}\NormalTok{(}\StringTok{`}\DataTypeTok{term frequency}\StringTok{`}\NormalTok{) }\OperatorTok{~}\StringTok{ }\KeywordTok{log10}\NormalTok{(rank), }\DataTypeTok{data =}\NormalTok{ russia_rank_subset)}
+
+\NormalTok{russia_freq_by_rank }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(rank, }\StringTok{`}\DataTypeTok{term frequency}\StringTok{`}\NormalTok{, }\DataTypeTok{color =}\NormalTok{ title)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_abline}\NormalTok{(}\DataTypeTok{intercept =}\NormalTok{ russia_lm}\OperatorTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{], }\DataTypeTok{slope =}\NormalTok{ russia_lm}\OperatorTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{], }\DataTypeTok{color =} \StringTok{"gray50"}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{size =} \FloatTok{1.1}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.8}\NormalTok{, }\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{scale_x_log10}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_log10}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/comparacao frquencia dos termos - russia-1.pdf}
+
+\hypertarget{tf-idf-term-frequency---inverse-document-frequency}{%
+\subsection{TF-IDF (Term Frequency - Inverse Document
+Frequency)}\label{tf-idf-term-frequency---inverse-document-frequency}}
+
+\hypertarget{franca-2}{%
+\subsubsection{França}\label{franca-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_book_words <-}\StringTok{ }\NormalTok{france_book_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{bind_tf_idf}\NormalTok{(word, title, n)}
+
+\NormalTok{france_book_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{total) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(tf_idf))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 25,599 x 6
+##    title                               word        n      tf   idf  tf_idf
+##    <chr>                               <chr>   <int>   <dbl> <dbl>   <dbl>
+##  1 "The Children of France\r\nA Book ~ lad        63 0.00674 1.61  0.0108 
+##  2 "The Children of France\r\nA Book ~ remi       45 0.00481 1.61  0.00775
+##  3 At Ypres with Best-Dunkley          dunkley    90 0.00458 1.61  0.00736
+##  4 "The Children of France\r\nA Book ~ mattia     30 0.00321 1.61  0.00517
+##  5 At Ypres with Best-Dunkley          andrews    63 0.00320 1.61  0.00515
+##  6 "The Children of France\r\nA Book ~ marie      50 0.00535 0.916 0.00490
+##  7 At Ypres with Best-Dunkley          platoon    96 0.00488 0.916 0.00447
+##  8 "Paris War Days\nDiary of an Ameri~ centig~    48 0.00264 1.61  0.00425
+##  9 "The Children of France\r\nA Book ~ prussi~    43 0.00460 0.916 0.00422
+## 10 "Paris War Days\nDiary of an Ameri~ paris     337 0.0185  0.223 0.00413
+## # ... with 25,589 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_book_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(tf_idf)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word =} \KeywordTok{factor}\NormalTok{(word, }\DataTypeTok{levels =} \KeywordTok{rev}\NormalTok{(}\KeywordTok{unique}\NormalTok{(word)))) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(title) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{top_n}\NormalTok{(}\DecValTok{5}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{ungroup }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(word, tf_idf, }\DataTypeTok{fill =}\NormalTok{ title)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{y =} \StringTok{"tf-idf"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{title, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{scales =} \StringTok{"free"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/palavras mais usadas por livro - franca-1.pdf}
+
+\hypertarget{dardanelles-2}{%
+\subsubsection{Dardanelles}\label{dardanelles-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_book_words <-}\StringTok{ }\NormalTok{dardanelles_book_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{bind_tf_idf}\NormalTok{(word, title, n)}
+
+\NormalTok{dardanelles_book_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{total) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(tf_idf))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 25,365 x 6
+##    title                             word          n      tf   idf  tf_idf
+##    <chr>                             <chr>     <int>   <dbl> <dbl>   <dbl>
+##  1 On Land and Sea at the Dardanell~ ken         698 0.0353  0.916 0.0324 
+##  2 On Land and Sea at the Dardanell~ roy         373 0.0189  1.61  0.0304 
+##  3 "Five Months at Anzac\r\nA Narra~ postage     129 0.0122  0.916 0.0112 
+##  4 On Land and Sea at the Dardanell~ dave         82 0.00415 1.61  0.00668
+##  5 "At Suvla Bay\r\nBeing the notes~ hawk         73 0.00656 0.916 0.00601
+##  6 On Land and Sea at the Dardanell~ ken's        73 0.00369 1.61  0.00594
+##  7 On Land and Sea at the Dardanell~ carringt~    60 0.00304 1.61  0.00489
+##  8 "Five Months at Anzac\r\nA Narra~ revised      31 0.00294 1.61  0.00473
+##  9 "Trenching at Gallipoli\r\nThe p~ dugout       40 0.00264 1.61  0.00426
+## 10 "Trenching at Gallipoli\r\nThe p~ newfound~    40 0.00264 1.61  0.00426
+## # ... with 25,355 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_book_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(tf_idf)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word =} \KeywordTok{factor}\NormalTok{(word, }\DataTypeTok{levels =} \KeywordTok{rev}\NormalTok{(}\KeywordTok{unique}\NormalTok{(word)))) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(title) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{top_n}\NormalTok{(}\DecValTok{5}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{ungroup }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(word, tf_idf, }\DataTypeTok{fill =}\NormalTok{ title)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{y =} \StringTok{"tf-idf"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{title, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{scales =} \StringTok{"free"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Selecting by tf_idf
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## conversion failure on 'A Year of the War on Many Fronts—and Behind Them' in
+## 'mbcsToSbcs': dot substituted for <e2>
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## conversion failure on 'A Year of the War on Many Fronts—and Behind Them' in
+## 'mbcsToSbcs': dot substituted for <80>
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## conversion failure on 'A Year of the War on Many Fronts—and Behind Them' in
+## 'mbcsToSbcs': dot substituted for <94>
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## font width unknown for character 0xd
+
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## font width unknown for character 0xd
+
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## font width unknown for character 0xd
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## conversion failure on 'A Year of the War on Many Fronts—and Behind Them' in
+## 'mbcsToSbcs': dot substituted for <e2>
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## conversion failure on 'A Year of the War on Many Fronts—and Behind Them' in
+## 'mbcsToSbcs': dot substituted for <80>
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## conversion failure on 'A Year of the War on Many Fronts—and Behind Them' in
+## 'mbcsToSbcs': dot substituted for <94>
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## font width unknown for character 0xd
+
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## font width unknown for character 0xd
+
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## font width unknown for character 0xd
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## conversion failure on 'A Year of the War on Many Fronts—and Behind Them' in
+## 'mbcsToSbcs': dot substituted for <e2>
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## conversion failure on 'A Year of the War on Many Fronts—and Behind Them' in
+## 'mbcsToSbcs': dot substituted for <80>
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## conversion failure on 'A Year of the War on Many Fronts—and Behind Them' in
+## 'mbcsToSbcs': dot substituted for <94>
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## font width unknown for character 0xd
+
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## font width unknown for character 0xd
+
+## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, :
+## font width unknown for character 0xd
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
+## x$y, : font width unknown for character 0xd
+
+## Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
+## x$y, : font width unknown for character 0xd
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
+## x$y, : conversion failure on 'A Year of the War on Many Fronts—and Behind
+## Them' in 'mbcsToSbcs': dot substituted for <e2>
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
+## x$y, : conversion failure on 'A Year of the War on Many Fronts—and Behind
+## Them' in 'mbcsToSbcs': dot substituted for <80>
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
+## x$y, : conversion failure on 'A Year of the War on Many Fronts—and Behind
+## Them' in 'mbcsToSbcs': dot substituted for <94>
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x,
+## x$y, : font width unknown for character 0xd
+\end{verbatim}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/palavras mais usadas por livro - dardanelles-1.pdf}
+
+\hypertarget{russia-2}{%
+\subsubsection{Rússia:}\label{russia-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_book_words <-}\StringTok{ }\NormalTok{russia_book_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{bind_tf_idf}\NormalTok{(word, title, n)}
+
+\NormalTok{russia_book_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{total) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(tf_idf))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 22,784 x 6
+##    title                               word        n      tf   idf  tf_idf
+##    <chr>                               <chr>   <int>   <dbl> <dbl>   <dbl>
+##  1 "With the \"Die-Hards\" in Siberia" omsk      116 0.00411 1.39  0.00570
+##  2 "The History of the American Exped~ pvt       228 0.00356 1.39  0.00494
+##  3 "With the \"Die-Hards\" in Siberia" czech      92 0.00326 1.39  0.00452
+##  4 "With the \"Die-Hards\" in Siberia" japane~   174 0.00617 0.693 0.00427
+##  5 Fighting Without a War: An Account~ british   111 0.0147  0.288 0.00421
+##  6 "With the \"Die-Hards\" in Siberia" koltch~    77 0.00273 1.39  0.00378
+##  7 Fighting Without a War: An Account~ russia     89 0.0117  0.288 0.00338
+##  8 Fighting Without a War: An Account~ bolshe~    85 0.0112  0.288 0.00323
+##  9 Four Weeks in the Trenches: The Wa~ trench     22 0.00441 0.693 0.00305
+## 10 Fighting Without a War: An Account~ kitsa      28 0.00370 0.693 0.00256
+## # ... with 22,774 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_book_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(tf_idf)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word =} \KeywordTok{factor}\NormalTok{(word, }\DataTypeTok{levels =} \KeywordTok{rev}\NormalTok{(}\KeywordTok{unique}\NormalTok{(word)))) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(title) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{top_n}\NormalTok{(}\DecValTok{5}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{ungroup }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(word, tf_idf, }\DataTypeTok{fill =}\NormalTok{ title)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{y =} \StringTok{"tf-idf"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{title, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{scales =} \StringTok{"free"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/palavras mais usadas por livro - russia-1.pdf}
+
+\hypertarget{analise-de-bigramas}{%
+\subsection{Análise de Bigramas}\label{analise-de-bigramas}}
+
+\hypertarget{franca-3}{%
+\subsubsection{França:}\label{franca-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_bigrams <-}\StringTok{ }\NormalTok{france_books }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unnest_tokens}\NormalTok{(bigram, text, }\DataTypeTok{token =} \StringTok{"ngrams"}\NormalTok{, }\DataTypeTok{n =} \DecValTok{2}\NormalTok{)}
+
+\NormalTok{france_bigrams }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(bigram, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 97,692 x 2
+##    bigram      n
+##    <chr>   <int>
+##  1 <NA>     5344
+##  2 of the   2217
+##  3 in the   1385
+##  4 to the    907
+##  5 on the    610
+##  6 at the    464
+##  7 and the   422
+##  8 for the   404
+##  9 to be     403
+## 10 it was    381
+## # ... with 97,682 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_bigrams_separated <-}\StringTok{ }\NormalTok{france_bigrams }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{separate}\NormalTok{(bigram, }\KeywordTok{c}\NormalTok{(}\StringTok{"word1"}\NormalTok{, }\StringTok{"word2"}\NormalTok{), }\DataTypeTok{sep =} \StringTok{" "}\NormalTok{)}
+
+\NormalTok{france_bigrams_filtered <-}\StringTok{ }\NormalTok{france_bigrams_separated }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\NormalTok{word1 }\OperatorTok{%in%}\StringTok{ }\NormalTok{stop_words}\OperatorTok{$}\NormalTok{word) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\NormalTok{word2 }\OperatorTok{%in%}\StringTok{ }\NormalTok{stop_words}\OperatorTok{$}\NormalTok{word)}
+
+\NormalTok{france_bigram_counts <-}\StringTok{ }\NormalTok{france_bigrams_filtered }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{count}\NormalTok{(word1, word2, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{)}
+
+\NormalTok{france_bigrams_united <-}\StringTok{ }\NormalTok{france_bigrams_filtered }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unite}\NormalTok{(bigram, word1, word2, }\DataTypeTok{sep =} \StringTok{" "}\NormalTok{)}
+
+\NormalTok{france_bigram_tf_idf <-}\StringTok{ }\NormalTok{france_bigrams_united }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(title, bigram) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{bind_tf_idf}\NormalTok{(bigram, title, n) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(tf_idf))}
+
+\NormalTok{france_bigram_tf_idf }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(tf_idf)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{bigram =} \KeywordTok{factor}\NormalTok{(bigram, }\DataTypeTok{levels =} \KeywordTok{rev}\NormalTok{(}\KeywordTok{unique}\NormalTok{(bigram)))) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(title) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{top_n}\NormalTok{(}\DecValTok{5}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{ungroup }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(bigram, tf_idf, }\DataTypeTok{fill =}\NormalTok{ title)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{y =} \StringTok{"tf-idf"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{title, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{scales =} \StringTok{"free"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/analise de bigramas - franca-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_bigram_counts }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(n }\OperatorTok{>=}\StringTok{ }\DecValTok{15}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggraph}\NormalTok{(}\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{edge_alpha =}\NormalTok{ n, }\DataTypeTok{edge_width =}\NormalTok{ n), }\DataTypeTok{edge_colour =} \StringTok{"royalblue"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{repel =} \OtherTok{TRUE}\NormalTok{,}
+                 \DataTypeTok{point.padding =} \KeywordTok{unit}\NormalTok{(}\FloatTok{0.2}\NormalTok{, }\StringTok{"lines"}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_void}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/analise de bigramas - franca-2.pdf}
+
+\hypertarget{dardanelles-3}{%
+\subsubsection{Dardanelles:}\label{dardanelles-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_bigrams <-}\StringTok{ }\NormalTok{dardanelles_books }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unnest_tokens}\NormalTok{(bigram, text, }\DataTypeTok{token =} \StringTok{"ngrams"}\NormalTok{, }\DataTypeTok{n =} \DecValTok{2}\NormalTok{)}
+
+\NormalTok{dardanelles_bigrams }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(bigram, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 102,363 x 2
+##    bigram       n
+##    <chr>    <int>
+##  1 <NA>      6449
+##  2 of the    1783
+##  3 in the    1143
+##  4 to the     775
+##  5 and the    671
+##  6 on the     659
+##  7 it was     627
+##  8 in a       404
+##  9 from the   401
+## 10 at the     390
+## # ... with 102,353 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_bigrams_separated <-}\StringTok{ }\NormalTok{dardanelles_bigrams }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{separate}\NormalTok{(bigram, }\KeywordTok{c}\NormalTok{(}\StringTok{"word1"}\NormalTok{, }\StringTok{"word2"}\NormalTok{), }\DataTypeTok{sep =} \StringTok{" "}\NormalTok{)}
+
+\NormalTok{dardanelles_bigrams_filtered <-}\StringTok{ }\NormalTok{dardanelles_bigrams_separated }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\NormalTok{word1 }\OperatorTok{%in%}\StringTok{ }\NormalTok{stop_words}\OperatorTok{$}\NormalTok{word) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\NormalTok{word2 }\OperatorTok{%in%}\StringTok{ }\NormalTok{stop_words}\OperatorTok{$}\NormalTok{word)}
+
+\NormalTok{dardanelles_bigram_counts <-}\StringTok{ }\NormalTok{dardanelles_bigrams_filtered }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{count}\NormalTok{(word1, word2, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{)}
+
+\NormalTok{dardanelles_bigrams_united <-}\StringTok{ }\NormalTok{dardanelles_bigrams_filtered }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unite}\NormalTok{(bigram, word1, word2, }\DataTypeTok{sep =} \StringTok{" "}\NormalTok{)}
+
+\NormalTok{dardanelles_bigram_tf_idf <-}\StringTok{ }\NormalTok{dardanelles_bigrams_united }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(title, bigram) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{bind_tf_idf}\NormalTok{(bigram, title, n) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(tf_idf))}
+
+\NormalTok{dardanelles_bigram_tf_idf }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(tf_idf)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{bigram =} \KeywordTok{factor}\NormalTok{(bigram, }\DataTypeTok{levels =} \KeywordTok{rev}\NormalTok{(}\KeywordTok{unique}\NormalTok{(bigram)))) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(title) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{top_n}\NormalTok{(}\DecValTok{5}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{ungroup }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(bigram, tf_idf, }\DataTypeTok{fill =}\NormalTok{ title)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{y =} \StringTok{"tf-idf"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{title, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{scales =} \StringTok{"free"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/analise de bigramas - dardanelles-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_bigram_counts }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(n }\OperatorTok{>=}\StringTok{ }\DecValTok{15}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggraph}\NormalTok{(}\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{edge_alpha =}\NormalTok{ n, }\DataTypeTok{edge_width =}\NormalTok{ n), }\DataTypeTok{edge_colour =} \StringTok{"royalblue"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{repel =} \OtherTok{TRUE}\NormalTok{,}
+                 \DataTypeTok{point.padding =} \KeywordTok{unit}\NormalTok{(}\FloatTok{0.2}\NormalTok{, }\StringTok{"lines"}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_void}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/analise de bigramas - dardanelles-2.pdf}
+
+\hypertarget{russia-3}{%
+\subsubsection{Rússia}\label{russia-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_bigrams <-}\StringTok{ }\NormalTok{russia_books }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unnest_tokens}\NormalTok{(bigram, text, }\DataTypeTok{token =} \StringTok{"ngrams"}\NormalTok{, }\DataTypeTok{n =} \DecValTok{2}\NormalTok{)}
+
+\NormalTok{russia_bigrams }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(bigram, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 109,418 x 2
+##    bigram       n
+##    <chr>    <int>
+##  1 <NA>      4220
+##  2 of the    2776
+##  3 in the    1371
+##  4 to the    1081
+##  5 on the     878
+##  6 and the    691
+##  7 it was     505
+##  8 for the    497
+##  9 by the     493
+## 10 had been   444
+## # ... with 109,408 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_bigrams_separated <-}\StringTok{ }\NormalTok{russia_bigrams }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{separate}\NormalTok{(bigram, }\KeywordTok{c}\NormalTok{(}\StringTok{"word1"}\NormalTok{, }\StringTok{"word2"}\NormalTok{), }\DataTypeTok{sep =} \StringTok{" "}\NormalTok{)}
+
+\NormalTok{russia_bigrams_filtered <-}\StringTok{ }\NormalTok{russia_bigrams_separated }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\NormalTok{word1 }\OperatorTok{%in%}\StringTok{ }\NormalTok{stop_words}\OperatorTok{$}\NormalTok{word) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\NormalTok{word2 }\OperatorTok{%in%}\StringTok{ }\NormalTok{stop_words}\OperatorTok{$}\NormalTok{word)}
+
+\NormalTok{russia_bigram_counts <-}\StringTok{ }\NormalTok{russia_bigrams_filtered }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{count}\NormalTok{(word1, word2, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{)}
+
+\NormalTok{russia_bigrams_united <-}\StringTok{ }\NormalTok{russia_bigrams_filtered }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unite}\NormalTok{(bigram, word1, word2, }\DataTypeTok{sep =} \StringTok{" "}\NormalTok{)}
+
+\NormalTok{russia_bigram_tf_idf <-}\StringTok{ }\NormalTok{russia_bigrams_united }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(title, bigram) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{bind_tf_idf}\NormalTok{(bigram, title, n) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(tf_idf))}
+
+\NormalTok{russia_bigram_tf_idf }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(tf_idf)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{bigram =} \KeywordTok{factor}\NormalTok{(bigram, }\DataTypeTok{levels =} \KeywordTok{rev}\NormalTok{(}\KeywordTok{unique}\NormalTok{(bigram)))) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(title) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{top_n}\NormalTok{(}\DecValTok{5}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{ungroup }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(bigram, tf_idf, }\DataTypeTok{fill =}\NormalTok{ title)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{y =} \StringTok{"tf-idf"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{title, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{scales =} \StringTok{"free"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/analise de bigramas - russia-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_bigram_counts }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(n }\OperatorTok{>=}\StringTok{ }\DecValTok{20}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggraph}\NormalTok{(}\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{edge_alpha =}\NormalTok{ n, }\DataTypeTok{edge_width =}\NormalTok{ n), }\DataTypeTok{edge_colour =} \StringTok{"royalblue"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{repel =} \OtherTok{TRUE}\NormalTok{,}
+                 \DataTypeTok{point.padding =} \KeywordTok{unit}\NormalTok{(}\FloatTok{0.2}\NormalTok{, }\StringTok{"lines"}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_void}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/analise de bigramas - russia-2.pdf}
+
+\hypertarget{analise-de-sentimentos-dos-bigramas}{%
+\subsection{Análise de Sentimentos dos
+Bigramas}\label{analise-de-sentimentos-dos-bigramas}}
+
+\hypertarget{franca-4}{%
+\subsubsection{França}\label{franca-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_bigrams_separated }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(word1 }\OperatorTok{==}\StringTok{ "not"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word1, word2, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 430 x 3
+##    word1 word2     n
+##    <chr> <chr> <int>
+##  1 not   only     52
+##  2 not   a        50
+##  3 not   be       46
+##  4 not   yet      32
+##  5 not   been     30
+##  6 not   know     29
+##  7 not   to       27
+##  8 not   the      25
+##  9 not   get      17
+## 10 not   have     15
+## # ... with 420 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_not_words <-}\StringTok{ }\NormalTok{france_bigrams_separated }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(word1 }\OperatorTok{==}\StringTok{ "not"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{get_sentiments}\NormalTok{(}\StringTok{"afinn"}\NormalTok{), }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\DataTypeTok{word2 =} \StringTok{"word"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word2, score, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{france_not_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{contribution =}\NormalTok{ n }\OperatorTok{*}\StringTok{ }\NormalTok{score) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(}\KeywordTok{abs}\NormalTok{(contribution))) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{20}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word2 =} \KeywordTok{reorder}\NormalTok{(word2, contribution)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(word2, n }\OperatorTok{*}\StringTok{ }\NormalTok{score, }\DataTypeTok{fill =}\NormalTok{ n }\OperatorTok{*}\StringTok{ }\NormalTok{score }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Words preceded by }\CharTok{\textbackslash{}"}\StringTok{not}\CharTok{\textbackslash{}"}\StringTok{"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Sentiment score * number of occurrences"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/anaslise de sentimento dos bigramas - franca-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{negation_words <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"not"}\NormalTok{, }\StringTok{"no"}\NormalTok{, }\StringTok{"never"}\NormalTok{, }\StringTok{"without"}\NormalTok{)}
+
+\NormalTok{france_negated_words <-}\StringTok{ }\NormalTok{france_bigrams_separated }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(word1 }\OperatorTok{%in%}\StringTok{ }\NormalTok{negation_words) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{get_sentiments}\NormalTok{(}\StringTok{"afinn"}\NormalTok{), }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\DataTypeTok{word2 =} \StringTok{"word"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word1, word2, score, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{france_negated_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{contribution =}\NormalTok{ n }\OperatorTok{*}\StringTok{ }\NormalTok{score) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(}\KeywordTok{abs}\NormalTok{(contribution))) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{20}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word2 =} \KeywordTok{reorder}\NormalTok{(word2, contribution)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(word2, n }\OperatorTok{*}\StringTok{ }\NormalTok{score, }\DataTypeTok{fill =}\NormalTok{ n }\OperatorTok{*}\StringTok{ }\NormalTok{score }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Words preceded by }\CharTok{\textbackslash{}"}\StringTok{not}\CharTok{\textbackslash{}"}\StringTok{, }\CharTok{\textbackslash{}"}\StringTok{no}\CharTok{\textbackslash{}"}\StringTok{, }\CharTok{\textbackslash{}"}\StringTok{never}\CharTok{\textbackslash{}"}\StringTok{, }\CharTok{\textbackslash{}"}\StringTok{without}\CharTok{\textbackslash{}"}\StringTok{"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Sentiment score * number of occurrences"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/anaslise de sentimento dos bigramas - franca-2.pdf}
+
+\hypertarget{dardanelles-4}{%
+\subsubsection{Dardanelles}\label{dardanelles-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_bigrams_separated }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(word1 }\OperatorTok{==}\StringTok{ "not"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word1, word2, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 330 x 3
+##    word1 word2     n
+##    <chr> <chr> <int>
+##  1 not   a        53
+##  2 not   to       27
+##  3 not   the      25
+##  4 not   only     24
+##  5 not   be       20
+##  6 not   so       17
+##  7 not   know     16
+##  8 not   been     15
+##  9 not   yet      15
+## 10 not   get      14
+## # ... with 320 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_not_words <-}\StringTok{ }\NormalTok{dardanelles_bigrams_separated }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(word1 }\OperatorTok{==}\StringTok{ "not"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{get_sentiments}\NormalTok{(}\StringTok{"afinn"}\NormalTok{), }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\DataTypeTok{word2 =} \StringTok{"word"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word2, score, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{dardanelles_not_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{contribution =}\NormalTok{ n }\OperatorTok{*}\StringTok{ }\NormalTok{score) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(}\KeywordTok{abs}\NormalTok{(contribution))) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{20}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word2 =} \KeywordTok{reorder}\NormalTok{(word2, contribution)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(word2, n }\OperatorTok{*}\StringTok{ }\NormalTok{score, }\DataTypeTok{fill =}\NormalTok{ n }\OperatorTok{*}\StringTok{ }\NormalTok{score }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Words preceded by }\CharTok{\textbackslash{}"}\StringTok{not}\CharTok{\textbackslash{}"}\StringTok{"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Sentiment score * number of occurrences"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/anaslise de sentimento dos bigramas - dardanelles-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{negation_words <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"not"}\NormalTok{, }\StringTok{"no"}\NormalTok{, }\StringTok{"never"}\NormalTok{, }\StringTok{"without"}\NormalTok{)}
+
+\NormalTok{dardanelles_negated_words <-}\StringTok{ }\NormalTok{dardanelles_bigrams_separated }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(word1 }\OperatorTok{%in%}\StringTok{ }\NormalTok{negation_words) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{get_sentiments}\NormalTok{(}\StringTok{"afinn"}\NormalTok{), }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\DataTypeTok{word2 =} \StringTok{"word"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word1, word2, score, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{dardanelles_negated_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{contribution =}\NormalTok{ n }\OperatorTok{*}\StringTok{ }\NormalTok{score) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(}\KeywordTok{abs}\NormalTok{(contribution))) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{20}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word2 =} \KeywordTok{reorder}\NormalTok{(word2, contribution)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(word2, n }\OperatorTok{*}\StringTok{ }\NormalTok{score, }\DataTypeTok{fill =}\NormalTok{ n }\OperatorTok{*}\StringTok{ }\NormalTok{score }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Words preceded by }\CharTok{\textbackslash{}"}\StringTok{not}\CharTok{\textbackslash{}"}\StringTok{, }\CharTok{\textbackslash{}"}\StringTok{no}\CharTok{\textbackslash{}"}\StringTok{, }\CharTok{\textbackslash{}"}\StringTok{never}\CharTok{\textbackslash{}"}\StringTok{, }\CharTok{\textbackslash{}"}\StringTok{without}\CharTok{\textbackslash{}"}\StringTok{"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Sentiment score * number of occurrences"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/anaslise de sentimento dos bigramas - dardanelles-2.pdf}
+
+\hypertarget{russia-4}{%
+\subsubsection{Rússia:}\label{russia-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_bigrams_separated }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(word1 }\OperatorTok{==}\StringTok{ "not"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word1, word2, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 411 x 3
+##    word1 word2     n
+##    <chr> <chr> <int>
+##  1 not   be       40
+##  2 not   a        38
+##  3 not   to       35
+##  4 not   the      32
+##  5 not   know     24
+##  6 not   only     23
+##  7 not   been     22
+##  8 not   have     19
+##  9 not   one      18
+## 10 not   see      16
+## # ... with 401 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_not_words <-}\StringTok{ }\NormalTok{russia_bigrams_separated }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(word1 }\OperatorTok{==}\StringTok{ "not"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{get_sentiments}\NormalTok{(}\StringTok{"afinn"}\NormalTok{), }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\DataTypeTok{word2 =} \StringTok{"word"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word2, score, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{russia_not_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{contribution =}\NormalTok{ n }\OperatorTok{*}\StringTok{ }\NormalTok{score) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(}\KeywordTok{abs}\NormalTok{(contribution))) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{20}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word2 =} \KeywordTok{reorder}\NormalTok{(word2, contribution)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(word2, n }\OperatorTok{*}\StringTok{ }\NormalTok{score, }\DataTypeTok{fill =}\NormalTok{ n }\OperatorTok{*}\StringTok{ }\NormalTok{score }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Words preceded by }\CharTok{\textbackslash{}"}\StringTok{not}\CharTok{\textbackslash{}"}\StringTok{"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Sentiment score * number of occurrences"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/anaslise de sentimento dos bigramas - russia-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{negation_words <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"not"}\NormalTok{, }\StringTok{"no"}\NormalTok{, }\StringTok{"never"}\NormalTok{, }\StringTok{"without"}\NormalTok{)}
+
+\NormalTok{russia_negated_words <-}\StringTok{ }\NormalTok{russia_bigrams_separated }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(word1 }\OperatorTok{%in%}\StringTok{ }\NormalTok{negation_words) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{get_sentiments}\NormalTok{(}\StringTok{"afinn"}\NormalTok{), }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\DataTypeTok{word2 =} \StringTok{"word"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{count}\NormalTok{(word1, word2, score, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{()}
+
+\NormalTok{russia_negated_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{contribution =}\NormalTok{ n }\OperatorTok{*}\StringTok{ }\NormalTok{score) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(}\KeywordTok{abs}\NormalTok{(contribution))) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{20}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word2 =} \KeywordTok{reorder}\NormalTok{(word2, contribution)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(word2, n }\OperatorTok{*}\StringTok{ }\NormalTok{score, }\DataTypeTok{fill =}\NormalTok{ n }\OperatorTok{*}\StringTok{ }\NormalTok{score }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Words preceded by }\CharTok{\textbackslash{}"}\StringTok{not}\CharTok{\textbackslash{}"}\StringTok{, }\CharTok{\textbackslash{}"}\StringTok{no}\CharTok{\textbackslash{}"}\StringTok{, }\CharTok{\textbackslash{}"}\StringTok{never}\CharTok{\textbackslash{}"}\StringTok{, }\CharTok{\textbackslash{}"}\StringTok{without}\CharTok{\textbackslash{}"}\StringTok{"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Sentiment score * number of occurrences"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/anaslise de sentimento dos bigramas - russia-2.pdf}
+
+\hypertarget{impressao-de-grafos-dos-bigramas}{%
+\subsection{Impressão de grafos dos
+bigramas:}\label{impressao-de-grafos-dos-bigramas}}
+
+\hypertarget{franca-5}{%
+\subsubsection{França}\label{franca-5}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_bigram_graph <-}\StringTok{ }\NormalTok{france_bigram_counts }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(n }\OperatorTok{>}\StringTok{ }\DecValTok{10}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{()}
+
+\NormalTok{france_bigram_graph}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## IGRAPH 2fd7a81 DN-- 79 50 -- 
+## + attr: name (v/c), n (e/n)
+## + edges from 2fd7a81 (vertex names):
+##  [1] red       ->cross      captain   ->andrews    degrees   ->centigrade
+##  [4] major     ->brighten   alsace    ->lorraine   machine   ->gun       
+##  [7] sergeant  ->major      lancashire->fusiliers  front     ->line      
+## [10] herr      ->von        lance     ->corporal   sergeant  ->baldwin   
+## [13] french    ->army       machine   ->guns       2         ->5th       
+## [16] foreign   ->affairs    french    ->soldiers   bilge     ->trench    
+## [19] german    ->army       de        ->la         rue       ->de        
+## [22] war       ->office     le        ->capitaine  military  ->governor  
+## + ... omitted several edges
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2018}\NormalTok{)}
+
+\KeywordTok{ggraph}\NormalTok{(france_bigram_graph, }\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{vjust =} \DecValTok{1}\NormalTok{, }\DataTypeTok{hjust =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/grafos dos bigramas - franca-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a <-}\StringTok{ }\NormalTok{grid}\OperatorTok{::}\KeywordTok{arrow}\NormalTok{(}\DataTypeTok{type =} \StringTok{"closed"}\NormalTok{, }\DataTypeTok{length =} \KeywordTok{unit}\NormalTok{(.}\DecValTok{15}\NormalTok{, }\StringTok{"inches"}\NormalTok{))}
+
+\KeywordTok{ggraph}\NormalTok{(france_bigram_graph, }\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{edge_alpha =}\NormalTok{ n), }\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{,}
+                 \DataTypeTok{arrow =}\NormalTok{ a, }\DataTypeTok{end_cap =} \KeywordTok{circle}\NormalTok{(.}\DecValTok{07}\NormalTok{, }\StringTok{'inches'}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{(}\DataTypeTok{color =} \StringTok{"lightblue"}\NormalTok{, }\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{vjust =} \DecValTok{1}\NormalTok{, }\DataTypeTok{hjust =} \DecValTok{1}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_void}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/grafos dos bigramas - franca-2.pdf}
+
+\hypertarget{dardanelles-5}{%
+\subsubsection{Dardanelles:}\label{dardanelles-5}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_bigram_graph <-}\StringTok{ }\NormalTok{dardanelles_bigram_counts }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(n }\OperatorTok{>}\StringTok{ }\DecValTok{10}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{()}
+
+\NormalTok{dardanelles_bigram_graph}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## IGRAPH a7f9f35 DN-- 78 57 -- 
+## + attr: name (v/c), n (e/n)
+## + edges from a7f9f35 (vertex names):
+##  [1] _postage ->1d         firing   ->line       6d       ->_postage  
+##  [4] 3s       ->6d         hundred  ->yards      stretcher->bearers   
+##  [7] _postage ->2d         salt     ->lake       cloth    ->gilt      
+## [10] machine  ->gun        ken      ->answered   red      ->cross     
+## [13] suvla    ->bay        bully    ->beef       gilt     ->gilt      
+## [16] top      ->3s         6s       ->_postage   dressing ->station   
+## [19] gilt     ->top        edges    ->6s         hospital ->ship      
+## [22] morocco  ->gilt       barbed   ->wire       captain  ->carrington
+## + ... omitted several edges
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2018}\NormalTok{)}
+
+\KeywordTok{ggraph}\NormalTok{(dardanelles_bigram_graph, }\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{vjust =} \DecValTok{1}\NormalTok{, }\DataTypeTok{hjust =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/grafos dos bigramas - dardanelles-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a <-}\StringTok{ }\NormalTok{grid}\OperatorTok{::}\KeywordTok{arrow}\NormalTok{(}\DataTypeTok{type =} \StringTok{"closed"}\NormalTok{, }\DataTypeTok{length =} \KeywordTok{unit}\NormalTok{(.}\DecValTok{15}\NormalTok{, }\StringTok{"inches"}\NormalTok{))}
+
+\KeywordTok{ggraph}\NormalTok{(dardanelles_bigram_graph, }\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{edge_alpha =}\NormalTok{ n), }\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{,}
+                 \DataTypeTok{arrow =}\NormalTok{ a, }\DataTypeTok{end_cap =} \KeywordTok{circle}\NormalTok{(.}\DecValTok{07}\NormalTok{, }\StringTok{'inches'}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{(}\DataTypeTok{color =} \StringTok{"lightblue"}\NormalTok{, }\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{vjust =} \DecValTok{1}\NormalTok{, }\DataTypeTok{hjust =} \DecValTok{1}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_void}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/grafos dos bigramas - dardanelles-2.pdf}
+
+\hypertarget{russia-5}{%
+\subsubsection{Rússia:}\label{russia-5}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_bigram_graph <-}\StringTok{ }\NormalTok{russia_bigram_counts }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(n }\OperatorTok{>}\StringTok{ }\DecValTok{10}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{()}
+
+\NormalTok{russia_bigram_graph}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## IGRAPH 176a9dd DN-- 138 117 -- 
+## + attr: name (v/c), n (e/n)
+## + edges from 176a9dd (vertex names):
+##  [1] north     ->russia   machine   ->gun      339th     ->inf     
+##  [4] red       ->cross    machine   ->guns     american  ->soldiers
+##  [7] official  ->photo    north     ->russian  american  ->troops  
+## [10] ust       ->padenga  red       ->guards   admiral   ->koltchak
+## [13] russian   ->people   british   ->officer  russian   ->army    
+## [16] british   ->officers commanding->officer  dvina     ->river   
+## [19] american  ->officer  american  ->soldier  supreme   ->governor
+## [22] 310th     ->engrs   
+## + ... omitted several edges
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2018}\NormalTok{)}
+
+\KeywordTok{ggraph}\NormalTok{(russia_bigram_graph, }\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{vjust =} \DecValTok{1}\NormalTok{, }\DataTypeTok{hjust =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/grafos dos bigramas - russia-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a <-}\StringTok{ }\NormalTok{grid}\OperatorTok{::}\KeywordTok{arrow}\NormalTok{(}\DataTypeTok{type =} \StringTok{"closed"}\NormalTok{, }\DataTypeTok{length =} \KeywordTok{unit}\NormalTok{(.}\DecValTok{15}\NormalTok{, }\StringTok{"inches"}\NormalTok{))}
+
+\KeywordTok{ggraph}\NormalTok{(russia_bigram_graph, }\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{edge_alpha =}\NormalTok{ n), }\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{,}
+                 \DataTypeTok{arrow =}\NormalTok{ a, }\DataTypeTok{end_cap =} \KeywordTok{circle}\NormalTok{(.}\DecValTok{07}\NormalTok{, }\StringTok{'inches'}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{(}\DataTypeTok{color =} \StringTok{"lightblue"}\NormalTok{, }\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{vjust =} \DecValTok{1}\NormalTok{, }\DataTypeTok{hjust =} \DecValTok{1}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_void}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/grafos dos bigramas - russia-2.pdf}
+
+\hypertarget{correlacao-dos-bigramas}{%
+\subsection{Correlação dos Bigramas}\label{correlacao-dos-bigramas}}
+
+\hypertarget{franca-6}{%
+\subsubsection{França:}\label{franca-6}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_section_words <-}\StringTok{ }\NormalTok{france_books }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{section =} \KeywordTok{row_number}\NormalTok{() }\OperatorTok{%/%}\StringTok{ }\DecValTok{10}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(section }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unnest_tokens}\NormalTok{(word, text) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word=}\KeywordTok{str_extract}\NormalTok{(word,}\StringTok{"[a-z']+"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\NormalTok{word }\OperatorTok{%in%}\StringTok{ }\NormalTok{stop_words}\OperatorTok{$}\NormalTok{word)}
+
+\NormalTok{france_section_words}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 83,918 x 5
+##    gutenberg_id title                           linenumber section word   
+##           <int> <chr>                                <int>   <dbl> <chr>  
+##  1         9975 "Paris War Days\nDiary of an A~         11       1 diary  
+##  2         9975 "Paris War Days\nDiary of an A~         11       1 americ~
+##  3         9975 "Paris War Days\nDiary of an A~         19       1 charles
+##  4         9975 "Paris War Days\nDiary of an A~         19       1 inman  
+##  5         9975 "Paris War Days\nDiary of an A~         19       1 barnard
+##  6         9975 "Paris War Days\nDiary of an A~         19       1 ll     
+##  7         9975 "Paris War Days\nDiary of an A~         19       1 harvard
+##  8         9975 "Paris War Days\nDiary of an A~         21       2 knight 
+##  9         9975 "Paris War Days\nDiary of an A~         21       2 legion 
+## 10         9975 "Paris War Days\nDiary of an A~         21       2 honor  
+## # ... with 83,908 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_word_pairs <-}\StringTok{ }\NormalTok{france_section_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{pairwise_count}\NormalTok{(word, section, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{()}
+
+\NormalTok{france_word_pairs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2,042,368 x 3
+##    item1  item2      n
+##    <chr>  <chr>  <dbl>
+##  1 french german   119
+##  2 german french   119
+##  3 french war      105
+##  4 war    french   105
+##  5 day    war      104
+##  6 war    day      104
+##  7 france war       92
+##  8 war    france    92
+##  9 german war       89
+## 10 war    german    89
+## # ... with 2,042,358 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_word_cors <-}\StringTok{ }\NormalTok{france_section_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{na.omit}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(word) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\KeywordTok{n}\NormalTok{() }\OperatorTok{>=}\StringTok{ }\DecValTok{20}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{pairwise_cor}\NormalTok{(word, section, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{)}
+
+\NormalTok{france_word_cors}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 652,056 x 3
+##    item1       item2       correlation
+##    <chr>       <chr>             <dbl>
+##  1 centigrade  degrees           0.906
+##  2 degrees     centigrade        0.906
+##  3 lancashire  fusiliers         0.820
+##  4 fusiliers   lancashire        0.820
+##  5 corporal    lance             0.806
+##  6 lance       corporal          0.806
+##  7 lorraine    alsace            0.773
+##  8 alsace      lorraine          0.773
+##  9 centigrade  thermometer       0.704
+## 10 thermometer centigrade        0.704
+## # ... with 652,046 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_word_cors }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(item1 }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"lorraine"}\NormalTok{, }\StringTok{"lancashire"}\NormalTok{, }\StringTok{"fusiliers"}\NormalTok{, }\StringTok{"von"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(item1) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{top_n}\NormalTok{(}\DecValTok{6}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{item2 =} \KeywordTok{reorder}\NormalTok{(item2, correlation)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(item2, correlation)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\StringTok{ }\NormalTok{item1, }\DataTypeTok{scales =} \StringTok{"free"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/graficos de correlacao dos bigramas - franca-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2018}\NormalTok{)}
+
+\NormalTok{france_word_cors }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(correlation }\OperatorTok{>}\StringTok{ }\FloatTok{.4}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggraph}\NormalTok{(}\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{edge_alpha =}\NormalTok{ correlation), }\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{(}\DataTypeTok{color =} \StringTok{"lightblue"}\NormalTok{, }\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{repel =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_void}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/graficos de correlacao dos bigramas - franca-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{france_word_cors }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(correlation }\OperatorTok{>}\StringTok{ }\FloatTok{.4}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggraph}\NormalTok{(}\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{edge_alpha =}\NormalTok{ correlation, }\DataTypeTok{edge_width =}\NormalTok{ correlation), }\DataTypeTok{edge_colour =} \StringTok{"cyan4"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{repel =} \OtherTok{TRUE}\NormalTok{, }
+                 \DataTypeTok{point.padding =} \KeywordTok{unit}\NormalTok{(}\FloatTok{0.2}\NormalTok{, }\StringTok{"lines"}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_void}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/graficos de correlacao dos bigramas - franca-3.pdf}
+
+\hypertarget{dardanelles-6}{%
+\subsubsection{Dardanelles:}\label{dardanelles-6}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_section_words <-}\StringTok{ }\NormalTok{dardanelles_books }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{section =} \KeywordTok{row_number}\NormalTok{() }\OperatorTok{%/%}\StringTok{ }\DecValTok{10}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(section }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unnest_tokens}\NormalTok{(word, text) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word=}\KeywordTok{str_extract}\NormalTok{(word,}\StringTok{"[a-z']+"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\NormalTok{word }\OperatorTok{%in%}\StringTok{ }\NormalTok{stop_words}\OperatorTok{$}\NormalTok{word)}
+
+\NormalTok{dardanelles_section_words}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 86,828 x 5
+##    gutenberg_id title                           linenumber section word   
+##           <int> <chr>                                <int>   <dbl> <chr>  
+##  1         3306 "At Suvla Bay\r\nBeing the not~         11       1 serving
+##  2         3306 "At Suvla Bay\r\nBeing the not~         11       1 field  
+##  3         3306 "At Suvla Bay\r\nBeing the not~         11       1 ambula~
+##  4         3306 "At Suvla Bay\r\nBeing the not~         11       1 divisi~
+##  5         3306 "At Suvla Bay\r\nBeing the not~         11       1 medite~
+##  6         3306 "At Suvla Bay\r\nBeing the not~         12       1 expedi~
+##  7         3306 "At Suvla Bay\r\nBeing the not~         12       1 force  
+##  8         3306 "At Suvla Bay\r\nBeing the not~         12       1 war    
+##  9         3306 "At Suvla Bay\r\nBeing the not~         18       1 minobi 
+## 10         3306 "At Suvla Bay\r\nBeing the not~         20       2 played 
+## # ... with 86,818 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_word_pairs <-}\StringTok{ }\NormalTok{dardanelles_section_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{pairwise_count}\NormalTok{(word, section, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{()}
+
+\NormalTok{dardanelles_word_pairs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2,169,572 x 3
+##    item1    item2        n
+##    <chr>    <chr>    <dbl>
+##  1 roy      ken        215
+##  2 ken      roy        215
+##  3 ken      time        83
+##  4 time     ken         83
+##  5 ken      answered    80
+##  6 answered ken         80
+##  7 postage  cloth       76
+##  8 cloth    postage     76
+##  9 ken      moment      67
+## 10 moment   ken         67
+## # ... with 2,169,562 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_word_cors <-}\StringTok{ }\NormalTok{dardanelles_section_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{na.omit}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(word) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\KeywordTok{n}\NormalTok{() }\OperatorTok{>=}\StringTok{ }\DecValTok{20}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{pairwise_cor}\NormalTok{(word, section, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{)}
+
+\NormalTok{dardanelles_word_cors}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 818,120 x 3
+##    item1   item2   correlation
+##    <chr>   <chr>         <dbl>
+##  1 morocco gilt          0.905
+##  2 gilt    morocco       0.905
+##  3 edges   morocco       0.904
+##  4 morocco edges         0.904
+##  5 lake    salt          0.876
+##  6 salt    lake          0.876
+##  7 edges   gilt          0.859
+##  8 gilt    edges         0.859
+##  9 beef    bully         0.836
+## 10 bully   beef          0.836
+## # ... with 818,110 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_word_cors }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(item1 }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"edges"}\NormalTok{, }\StringTok{"morocco"}\NormalTok{, }\StringTok{"jhill"}\NormalTok{, }\StringTok{"gilt"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(item1) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{top_n}\NormalTok{(}\DecValTok{6}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{item2 =} \KeywordTok{reorder}\NormalTok{(item2, correlation)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(item2, correlation)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\StringTok{ }\NormalTok{item1, }\DataTypeTok{scales =} \StringTok{"free"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/graficos de correlacao dos bigramas - dardanelles-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2018}\NormalTok{)}
+
+\NormalTok{dardanelles_word_cors }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(correlation }\OperatorTok{>}\StringTok{ }\FloatTok{.4}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggraph}\NormalTok{(}\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{edge_alpha =}\NormalTok{ correlation), }\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{(}\DataTypeTok{color =} \StringTok{"lightblue"}\NormalTok{, }\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{repel =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_void}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/graficos de correlacao dos bigramas - dardanelles-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dardanelles_word_cors }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(correlation }\OperatorTok{>}\StringTok{ }\FloatTok{.4}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggraph}\NormalTok{(}\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{edge_alpha =}\NormalTok{ correlation, }\DataTypeTok{edge_width =}\NormalTok{ correlation), }\DataTypeTok{edge_colour =} \StringTok{"cyan4"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{repel =} \OtherTok{TRUE}\NormalTok{, }
+                 \DataTypeTok{point.padding =} \KeywordTok{unit}\NormalTok{(}\FloatTok{0.2}\NormalTok{, }\StringTok{"lines"}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_void}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/graficos de correlacao dos bigramas - dardanelles-3.pdf}
+
+\hypertarget{russia-6}{%
+\subsubsection{Rússia:}\label{russia-6}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_section_words <-}\StringTok{ }\NormalTok{russia_books }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{section =} \KeywordTok{row_number}\NormalTok{() }\OperatorTok{%/%}\StringTok{ }\DecValTok{10}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(section }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unnest_tokens}\NormalTok{(word, text) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{word=}\KeywordTok{str_extract}\NormalTok{(word,}\StringTok{"[a-z']+"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\NormalTok{word }\OperatorTok{%in%}\StringTok{ }\NormalTok{stop_words}\OperatorTok{$}\NormalTok{word)}
+
+\NormalTok{russia_section_words}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 104,754 x 5
+##    gutenberg_id title                           linenumber section word   
+##           <int> <chr>                                <int>   <dbl> <chr>  
+##  1        10967 Four Weeks in the Trenches: Th~         10       1 life   
+##  2        10967 Four Weeks in the Trenches: Th~         10       1 dedica~
+##  3        10967 Four Weeks in the Trenches: Th~         10       1 book   
+##  4        10967 Four Weeks in the Trenches: Th~         12       1 humble 
+##  5        10967 Four Weeks in the Trenches: Th~         12       1 token  
+##  6        10967 Four Weeks in the Trenches: Th~         12       1 everla~
+##  7        10967 Four Weeks in the Trenches: Th~         12       1 gratit~
+##  8        10967 Four Weeks in the Trenches: Th~         12       1 devoti~
+##  9        10967 Four Weeks in the Trenches: Th~         17       1 preface
+## 10        10967 Four Weeks in the Trenches: Th~         19       1 record 
+## # ... with 104,744 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_word_pairs <-}\StringTok{ }\NormalTok{russia_section_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{pairwise_count}\NormalTok{(word, section, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{()}
+
+\NormalTok{russia_word_pairs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2,576,030 x 3
+##    item1     item2         n
+##    <chr>     <chr>     <dbl>
+##  1 russian   american    167
+##  2 american  russian     167
+##  3 british   american    146
+##  4 american  british     146
+##  5 british   russian     141
+##  6 north     russia      141
+##  7 russia    north       141
+##  8 russian   british     141
+##  9 archangel american    138
+## 10 american  archangel   138
+## # ... with 2,576,020 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_word_cors <-}\StringTok{ }\NormalTok{russia_section_words }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{na.omit}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(word) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\KeywordTok{n}\NormalTok{() }\OperatorTok{>=}\StringTok{ }\DecValTok{20}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{pairwise_cor}\NormalTok{(word, section, }\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{)}
+
+\NormalTok{russia_word_cors}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1,097,256 x 3
+##    item1        item2        correlation
+##    <chr>        <chr>              <dbl>
+##  1 padenga      ust                0.910
+##  2 ust          padenga            0.910
+##  3 pvt          mich               0.734
+##  4 mich         pvt                0.734
+##  5 photo        official           0.724
+##  6 official     photo              0.724
+##  7 photo        illustration       0.723
+##  8 illustration photo              0.723
+##  9 governor     supreme            0.686
+## 10 supreme      governor           0.686
+## # ... with 1,097,246 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_word_cors }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(item1 }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"padenga"}\NormalTok{, }\StringTok{"revolutionary"}\NormalTok{, }\StringTok{"comrade"}\NormalTok{, }\StringTok{"lieut"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(item1) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{top_n}\NormalTok{(}\DecValTok{6}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{item2 =} \KeywordTok{reorder}\NormalTok{(item2, correlation)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(item2, correlation)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\StringTok{ }\NormalTok{item1, }\DataTypeTok{scales =} \StringTok{"free"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/graficos de correlacao dos bigramas - russia-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2018}\NormalTok{)}
+
+\NormalTok{russia_word_cors }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(correlation }\OperatorTok{>}\StringTok{ }\FloatTok{.4}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggraph}\NormalTok{(}\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{edge_alpha =}\NormalTok{ correlation), }\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{(}\DataTypeTok{color =} \StringTok{"lightblue"}\NormalTok{, }\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{repel =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_void}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/graficos de correlacao dos bigramas - russia-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{russia_word_cors }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(correlation }\OperatorTok{>}\StringTok{ }\FloatTok{.4}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{graph_from_data_frame}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggraph}\NormalTok{(}\DataTypeTok{layout =} \StringTok{"fr"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_edge_link}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{edge_alpha =}\NormalTok{ correlation, }\DataTypeTok{edge_width =}\NormalTok{ correlation), }\DataTypeTok{edge_colour =} \StringTok{"cyan4"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_node_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label =}\NormalTok{ name), }\DataTypeTok{repel =} \OtherTok{TRUE}\NormalTok{, }
+                 \DataTypeTok{point.padding =} \KeywordTok{unit}\NormalTok{(}\FloatTok{0.2}\NormalTok{, }\StringTok{"lines"}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_void}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Trabalho4-v3_files/figure-latex/graficos de correlacao dos bigramas - russia-3.pdf}
+
+
+\end{document}
