@@ -1,19 +1,15 @@
-#!/usr/bin/env python3
-
 import speech_recognition as sr
 
 # obtain path to "english.wav" in the same folder as this script
 from os import path
-AUDIO_FILE = "DebBandPres2018.wav"
-# AUDIO_FILE = path.join(path.dirname(path.realpath(__file__)), "french.aiff")
-# AUDIO_FILE = path.join(path.dirname(path.realpath(__file__)), "chinese.flac")
 
-txt = open("DebBandPres2018.txt", "w")
+AUDIO_FILE = path.join(path.curdir,"DebBandPres2018.wav")
+
+txt = open("DebBandPres2018-34.txt", "w")
 
 # use the audio file as the audio source
 r = sr.Recognizer()
 
-while(!AUDIO_FILE.)
 with sr.AudioFile(AUDIO_FILE) as source:
     audio = r.record(source,duration=25)  # read the entire audio file
 
