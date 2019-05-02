@@ -9,8 +9,6 @@ library(rgl)
 library(readxl)
 library(igraph)
 
-etwd("~/Tresors/zz-pessoal/FGV/git/Trabalhos/ARSTM/Tarefa1")
-
 # Trabalha a partir de uma rede aleat?ria
 rede <- read.table("Rede One Mode_Tarefa Aula 1_Paulista T4.csv",header=TRUE,sep = ",")
 
