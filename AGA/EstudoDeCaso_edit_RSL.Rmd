@@ -1,0 +1,904 @@
+---
+title: "Aplicações de GeoAnálise - Estudo de Caso"
+author: "Carlos Polato - A9999999, Gustavo Hotta - A56865193, Rafael Furlan - A56871487, Ricardo Squassina Lee - A56843646"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+  word_document: default
+---
+
+---
+# Notas:
+adicionar variáveis sócio-econômicas do IBGE
+IDHM ???
+fazer % da população, para este número não "pesar" na análise
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Inicia Ambiente, message=FALSE, include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014") 
+setwd("~/Tresors/zz-pessoal/FGV/git/Trabalhos/AGA")
+# setwd("C:/Users/risquass/OneDrive - Microsoft/Documents/MBA/para o trabalho")
+```
+
+```{r Carrega bibliotecas necessarias, message=FALSE, warning=TRUE, include=FALSE}
+#Load required packages
+if(!require(maps)) {
+  install.packages("maps")
+  library(maps)
+}
+
+if(!require(maptools)) {
+  install.packages("maptools")
+  library(maptools)
+}
+
+if(!require(sp)) {
+  install.packages("sp")
+  library(sp)
+}
+
+if(!require(spdep)) {
+  install.packages("spdep")
+  library(spdep)
+}
+
+if(!require(ggmap)) {
+  install.packages("gstat")
+  library(ggmap)
+}
+
+if(!require(splancs)) {
+  install.packages("splancs")
+  library(splancs)
+}
+
+if(!require(spatstat)) {
+  install.packages("spatstat")
+  library(spatstat)
+}
+
+if(!require(RColorBrewer)) {
+  install.packages("RColorBrewer")
+  library(RColorBrewer)
+}
+
+if(!require(classInt)) {
+  install.packages("classInt")
+  library(classInt)
+}
+
+if(!require(spgwr)) {
+  install.packages("spgwr")
+  library(spgwr)
+}
+
+if(!require(ggmap)) {
+  install.packages("ggmap")
+  library(ggmap)
+}
+
+if(!require(gpclib)) {
+  install.packages("gpclib")
+  library(gpclib)
+}
+
+if(!require(rgdal)) {
+  install.packages("rgdal")
+  library(rgdal)
+}
+
+if(!require(tmap)) {
+  install.packages("tmap")
+  library(tmap)
+}
+
+
+if(!require(ncf)) {
+  install.packages("ncf")
+  library(ncf)
+}
+
+if(!require(data.table)) {
+  install.packages("data.table")
+  library(data.table)
+}
+```
+
+-----------------
+```{r Baixando os Shape Files para serem "juntdos" no QGIS}
+dest <- "./DADOS/SHP"
+setwd("./DADOS/SHP")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/ac/ac_municipios.zip"
+download.file(url = url, destfile = "ac_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/al/al_municipios.zip"
+download.file(url = url, destfile = "al_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/am/am_municipios.zip"
+download.file(url = url, destfile = "am_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/ap/ap_municipios.zip"
+download.file(url = url, destfile = "ap_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/ba/ba_municipios.zip"
+download.file(url = url, destfile = "ba_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/ce/ce_municipios.zip"
+download.file(url = url, destfile = "ce_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/df/df_municipios.zip"
+download.file(url = url, destfile = "df_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/es/es_municipios.zip"
+download.file(url = url, destfile = "es_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/go/go_municipios.zip"
+download.file(url = url, destfile = "go_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/ma/ma_municipios.zip"
+download.file(url = url, destfile = "ma_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/mg/mg_municipios.zip"
+download.file(url = url, destfile = "mg_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/ms/ms_municipios.zip"
+download.file(url = url, destfile = "ms_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/mt/mt_municipios.zip"
+download.file(url = url, destfile = "mt_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/pa/pa_municipios.zip"
+download.file(url = url, destfile = "pa_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/pb/pb_municipios.zip"
+download.file(url = url, destfile = "pb_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/pe/pe_municipios.zip"
+download.file(url = url, destfile = "pe_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/pi/pi_municipios.zip"
+download.file(url = url, destfile = "pi_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/pr/pr_municipios.zip"
+download.file(url = url, destfile = "pr_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/rj/rj_municipios.zip"
+download.file(url = url, destfile = "rj_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/rn/rn_municipios.zip"
+download.file(url = url, destfile = "rn_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/ro/ro_municipios.zip"
+download.file(url = url, destfile = "ro_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/rr/rr_municipios.zip"
+download.file(url = url, destfile = "rr_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/rs/rs_municipios.zip"
+download.file(url = url, destfile = "rs_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/sc/sc_municipios.zip"
+download.file(url = url, destfile = "sc_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/se/se_municipios.zip"
+download.file(url = url, destfile = "se_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/sp/sp_municipios.zip"
+download.file(url = url, destfile = "sp_municipios.zip")
+url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2010/setores_censitarios_shp/to/to_municipios.zip"
+download.file(url = url, destfile = "to_municipios.zip")
+
+arquivos <- list.files(path = dest
+                       , pattern = "*.zip"
+                       , full.names = TRUE)
+
+do.call(rbind, lapply(arquivos
+                      , function(x) unzip(x, exdir = dest)))
+
+setwd("~/Tresors/zz-pessoal/FGV/git/Trabalhos/AGA")
+```
+
+Usando o QGIS juntamos os Shape Files para termos um mapa com os municípios do Brasil. Tentei usar o R para fazer este merge, mas não consegui de forma adequada
+
+```{r Preparacao dos dados - Leitura do Shapefile - ainda está sendo ajustado, eval=FALSE, message=FALSE, include=FALSE}
+# dest <- "./DADOS/SHP"
+# arquivos <- list.files(path = dest
+#                        , pattern = "*.shp"
+#                        , full.names = TRUE)
+#
+# municipios <- do.call(rbind, c(lapply(arquivos, function(x) { readOGR(dsn = dest, verbose = TRUE, use_iconv = TRUE, p4s = "+proj=longlat +ellps=WGS84", encoding = "Latin1",)}), fix.duplicated.IDs=TRUE))
+#
+#
+# # municip_sp<- readOGR(dsn = "35MUE250GC_SIR", layer = "35MUE250GC_SIR",verbose = TRUE, use_iconv = TRUE, p4s = "+proj=longlat +ellps=WGS84", encoding = "Latin1")
+# # names(municip_sp)
+# # summary(municip_sp)
+# names(municipios)
+# summary(municipios)
+```
+
+Lendo o Shapefile com os municípios no mapa do Brasil
+
+
+```{r}
+municip_br <- readOGR(dsn = "Municip_BR.shp"
+                     , layer = "Municip_BR"
+                     , verbose = TRUE
+                     , use_iconv = TRUE
+                     , p4s = "+proj=longlat +ellps=WGS84"
+                     , encoding = "Latin1"
+                     )
+names(municip_br)
+summary(municip_br)
+
+municip_br_bkp <- municip_br
+
+```
+
+
+Mapa do Brasil com os municípios, como no shapefile, sem tema:
+
+```{r plot do mapa do Brasil sem tema}
+tmap::qtm(municip_br,title = "Mapa do Brasil")
+
+```
+
+```{r}
+# url <- "http://ftp.dadosabertos.ans.gov.br/FTP/PDA/TISS/HOSPITALAR/2017/SP.zip"
+# dest <- "./DADOS/SP-H-2017.zip"
+# download.file(url = url, destfile = dest)
+# 
+# arquivos <- list.files(path = "./DADOS"
+#                        , pattern = "SP.*zip"
+#                        , full.names = TRUE)
+# 
+# do.call(rbind, lapply(arquivos
+#                       , function(x) unzip(x, exdir = "./DataSP")))
+
+```
+
+```{r}
+arquivos <- list.files(path = "./DataSP"
+                       , pattern = ".*HOSP.*CONS.*csv"
+                       , full.names = TRUE)
+
+dadosHospSP <- do.call(rbind
+                          , lapply(arquivos
+                                   , function(x) fread(x,encoding = "Latin-1"))) 
+```
+
+
+```{r listing all the CIDs available in the datafram in a single column}
+CID1 <- data.table::setnames(base::within(dadosHospSP[!which(dadosHospSP$CID_1 == "")]
+                        , data.table::rm("CID_2","CID_3","CID_4")),"CID_1", "CID") 
+CID2 <- data.table::setnames(base::within(dadosHospSP[!which(dadosHospSP$CID_2 == "")]
+                        , rm("CID_1","CID_3","CID_4")),"CID_2", "CID")
+CID3 <- data.table::setnames(base::within(dadosHospSP[!which(dadosHospSP$CID_3 == "")]
+                        , rm("CID_2","CID_1","CID_4")),"CID_3", "CID")
+CID4 <- data.table::setnames(base::within(dadosHospSP[!which(dadosHospSP$CID_4 == "")]
+                        , rm("CID_2","CID_3","CID_1")),"CID_4", "CID")
+
+dadosHospSP <- rbind(CID1, CID2, CID3, CID4)
+rm(CID1, CID2, CID3, CID4)
+
+dadosHospSP$CID <- substr(dadosHospSP$CID,1,3)
+```
+
+```{r selecionando as colunas necessárias}
+dadosHospSP_min <- dadosHospSP[,c("CD_MUNIC_BENEFICIARIO","CD_MUNIC_PRESTADOR","DT_INTERNACAO","CID")]
+dadosHospSP_min$DT_INTERNACAO <- as.Date(dadosHospSP_min$DT_INTERNACAO, format = "%d/%m/%Y")
+summary(dadosHospSP_min)
+# write.csv(dadosHospSP_min, "./DadosSP.csv")
+```
+
+```{r limpando os nas}
+dadosHospSP_min <- dadosHospSP_min[complete.cases(dadosHospSP_min),]
+summary(dadosHospSP_min)
+```
+
+```{r}
+#municip_br <- municip_br_bkp
+
+names(municip_br)
+names(dadosHospSP_min)
+
+head(sort(municip_br$CD_GEOCODM))
+head(dadosHospSP_min)
+
+#municip_br$CD_GEOCODM <- substr(municip_br$CD_GEOCODM,1,6)
+```
+
+```{r}
+contagem_prest <- as.data.frame(table(dadosHospSP_min$CD_MUNIC_PRESTADOR), stringsAsFactors = FALSE)
+names(contagem_prest) <- c("localizacao","freq_prest")
+contagem_paci <- as.data.frame(table(dadosHospSP_min$CD_MUNIC_BENEFICIARIO), stringsAsFactors = FALSE)
+names(contagem_paci) <- c("localizacao","freq_paci")
+contagem_cid <- as.data.frame(table(dadosHospSP_min$CID), stringsAsFactors = FALSE)
+names(contagem_prest) <- c("localizacao","freq_prest")
+
+```
+
+
+```{r}
+ivs <- fread("ivs.csv")
+
+municip_br_ivs <- sp::merge(municip_br, ivs, by.x = "CD_GEOC", by.y = "CD_GEOCODM")
+
+writeOGR(obj = municip_br_ivs
+         , dsn = "MUNIC_BR_DADOS_IDHM_IVS.shp"
+         , layer = "MUNIC_BR_DADOS_IDHM_IVS"
+         , driver = "ESRI Shapefile"
+         , overwrite_layer = TRUE)
+
+```
+
+
+```{r fazendo o merge dos arquivos}
+#contagem_prest$localizacao <- as.factor(contagem_prest$localizacao)
+#contagem_paci$localizacao <- as.factor(contagem_paci$localizacao)
+
+municip_br <- sp::merge(municip_br
+                      , contagem_prest
+                      , by.x = "CD_GEOCODM"
+                      , by.y = "localizacao")
+head(municip_br)
+
+municip_br <- sp::merge(municip_br
+                      , contagem_paci 
+                      , by.x = "CD_GEOCODM"
+                      , by.y = "localizacao")
+head(municip_br)
+
+```
+
+```{r}
+municip_br$prestador <- as.integer(!is.na(municip_br$freq_prest))
+municip_br$prestador[is.na(municip_br$prestador)] <- 0
+municip_br$freq_prest[is.na(municip_br$freq_prest)] <- 0
+municip_br$paci <- as.integer(!is.na(municip_br$freq_paci))
+municip_br$paci[is.na(municip_br$paci)] <- 0
+municip_br$freq_paci[is.na(municip_br$freq_paci)] <- 0
+
+head(municip_br)
+head(contagem_paci)
+head(contagem_prest)
+```
+
+```{r}
+municip_2 <- read.csv("municipios2.csv")
+names(municip_2)
+municip_2 <- within(municip_2, rm("X.1","X","NM_MUNICIP","Info"))
+names(municip_2)
+
+municip_br <- sp::merge(municip_br
+                      , municip_2 
+                      , by.x = "CD_GEOCODM"
+                      , by.y = "CD_GEOCODM")
+head(municip_br)
+```
+
+
+
+
+```{r}
+writeOGR(obj = municip_br
+         , dsn = "MUNIC_BR_DADOS.shp"
+         , layer = "MUNIC_BR_DADOS"
+         , driver = "ESRI Shapefile"
+         , overwrite_layer = TRUE)
+```
+
+Existia um registro duplicado, que foi ajustado no GeoDA
+
+```{r}
+municip_br <- readOGR(dsn = "MUNIC_BR_DADOS.shp"
+                      , layer = "MUNIC_BR_DADOS"
+                      , verbose = TRUE
+                      , use_iconv = TRUE
+                      , p4s = "+proj=longlat +ellps=WGS84"
+                      , encoding = "UTF8"
+                     )
+
+```
+
+Lendo IDH-M
+```{r}
+IDHM <- fread("IDHM_2010.2.csv", encoding = "UTF-8",drop = c("MUNICÍPIO","ESTADO"))
+
+
+IDHM$IDHM[is.na(IDHM$IDHM)] <- 0
+IDHM$RENDA[is.na(IDHM$RENDA)] <- 0
+IDHM$LONGEVIDADE[is.na(IDHM$LONGEVIDADE)] <- 0
+IDHM$EDUCACAO[is.na(IDHM$EDUCACAO)] <- 0
+
+```
+
+
+```{r}
+municip_br_idhm <- sp::merge(municip_br, IDHM, by.x = "CD_GEOCODM", by.y = "CD_GEOCODM")
+
+
+municip_br_idhm$IDHM[is.na(municip_br_idhm$IDHM)] <- 0
+municip_br_idhm$RENDA[is.na(municip_br_idhm$RENDA)] <- 0
+municip_br_idhm$LONGEVIDADE[is.na(municip_br_idhm$LONGEVIDADE)] <- 0
+municip_br_idhm$EDUCACAO[is.na(municip_br_idhm$EDUCACAO)] <- 0
+
+```
+
+```{r}
+writeOGR(obj = municip_br_idhm
+         , dsn = "MUNIC_BR_DADOS_IDHM.shp"
+         , layer = "MUNIC_BR_DADOS_IDHM"
+         , driver = "ESRI Shapefile"
+         , overwrite_layer = TRUE)
+
+
+
+```
+
+
+
+-----------------
+COM ARQUIVOS PRONTOS, RODAR O CHUNCK DE CARGA DAS BIBLIOTECAS E, DEPOIS, COMECAR DAQUI:
+
+
+```{r}
+
+# rm(list = ls())
+# cat("\014") 
+
+municip_br <- readOGR(dsn = "MUNIC_BR_DADOS_IDHM.shp"
+                      , layer = "MUNIC_BR_DADOS_IDHM"
+                      , verbose = TRUE
+                      , use_iconv = TRUE
+                      , p4s = "+proj=longlat +ellps=WGS84"
+                      , encoding = "UTF8"
+                     )
+
+```
+
+
+```{r calculo do Moran I - Estado de SP}
+
+munic_br_nb = poly2nb(municip_br, queen=TRUE, row.names=municip_br$fid)
+
+munic_br_w <- nb2listw(munic_br_nb, style="W",zero.policy = TRUE)
+
+msp_fid <- as.numeric(municip_br$fid)
+msp_prest <- as.numeric(municip_br$prestdr)
+msp_paci  <- as.numeric(municip_br$paci)
+msp_freq_prest <- as.numeric(municip_br$frq_prs)
+msp_freq_paci <- as.numeric(municip_br$freq_pc)
+msp_idhm <- as.numeric(municip_br$IDHM)
+msp_renda <- as.numeric(municip_br$RENDA)
+msp_longevi <- as.numeric(municip_br$LONGEVI)
+msp_educaca <- as.numeric(municip_br$EDUCACA)
+
+moran_i_fid        <- moran(msp_fid,        munic_br_w, length(munic_br_nb), Szero(munic_br_w),zero.policy=TRUE)
+moran_i_prest      <- moran(msp_prest,      munic_br_w, length(munic_br_nb), Szero(munic_br_w),zero.policy=TRUE)
+moran_i_paci       <- moran(msp_paci,       munic_br_w, length(munic_br_nb), Szero(munic_br_w),zero.policy=TRUE)
+moran_i_freq_prest <- moran(msp_freq_prest, munic_br_w, length(munic_br_nb), Szero(munic_br_w),zero.policy=TRUE)
+moran_i_freq_paci  <- moran(msp_freq_paci,  munic_br_w, length(munic_br_nb), Szero(munic_br_w),zero.policy=TRUE)
+moran_i_idhm       <- moran(msp_idhm,       munic_br_w, length(munic_br_nb), Szero(munic_br_w),zero.policy=TRUE)
+moran_i_renda      <- moran(msp_renda,      munic_br_w, length(munic_br_nb), Szero(munic_br_w),zero.policy=TRUE)
+moran_i_longevi    <- moran(msp_longevi,    munic_br_w, length(munic_br_nb), Szero(munic_br_w),zero.policy=TRUE)
+moran_i_educaca    <- moran(msp_educaca,    munic_br_w, length(munic_br_nb), Szero(munic_br_w),zero.policy=TRUE)
+```
+
+Mostrando todas as auto-correlações:
+
+```{r apresentacao das autocorrelacoes em ordem decrescente}
+moran <- c("label","i")
+label <- c("moran_i_fid"
+           , "moran_i_prest"
+           , "moran_i_paci"
+           , "moran_i_freq_prest"
+           , "moran_i_freq_paci"
+           , "moran_i_idhm"
+           , "moran_i_renda"
+           , "moran_i_longevi"
+           , "moran_i_educaca"
+)
+
+moran_i <- c(moran_i_fid$I
+             , moran_i_prest$I
+             , moran_i_paci$I
+             , moran_i_freq_prest$I
+             , moran_i_freq_paci$I
+             , moran_i_idhm$I
+             , moran_i_renda$I
+             , moran_i_longevi$I
+             , moran_i_educaca$I
+)
+
+moran <- data.frame(label = label, moran_i = moran_i)
+
+moran[order(moran$moran_i,decreasing = TRUE),]
+
+```
+
+Mostrando Moran's I das variáveis:
+
+```{r plot do Moran I para as variaveis com maiores e menor I}
+{
+  moran.plot(x = msp_fid, listw = munic_br_w, labels = FALSE, zero.policy = TRUE)
+  title("Moran's I de FID")
+  moran.plot(x = msp_prest, listw = munic_br_w, labels = FALSE, zero.policy = TRUE)
+  title("Moran's I de Prestadores")
+  moran.plot(x = msp_renda, listw = munic_br_w, labels = FALSE, zero.policy = TRUE)
+  title("Moran's I de Renda")
+  moran.plot(x = msp_idhm, listw = munic_br_w, labels = FALSE, zero.policy = TRUE)
+  title("Moran's I de IDHM")
+  moran.plot(x = msp_educaca, listw = munic_br_w, labels = FALSE, zero.policy = TRUE)
+  title("Moran's I de Educação")
+  moran.plot(x = msp_longevi, listw = munic_br_w, labels = FALSE, zero.policy = TRUE)
+  title("Moran's I de Longevidade")
+  moran.plot(x = msp_paci, listw = munic_br_w, labels = FALSE, zero.policy = TRUE)
+  title("Moran's I de Pacientes")
+  moran.plot(x = msp_freq_prest, listw = munic_br_w, labels = FALSE, zero.policy = TRUE)
+  title("Moran's I de Frequencia de Prestadores")
+  moran.plot(x = msp_freq_paci, listw = munic_br_w, labels = FALSE, zero.policy = TRUE)
+  title("Moran's I de Frequencia de Pacientes")
+}
+
+```
+
+Calculando LISA
+
+Verificando a média de links entre vizinhos:
+
+```{r identificando media de vizinhos no dataset}
+munic_br_nb
+```
+
+Como a média de links é 5.9, passamos este valor como parâmetro com o comando "mean(card(munic_br_nb))" para o cálculo do LISA para as variáveis:
+
+```{r calculo do LISA para as variaveis}
+
+# LISA_FID <- lisa(x = municip_br$lat, y = municip_br$lon, z = municip_br$fid, neigh = mean(card(munic_br_nb)))
+# LISA_FREQ_PREST <- lisa(x = municip_br$lat, y = municip_br$lon, z = municip_br$frq_prs, neigh = mean(card(munic_br_nb)))
+# LISA_FREQ_PACI <- lisa(x = municip_br$lat, y = municip_br$lon, z = municip_br$freq_pc, neigh = mean(card(munic_br_nb)))
+LISA_IDHM <- lisa(x = municip_br$lat, y = municip_br$lon, z = municip_br$IDHM, neigh = mean(card(munic_br_nb)))
+LISA_RENDA <- lisa(x = municip_br$lat, y = municip_br$lon, z = municip_br$RENDA, neigh = mean(card(munic_br_nb)))
+LISA_EDUCACAO <- lisa(x = municip_br$lat, y = municip_br$lon, z = municip_br$EDUCACA, neigh = mean(card(munic_br_nb)))
+LISA_LONGEVIDADE <- lisa(x = municip_br$lat, y = municip_br$lon, z = municip_br$LONGEVI, neigh = mean(card(munic_br_nb)))
+
+```
+
+Plot dos mapas LISA:
+
+```{r plot dos mapas LISA}
+
+# municip_br$LISA_FID_p <- LISA_FID$p
+# municip_br$LISA_FREQ_PREST_p <- LISA_FREQ_PREST$p
+# municip_br$LISA_FREQ_PACI_p <- LISA_FREQ_PACI$p
+municip_br$LISA_IDHM_p <- LISA_IDHM$p
+municip_br$LISA_RENDA_p <- LISA_RENDA$p
+municip_br$LISA_EDUCACAO_p <- LISA_EDUCACAO$p
+municip_br$LISA_LONGEVIDADE_p <- LISA_LONGEVIDADE$p
+
+# municip_br$LISA_FID_corr <- LISA_FID$correlation
+# municip_br$LISA_FREQ_PREST_corr <- LISA_FREQ_PREST$correlation
+# municip_br$LISA_FREQ_PACI_corr <- LISA_FREQ_PACI$correlation
+municip_br$LISA_IDHM_corr <- LISA_IDHM$correlation
+municip_br$LISA_RENDA_corr <- LISA_RENDA$correlation
+municip_br$LISA_EDUCACAO_corr <- LISA_EDUCACAO$correlation
+municip_br$LISA_LONGEVIDADE_corr <- LISA_LONGEVIDADE$correlation
+
+# tmap::tm_shape(municip_br, simplify = 1) +
+#   tmap::tm_polygons() +
+#   tmap::tm_shape(municip_br, simplify = 1) +
+#   tmap::tm_fill(c("LISA_FID_p","LISA_FID_corr"), midpoint = 0) +
+#   tmap::tm_style("natural")
+# 
+# tmap::tm_shape(municip_br, simplify = 1) +
+#   tmap::tm_polygons() +
+#   tmap::tm_shape(municip_br, simplify = 1) +
+#   tmap::tm_fill(c("LISA_FREQ_PREST_p","LISA_FREQ_PREST_corr"), midpoint = 0) +
+#   tmap::tm_style("natural")
+# 
+# tmap::tm_shape(municip_br, simplify = 1) +
+#   tmap::tm_polygons() +
+#   tmap::tm_shape(municip_br, simplify = 1) +
+#   tmap::tm_fill(c("LISA_FREQ_PACI_p","LISA_FREQ_PACI_corr"), midpoint = 0) +
+#   tmap::tm_style("natural")
+
+tmap::tm_shape(municip_br, simplify = 1) +
+  tmap::tm_polygons() +
+  tmap::tm_shape(municip_br, simplify = 1) +
+  tmap::tm_fill(c("LISA_IDHM_p","LISA_IDHM_corr"), midpoint = 0) +
+  tmap::tm_style("natural")
+
+tmap::tm_shape(municip_br, simplify = 1) +
+  tmap::tm_polygons() +
+  tmap::tm_shape(municip_br, simplify = 1) +
+  tmap::tm_fill(c("LISA_RENDA_p","LISA_RENDA_corr"), midpoint = 0) +
+  tmap::tm_style("natural")
+
+tmap::tm_shape(municip_br, simplify = 1) +
+  tmap::tm_polygons() +
+  tmap::tm_shape(municip_br, simplify = 1) +
+  tmap::tm_fill(c("LISA_EDUCACAO_p","LISA_EDUCACAO_corr"), midpoint = 0) +
+  tmap::tm_style("natural")
+
+tmap::tm_shape(municip_br, simplify = 1) +
+  tmap::tm_polygons() +
+  tmap::tm_shape(municip_br, simplify = 1) +
+  tmap::tm_fill(c("LISA_LONGEVIDADE_p","LISA_LONGEVIDADE_corr"), midpoint = 0) +
+  tmap::tm_style("natural")
+
+
+```
+
+
+Regressão linear simples:
+
+```{r regressao linear simples - com SAR}
+ap <- as.data.frame(cbind(municip_br$fid
+                          , municip_br$CD_GEOCODM
+                          , municip_br$frq_prs
+                          , municip_br$freq_paci
+                          , municip_br$prestdr
+                          , municip_br$paci
+                          , municip_br$IDHM
+                          , municip_br$RENDA
+                          , municip_br$EDUCACA
+                          , municip_br$LONGEVI))
+colnames(ap) <- c("fid", "CD_GEOCODM","freq_prest","freq_paci","prestador","paci","IDHM","renda","educacao","longevidade")
+
+head(ap)
+```
+
+lmK_m_prest <- lm(formula = municip_br$CD_GEOCODM ~ prestador, data = ap)
+summary(lmK_m_prest)
+
+```{r}
+lmK_m_prest <- lm(formula = municip_br$CD_GEOCODM ~ prestador, data = ap)
+summary(lmK_m_prest)
+```
+
+
+```{r}
+lmK_m_paci <- lm(formula = municip_br$CD_GEOCODM ~ paci, data = ap)
+summary(lmK_m_paci)
+```
+
+```{r}
+lmK_paci_prest <- lm(formula = municip_br$paci ~ prestador, data = ap)
+summary(lmK_paci_prest)
+```
+
+```{r}
+lmK_prest_paci <- lm(formula = municip_br$prestador ~ paci, data = ap)
+summary(lmK_prest_paci)
+```
+
+
+```{r}
+lmK_m_idhm <- lm(formula = municip_br$CD_GEOCODM ~ IDHM, data = ap)
+summary(lmK_m_prest)
+```
+
+```{r}
+lmK_m_renda <- lm(formula = municip_br$CD_GEOCODM ~ RENDA, data = ap)
+summary(lmK_m_prest)
+```
+
+```{r}
+lmK_m_educaca <- lm(formula = municip_br$CD_GEOCODM ~ EDUCACA, data = ap)
+summary(lmK_m_prest)
+```
+
+```{r}
+lmK_m_longevi <- lm(formula = municip_br$CD_GEOCODM ~ LONGEVI, data = ap)
+summary(lmK_m_prest)
+```
+
+Regressao linear espacial - SAR
+
+Se necessário, executar novamente as 2 linhas abaixo:
+munic_br_nb = poly2nb(municip_br, queen=TRUE, row.names=municip_br$fid)
+munic_br_w <- nb2listw(munic_br_nb, style="W",zero.policy = TRUE)
+
+
+```{r regressao linear especial - com SAR - prep}
+ap <- as.data.frame(cbind(municip_br$fid
+                          , municip_br$CD_GEOCODM
+                          , municip_br$frq_prs
+                          , municip_br$freq_paci
+                          , municip_br$prestdr
+                          , municip_br$paci
+                          , municip_br$IDHM
+                          , municip_br$RENDA
+                          , municip_br$EDUCACA
+                          , municip_br$LONGEVI))
+colnames(ap) <- c("fid", "CD_GEOCODM","freq_prest","freq_paci","prestador","paci","IDHM","renda","educacao","longevidade")
+
+head(ap)
+```
+
+
+```{r regressao linear espacial - SAR}
+sar.ap <- lagsarlm(municip_br$freq_paci ~ IDHM
+                   , data = ap
+                   , munic_br_w
+                   ,method="eigen"
+                   , na.action = na.exclude)
+  
+SARk_SSE <- sar.ap$SSE
+
+SST <- sum((ap$IDHM - mean(ap$IDHM))^2)
+
+r2_SARk <- 1 - (SARk_SSE/SST)
+r2_SARk
+
+summary(sar.ap)
+
+```
+
+---
+
+```{r comparacao de SAR e LM}
+cat("Rˆ2 SAR: ",r2_SARk)
+cat("Rˆ2 LM:",summary(lmK)$adj.r.squared)
+```
+
+---
+
+Regressão linear simples:
+
+```{r regressao linear simples - com GWR}
+ap <- as.data.frame(cbind(municip_br$fid
+                          , municip_br$CD_GEOCODM
+                          , municip_br$frq_prs
+                          , municip_br$freq_paci
+                          , municip_br$prestdr
+                          , municip_br$paci
+                          , municip_br$IDHM
+                          , municip_br$RENDA
+                          , municip_br$EDUCACA
+                          , municip_br$LONGEVI))
+colnames(ap) <- c("fid", "CD_GEOCODM","freq_prest","freq_paci","prestador","paci","IDHM","renda","educacao","longevidade")
+
+head(ap)
+
+lmK <- lm(formula = municip_br$freq_prest ~ freq_paci, data = ap)
+
+summary(lmK)
+
+```
+
+Regressão linear GWR:
+
+```{r calculo do modelo de regressao GWR}
+
+coords <- cbind(municip_br$lat, municip_br$lon)
+colnames(coords) <- c("X","Y")
+
+ap <- as.data.frame(cbind(municip_br$CD_GEOC,municip_br$frq_prs,municip_br$freq_pc,municip_br$prestdr,municip_br$paci,
+                          municip_br$IDHM,municip_br$RENDA,municip_br$LONGEVI,municip_br$EDUCACA))
+colnames(ap) <- c("CD_GEOC","FRQ_PREST","FRQ_PACI","PRESTDR","PACI","IDHM","RENDA","LONGEVI","EDUCACA")
+
+bwGauss <- gwr.sel(municip_br$freq_pc ~ IDHM,data=ap,coords=coords,adapt=TRUE,method="aic",
+                   gweight=gwr.Gauss,verbose=FALSE)
+
+gwr.ap <- gwr(municip_br$freq_pc ~ IDHM, data=ap,coords=coords,bandwidth=bwGauss,
+               gweight=gwr.Gauss,adapt=bwGauss,hatmatrix=TRUE)
+gwr.ap
+ 
+GWR_SSE <- gwr.ap$results$rss
+r2_GWR <- 1 - (GWR_SSE/SST)
+r2_GWR
+
+```
+
+```{r}
+
+cat("Coeficientes LM:",summary(lmK)$coefficients, "\n")
+cat("Rˆ2 LM:",summary(lmK)$adj.r.squared, "\n")
+
+cat("Coeficientes GWR:",summary(gwr.ap$lm$coefficients), "\n")
+cat("Rˆ2 GWR:",r2_GWR, "\n")
+
+```
+
+---
+
+```{r comparacao de SAR e GWR}
+
+cat("Rˆ2 LM:",summary(lmK)$adj.r.squared, "\n")
+cat("Rˆ2 SAR: ",r2_SARk, "\n")
+cat("Rˆ2 GWR: ",r2_GWR, "\n")
+
+```
+
+
+```{r implementacao do modelo multivariado stepwise - regressao simples}
+
+ap <- as.data.frame(cbind(municip_br$CD_GEOC,municip_br$frq_prs,municip_br$freq_pc,municip_br$prestdr,municip_br$paci,
+                          municip_br$IDHM,municip_br$RENDA,municip_br$LONGEVI,municip_br$EDUCACA))
+colnames(ap) <- c("CD_GEOC","FRQ_PREST","FRQ_PACI","PRESTDR","PACI","IDHM","RENDA","LONGEVI","EDUCACA")
+
+lm.ap <- step(lm(municip_br$freq_pc ~ ., data=ap))
+lm.ap
+summary(lm.ap)
+
+lmKmv <- lm(formula = municip_br$freq_pc ~ IDHM + RENDA + LONGEVI + EDUCACA, 
+    data = ap)
+
+summary(lmKmv)
+```
+
+Implementação do modelo multivariado stepwise - regressão SAR
+
+```{r implementacao do modelo multivariado stepwise - regressao SAR}
+
+ap <- as.data.frame(cbind(municip_br$CD_GEOC,municip_br$frq_prs,municip_br$freq_pc,municip_br$prestdr,municip_br$paci,
+                          municip_br$IDHM,municip_br$RENDA,municip_br$LONGEVI,municip_br$EDUCACA))
+colnames(ap) <- c("CD_GEOC","FRQ_PREST","FRQ_PACI","PRESTDR","PACI","IDHM","RENDA","LONGEVI","EDUCACA")
+
+sarmv.ap <- lagsarlm(municip_br$freq_pc ~ IDHM + RENDA + LONGEVI + EDUCACA,data=ap,crime_mg_w,method="eigen")
+  
+SARkmv_SSE <- sarmv.ap$SSE
+
+SST <- sum((ap$FRQ_PACI - mean(ap$FRQ_PACI))^2)
+
+r2_SARkmv <- 1 - (SARkmv_SSE/SST)
+r2_SARkmv
+
+summary(sarmv.ap)
+
+```
+
+Comparação dos modelos Multi-variados de SAR e LM:
+
+```{r comparacao de SAR e LM Multi-variado}
+cat("Rˆ2 SAR: ",r2_SARk, "\n")
+cat("Rˆ2 LM:",summary(lmK)$adj.r.squared,"\n")
+
+cat("Rˆ2 SAR MV: ",r2_SARkmv, "\n")
+cat("Rˆ2 LM MV:",summary(lmKmv)$adj.r.squared,"\n")
+```
+
+No modelo multivariado o ganho é de 1% sobre o modelo linear simples para o modelo SAR, porém o ganho foi de +37% com relação ao modelo original univariado.
+---
+
+```{r implementacao do modelo multivariado stepwise - regressao GWR}
+
+bwGaussMV <- gwr.sel(municip_br$freq_pc ~ IDHM + RENDA + LONGEVI + EDUCACA,data=ap,coords=coords,adapt=TRUE,method="aic",
+                   gweight=gwr.Gauss,verbose=FALSE)
+
+gwrMV.ap <- gwr(municip_br$freq_pc ~ IDHM + RENDA + LONGEVI + EDUCACA
+                , data=ap,coords=coords,bandwidth=bwGauss
+                , gweight=gwr.Gauss,adapt=bwGaussMV,hatmatrix=TRUE)
+gwrMV.ap
+
+SST <- sum((ap$FRQ_PACI - mean(ap$FRQ_PACI))^2)
+ 
+GWR_MV_SSE <- gwrMV.ap$results$rss
+r2_GWR_MV <- 1 - (GWR_MV_SSE/SST)
+r2_GWR_MV
+
+```
+
+Comparando os resultados finais:
+
+```{r comparacao de GWR - SAR - LM Multi-variado}
+cat("Rˆ2 GWR: ",r2_GWR, "\n")
+cat("Rˆ2 SAR: ",r2_SARk, "\n")
+cat("Rˆ2 LM:",summary(lmK)$adj.r.squared,"\n")
+
+cat("Rˆ2 GWR MV: ",r2_GWR_MV, "\n")
+cat("Rˆ2 SAR MV: ",r2_SARkmv, "\n")
+cat("Rˆ2 LM MV:",summary(lmKmv)$adj.r.squared,"\n")
+```
+
+Notamos que o modelo GWR tambem é beneficiado por uma análise multivariada, tendo aumentado 27%, passando de 48.1% para 75%.
+
+---
+
+```{r plotando mapas com tmap, message=FALSE, warning=FALSE}
+
+max(municip_br$prestador)
+max(municip_br$paci)
+
+ani_map <- tmap::tm_shape(municip_br, simplify = 1) + 
+  tmap::tm_fill() +
+  tmap::tm_shape(municip_br) + 
+  tmap::tm_fill(c("paci","prestador")) +
+  tmap::tm_style(style = "natural", legend.outside = TRUE) +
+  tmap::tm_borders(alpha = 0)  +
+  tmap::tm_facets(free.scales.symbol.size = TRUE, nrow=1,ncol=1, drop.NA.facets = TRUE, drop.empty.facets = TRUE) +
+  tmap::tm_layout(main.title = "Movimento Paciente -> Hospital") +
+  tmap::tm_polygons()
+
+tmap::animation_tmap(ani_map, loop = TRUE, delay=200, filename = "PaciHosp2.gif")
+
+```
+
+```{r Inclui o grafico gerado no trabalho, message=FALSE, warning=FALSE}
+
+knitr::include_graphics("CRIME_MG.gif")
+
+```
