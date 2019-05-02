@@ -52,15 +52,18 @@ test*
 >>>>>>> f17f7ce687c25481caa9497da2f2b03b507e0676
 .DS_Store
 AIA/*.csv
+AIA/Dados/
 */.ipynb_checkpoints/
-*.csv
 *.mp3
 *.wav
 ARSTM/Tarefa2/v15n2a02.pdf
-AGA/Backup/
+-AGA/Backup/
 AGA/DADOS/
 AGA/ibge/
 AGA/35MUE250GC_SIR/
+AGA/DataSP/
+AGA/dadosHospSP.csv
+AGA/DadosSP.csv
 *.cpg
 *.dbf
 *.gal
@@ -72,3 +75,4 @@ AGA/35MUE250GC_SIR/
 *.qpj
 *.ts
 *.zip
+*.nb.html
