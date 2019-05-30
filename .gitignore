@@ -76,3 +76,7 @@ AGA/DadosSP.csv
 *.ts
 *.zip
 *.nb.html
+TCC/Monografia/
+TCC/DADOS
+TCC/DADOS_ZIP
+TCC/consultas_cons.csv

@@ -1,0 +1,102 @@
+---
+title: "Trabalho de Conclusão de Cusros - FGV T4 Big Data e Analytics"
+author: "Ricardo Squassina Lee, Rafael Furlan, Djalma Gomes"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+  word_document: default
+---
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+---
+```{r Inicia Ambiente, message=FALSE, include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014") 
+setwd("~/Tresors/zz-pessoal/FGV/git/TCC")
+```
+
+---
+```{r Carrega bibliotecas necessarias, message=FALSE, warning=TRUE, include=FALSE}
+if(!require(data.table)) {
+  install.packages("data.table")
+  library(data.table)
+}
+
+```
+
+```{r}
+CONSULTAS_CONS <- fread("consultas_cons.csv", drop = "V1")
+```
+
+# MapReduce
+```{r MapReduce - Map}
+CAT_Precip <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$Precip)
+CAT_TMax <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$TMax)
+CAT_Tmin <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$TMin)
+CAT_Ins <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$Ins)
+CAT_EvapPiche <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$EvapPiche)
+CAT_TempCompMed <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$TempCompMedia)
+CAT_UmidRelMed <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$UmidRelMed)
+CAT_VelVentMed <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$VelVentMed)
+CAT_TDelta <- paste(CONSULTAS_CONS$CID,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin))
+SEX_CAT_Precip <- paste(CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$Precip)
+SEX_CAT_TMax <- paste(CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$TMax)
+SEX_CAT_Tmin <- paste(CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$TMin)
+SEX_CAT_Ins <- paste(CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$Ins)
+SEX_CAT_EvapPiche <- paste(CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$EvapPiche)
+SEX_CAT_TempCompMed <- paste(CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$TempCompMedia)
+SEX_CAT_UmidRelMed <- paste(CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$UmidRelMed)
+SEX_CAT_VelVentMed <- paste(CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$VelVentMed)
+SEX_CAT_TDelta <- paste(CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$CID,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin))
+IDADE_CAT_Precip <- paste(CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$Precip)
+IDADE_CAT_TMax <- paste(CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$TMax)
+IDADE_CAT_Tmin <- paste(CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$TMin)
+IDADE_CAT_Ins <- paste(CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$Ins)
+IDADE_CAT_EvapPiche <- paste(CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$EvapPiche)
+IDADE_CAT_TempCompMed <- paste(CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$TempCompMedia)
+IDADE_CAT_UmidRelMed <- paste(CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$UmidRelMed)
+IDADE_CAT_VelVentMed <- paste(CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$CID,CONSULTAS_CONS$VelVentMed)
+IDADE_CAT_TDelta <- paste(CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$CID,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin))
+
+
+```
+
+```{r MapReduce - Reduce}
+CAT_Precip_freq <- as.data.frame(table(CAT_Precip))
+CAT_TMax_freq <- as.data.frame(table(CAT_TMax))
+CAT_Tmin_freq <- as.data.frame(table(CAT_Tmin))
+CAT_Ins_freq <- as.data.frame(table(CAT_Ins))
+CAT_EvapPiche_freq <- as.data.frame(table(CAT_EvapPiche))
+CAT_TempCompMed_freq <- as.data.frame(table(CAT_TempCompMed))
+CAT_UmidRelMed_freq <- as.data.frame(table(CAT_UmidRelMed))
+CAT_VelVentMed_freq <- as.data.frame(table(CAT_VelVentMed))
+CAT_TempDelta_freq <- as.data.frame(table(CAT_TDelta))
+
+SEX_CAT_Precip_freq <- as.data.frame(table(SEX_CAT_Precip))
+SEX_CAT_TMax_freq <- as.data.frame(table(SEX_CAT_TMax))
+SEX_CAT_Tmin_freq <- as.data.frame(table(SEX_CAT_Tmin))
+SEX_CAT_Ins_freq <- as.data.frame(table(SEX_CAT_Ins))
+SEX_CAT_EvapPiche_freq <- as.data.frame(table(SEX_CAT_EvapPiche))
+SEX_CAT_TempCompMed_freq <- as.data.frame(table(SEX_CAT_TempCompMed))
+SEX_CAT_UmidRelMed_freq <- as.data.frame(table(SEX_CAT_UmidRelMed))
+SEX_CAT_VelVentMed_freq <- as.data.frame(table(SEX_CAT_VelVentMed))
+SEX_CAT_TempDelta_freq <- as.data.frame(table(SEX_CAT_TDelta))
+
+IDADE_CAT_Precip_freq <- as.data.frame(table(IDADE_CAT_Precip))
+IDADE_CAT_TMax_freq <- as.data.frame(table(IDADE_CAT_TMax))
+IDADE_CAT_Tmin_freq <- as.data.frame(table(IDADE_CAT_Tmin))
+IDADE_CAT_Ins_freq <- as.data.frame(table(IDADE_CAT_Ins))
+IDADE_CAT_EvapPiche_freq <- as.data.frame(table(IDADE_CAT_EvapPiche))
+IDADE_CAT_TempCompMed_freq <- as.data.frame(table(IDADE_CAT_TempCompMed))
+IDADE_CAT_UmidRelMed_freq <- as.data.frame(table(IDADE_CAT_UmidRelMed))
+IDADE_CAT_VelVentMed_freq <- as.data.frame(table(IDADE_CAT_VelVentMed))
+IDADE_CAT_TempDelta_freq <- as.data.frame(table(IDADE_CAT_TDelta))
+```
