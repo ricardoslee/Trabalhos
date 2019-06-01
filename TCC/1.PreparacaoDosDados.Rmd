@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #Iniciando o ambiente
 rm(list = ls())
 cat("\014") 
-setwd("~/Tresors/zz-pessoal/FGV/git/TCC")
+setwd("./")
 ```
 
 ---
@@ -93,9 +93,9 @@ CONSULTAS <- do.call(rbind, lapply(list.files(path = "./DADOS"
                                     , full.names = TRUE)
                                     , function(x) fread(x,encoding = "Latin-1")))
 
-arquivos <- list.files(path = "./DADOS"
-                  , pattern = ".*CSV"
-                  , full.names = TRUE)
+# arquivos <- list.files(path = "./DADOS"
+#                   , pattern = ".*CSV"
+#                   , full.names = TRUE)
 
 # CID10 <- lapply(arquivos, function(x) fread(x, encoding = "Latin-1", sep = ";"))
 # names(CID10) <- substr(arquivos, 9, 32)
@@ -122,14 +122,6 @@ CONSULTAS <- CONSULTAS[CONSULTAS$CD_MUNIC_BENEFICIARIO == 355030,]
 summary(CONSULTAS)
 ```
 
-```{r NA treatment}
-CONSULTAS <- CONSULTAS[complete.cases(CONSULTAS),]
-```
-
-```{r understanding the data  - HOSPITAL - SP - after NA treatment}
-summary(CONSULTAS)
-```
-
 ```{r}
 CONSULTAS <- within(CONSULTAS, rm("#ID_EVENTO"
                                     ,"ID_PLANO"
@@ -148,28 +140,43 @@ CONSULTAS <- within(CONSULTAS, rm("#ID_EVENTO"
                                     ,"NR_DIARIAS_UTI"
                                     ,"LG_VALOR_PREESTABELECIDO"))
 
+summary(CONSULTAS)
+nrow(CONSULTAS)
+```
+
+```{r NA treatment}
+# CONSULTAS <- CONSULTAS[complete.cases(CONSULTAS),]
+# 
+# summary(CONSULTAS)
+# nrow(CONSULTAS)
+
 ```
 
 
-
 ```{r listing all the CIDs available in the datafram in a single column}
-CID1 <- setnames(within(CONSULTAS[!which(CONSULTAS$CID_1 == "")], rm("CID_2","CID_3","CID_4")),"CID_1", "CID") 
+CID1 <- setnames(within(CONSULTAS[!which(CONSULTAS$CID_1 == "")], rm("CID_2","CID_3","CID_4")),"CID_1", "CID")
 CID2 <- setnames(within(CONSULTAS[!which(CONSULTAS$CID_2 == "")], rm("CID_1","CID_3","CID_4")),"CID_2", "CID")
 CID3 <- setnames(within(CONSULTAS[!which(CONSULTAS$CID_3 == "")], rm("CID_2","CID_1","CID_4")),"CID_3", "CID")
 CID4 <- setnames(within(CONSULTAS[!which(CONSULTAS$CID_4 == "")], rm("CID_2","CID_3","CID_1")),"CID_4", "CID")
 
-CONSULTAS <- rbind(CID1, CID2, CID3, CID4)
+CONSULTAS <- data.table::rbindlist(l = list(CID1, CID2, CID3, CID4),use.names = TRUE)
 rm(CID1, CID2, CID3, CID4)
 
 CONSULTAS$CID <- substr(CONSULTAS$CID,1,3)
 
 CONSULTAS$DT_INTERNACAO <- as.Date(CONSULTAS$DT_INTERNACAO, format = "%d/%m/%Y")
 
-write.csv(DataCidSPHospCons, file = "./DADOS/CONSULTAS.csv")
+nrow(CONSULTAS)
 ```
 
+
+```{r understanding the data  - HOSPITAL - SP - after NA treatment}
+summary(CONSULTAS)
+```
+
+
 ```{r}
-CLIMA <- fread("./DADOS/base_saopaulo.csv", drop = "V1")
+CLIMA <- fread("./DADOS/base_saopaulo.csv", drop = c("V1","Estacao"))
 CLIMA$Data <- as.Date(CLIMA$Data)
 ```
 
@@ -177,6 +184,127 @@ CLIMA$Data <- as.Date(CLIMA$Data)
 ```{r}
 CONSULTAS_CONS <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "Data")
 head(CONSULTAS_CONS)
-
 write.csv(CONSULTAS_CONS, file = "./consultas_cons.csv")
+```
+
+```{r}
+CONSULTAS_CONS2 <- cbind(CONSULTAS_CONS,dummy(CONSULTAS_CONS$CID))
+write.csv(CONSULTAS_CONS2, file = "consultas_cons_dummies.csv")
+
+```
+
+
+```{r}
+CONSULTAS_CONS_CAP <- fread("consultas_cons.csv")
+
+CONSULTAS_CONS_CAP$CID1 <- substr(CONSULTAS_CONS_CAP$CID,1,1)
+CONSULTAS_CONS_CAP$CID2 <- substr(CONSULTAS_CONS_CAP$CID,2,2)
+CONSULTAS_CONS_CAP$CID3 <- substr(CONSULTAS_CONS_CAP$CID,3,3)
+
+for (i in 1:nrow(CONSULTAS_CONS_CAP)) {
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "A" || CONSULTAS_CONS_CAP[i]$CID1 == "B")  {
+    CONSULTAS_CONS_CAP$CAP = 1
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "C")  {
+    CONSULTAS_CONS_CAP$CAP = 2
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "D")  {
+    if (CONSULTAS_CONS_CAP[i]$CID2 < "5") {
+      CONSULTAS_CONS_CAP$CAP = 2
+      next
+    } else {
+      CONSULTAS_CONS_CAP$CAP = 3
+      next
+    }
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "E")  {
+    CONSULTAS_CONS_CAP$CAP = 4
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "F")  {
+    CONSULTAS_CONS_CAP$CAP = 5
+    next
+    }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "G")  {
+    CONSULTAS_CONS_CAP$CAP = 6
+    next
+    }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "H")  {
+    if (CONSULTAS_CONS_CAP[i]$CID2 < "6") {
+      CONSULTAS_CONS_CAP$CAP = 7
+      next
+    } else {
+      CONSULTAS_CONS_CAP$CAP = 8
+      next
+    }
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "I")  {
+    CONSULTAS_CONS_CAP$CAP = 9
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "J")  {
+    CONSULTAS_CONS_CAP$CAP = 10
+    next
+  }
+    if (CONSULTAS_CONS_CAP[i]$CID1 == "K")  {
+    CONSULTAS_CONS_CAP$CAP = 11
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "L")  {
+    CONSULTAS_CONS_CAP$CAP = 12
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "M")  {
+    CONSULTAS_CONS_CAP$CAP = 13
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "N")  {
+    CONSULTAS_CONS_CAP$CAP = 14
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "O")  {
+    CONSULTAS_CONS_CAP$CAP = 15
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "P")  {
+    CONSULTAS_CONS_CAP$CAP = 16
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "Q")  {
+    CONSULTAS_CONS_CAP$CAP = 17
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "R")  {
+    CONSULTAS_CONS_CAP$CAP = 18
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "S" || CONSULTAS_CONS_CAP[i]$CID1 == "T")  {
+    CONSULTAS_CONS_CAP$CAP = 19
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "v" || CONSULTAS_CONS_CAP[i]$CID1 == "X" || CONSULTAS_CONS_CAP[i]$CID1 == "Y")  {
+    CONSULTAS_CONS_CAP$CAP = 20
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "Z")  {
+    CONSULTAS_CONS_CAP$CAP = 21
+    next
+  }
+  if (CONSULTAS_CONS_CAP[i]$CID1 == "U")  {
+    CONSULTAS_CONS_CAP$CAP = 22
+    next
+  }
+}
+
+write.csv(CONSULTAS_CONS_CAP, file = "consultas_cons_cap.csv")
+
+```
+
+
+```{r}
+CONSULTAS_CONS_CAP2 <- cbind(CONSULTAS_CONS_CAP,dummy(CONSULTAS_CONS_CAP$CAP))
+write.csv(CONSULTAS_CONS_CAP2, file = "consultas_cons_cap_dummies.csv")
+
 ```
