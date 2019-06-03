@@ -29,6 +29,10 @@ if(!require(data.table)) {
   install.packages("data.table")
   library(data.table)
 }
+if(!require(dummies)) {
+  install.packages("dummies")
+  library(dummies)
+}
 ```
 
 ---
@@ -193,110 +197,42 @@ write.csv(CONSULTAS_CONS2, file = "consultas_cons_dummies.csv")
 
 ```
 
-
 ```{r}
 CONSULTAS_CONS_CAP <- fread("consultas_cons.csv")
 
-CONSULTAS_CONS_CAP$CID1 <- substr(CONSULTAS_CONS_CAP$CID,1,1)
-CONSULTAS_CONS_CAP$CID2 <- substr(CONSULTAS_CONS_CAP$CID,2,2)
-CONSULTAS_CONS_CAP$CID3 <- substr(CONSULTAS_CONS_CAP$CID,3,3)
+CONSULTAS_CONS_CAP$CID1 <- substr(CONSULTAS_CONS_CAP$CID,1,2)
 
-for (i in 1:nrow(CONSULTAS_CONS_CAP)) {
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "A" || CONSULTAS_CONS_CAP[i]$CID1 == "B")  {
-    CONSULTAS_CONS_CAP$CAP = 1
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "C")  {
-    CONSULTAS_CONS_CAP$CAP = 2
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "D")  {
-    if (CONSULTAS_CONS_CAP[i]$CID2 < "5") {
-      CONSULTAS_CONS_CAP$CAP = 2
-      next
-    } else {
-      CONSULTAS_CONS_CAP$CAP = 3
-      next
-    }
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "E")  {
-    CONSULTAS_CONS_CAP$CAP = 4
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "F")  {
-    CONSULTAS_CONS_CAP$CAP = 5
-    next
-    }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "G")  {
-    CONSULTAS_CONS_CAP$CAP = 6
-    next
-    }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "H")  {
-    if (CONSULTAS_CONS_CAP[i]$CID2 < "6") {
-      CONSULTAS_CONS_CAP$CAP = 7
-      next
-    } else {
-      CONSULTAS_CONS_CAP$CAP = 8
-      next
-    }
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "I")  {
-    CONSULTAS_CONS_CAP$CAP = 9
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "J")  {
-    CONSULTAS_CONS_CAP$CAP = 10
-    next
-  }
-    if (CONSULTAS_CONS_CAP[i]$CID1 == "K")  {
-    CONSULTAS_CONS_CAP$CAP = 11
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "L")  {
-    CONSULTAS_CONS_CAP$CAP = 12
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "M")  {
-    CONSULTAS_CONS_CAP$CAP = 13
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "N")  {
-    CONSULTAS_CONS_CAP$CAP = 14
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "O")  {
-    CONSULTAS_CONS_CAP$CAP = 15
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "P")  {
-    CONSULTAS_CONS_CAP$CAP = 16
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "Q")  {
-    CONSULTAS_CONS_CAP$CAP = 17
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "R")  {
-    CONSULTAS_CONS_CAP$CAP = 18
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "S" || CONSULTAS_CONS_CAP[i]$CID1 == "T")  {
-    CONSULTAS_CONS_CAP$CAP = 19
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "v" || CONSULTAS_CONS_CAP[i]$CID1 == "X" || CONSULTAS_CONS_CAP[i]$CID1 == "Y")  {
-    CONSULTAS_CONS_CAP$CAP = 20
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "Z")  {
-    CONSULTAS_CONS_CAP$CAP = 21
-    next
-  }
-  if (CONSULTAS_CONS_CAP[i]$CID1 == "U")  {
-    CONSULTAS_CONS_CAP$CAP = 22
-    next
-  }
-}
+CONSULTAS_CONS_CAP$CAP <- 0
+
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "A", ][, "CAP"] <- 1
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "B", ][, "CAP"] <- 1
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "C", ][, "CAP"] <- 2
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "D" && substr(CONSULTAS_CONS_CAP$CID1,2,1) < 5,][, "CAP"] <-2# < 5
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "D" && substr(CONSULTAS_CONS_CAP$CID1,2,1) > 4,][, "CAP"] <-3 # > 4
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "E",][, "CAP"] <-4
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "F",][, "CAP"] <-5
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "G",][, "CAP"] <-6
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "H" && substr(CONSULTAS_CONS_CAP$CID1,2,1) < 6,][, "CAP"] <-7# < 6
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "H" && substr(CONSULTAS_CONS_CAP$CID1,2,1) > 5,][, "CAP"] <-8# > 5
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "I",][, "CAP"] <-9
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "J",][, "CAP"] <-10
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "K",][, "CAP"] <-11
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "L",][, "CAP"] <-12
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "M",][, "CAP"] <-13
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "N",][, "CAP"] <-14
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "O",][, "CAP"] <-15
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "P",][, "CAP"] <-16
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "Q",][, "CAP"] <-17
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "R",][, "CAP"] <-18
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "S",][, "CAP"] <-19
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "T",][, "CAP"] <-19
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "U",][, "CAP"] <-22
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "V",][, "CAP"] <-20
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "X",][, "CAP"] <-20
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "Y",][, "CAP"] <-20
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "Z",][, "CAP"] <-21
+
+tail(CONSULTAS_CONS_CAP)
 
 write.csv(CONSULTAS_CONS_CAP, file = "consultas_cons_cap.csv")
 
