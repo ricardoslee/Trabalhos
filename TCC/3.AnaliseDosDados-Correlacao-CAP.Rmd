@@ -47,29 +47,22 @@ CONSULTAS_CONS2 <- fread("consultas_cons_cap_dummies.csv", drop = 1:2)
 ```
 
 ```{r}
-# scatterplotMatrix(CONSULTAS_CONS[,5:6])
-# cor.test(~ Precip
-#          + TMax
-#          , data = CONSULTAS_CONS)
+
+CONSULTAS_CONS2$DeltaT <- 0
+
+CONSULTAS_CONS2[CONSULTAS_CONS2$TMax > 0,][,"DeltaT"] <- CONSULTAS_CONS2[CONSULTAS_CONS2$TMax > 0,]$TMax - CONSULTAS_CONS2[CONSULTAS_CONS2$TMax > 0,]$TMin
+
+
+
 ```
 
+
 ```{r}
-mosthighlycorrelated <- function(mydataframe,numtoreport) {
-  # find the correlations
-  cormatrix <- cor(mydataframe)
-  # set the correlations on the diagonal or lower triangle to zero,
-  # so they will not be reported as the highest ones:
-  diag(cormatrix) <- 0
-  cormatrix[lower.tri(cormatrix)] <- 0
-  # flatten the matrix into a dataframe for easy sorting
-  fm <- as.data.frame(as.table(cormatrix))
-  # assign human-friendly names
-  names(fm) <- c("First.Variable", "Second.Variable","Correlation")
-  # sort and print the top n correlations
-  head(fm[order(abs(fm$Correlation),decreasing=T),],n=numtoreport)
-}
-
-mosthighlycorrelated(CONSULTAS_CONS2[,c(5:12,15:32)], 20)
-
+MatrizCorr <- cor(CONSULTAS_CONS2[,c(5:12,15:33)])
+diag(MatrizCorr) <- 0
+MatrizCorr[lower.tri(MatrizCorr)] <- 0
+MatrizCorrDF <- as.data.frame(as.table(MatrizCorr))
+names(MatrizCorrDF) <- c("Variavel_1", "Variavel_2","Correlacao")
+Correlacoes <- MatrizCorrDF[order(abs(MatrizCorrDF$Correlacao),decreasing=T),]
 ```
 

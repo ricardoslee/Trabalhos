@@ -149,10 +149,10 @@ nrow(CONSULTAS)
 ```
 
 ```{r NA treatment}
-# CONSULTAS <- CONSULTAS[complete.cases(CONSULTAS),]
-# 
-# summary(CONSULTAS)
-# nrow(CONSULTAS)
+CONSULTAS <- CONSULTAS[complete.cases(CONSULTAS),]
+
+summary(CONSULTAS)
+nrow(CONSULTAS)
 
 ```
 
@@ -176,12 +176,15 @@ nrow(CONSULTAS)
 
 ```{r understanding the data  - HOSPITAL - SP - after NA treatment}
 summary(CONSULTAS)
+write.csv(CONSULTAS, file = "./consultas.csv")
 ```
 
 
 ```{r}
-CLIMA <- fread("./DADOS/base_saopaulo.csv", drop = c("V1","Estacao"))
-CLIMA$Data <- as.Date(CLIMA$Data)
+CONSULTAS <- fread("./consultas.csv", drop = "V1")
+CONSULTAS$DT_INTERNACAO <- as.Date((CONSULTAS$DT_INTERNACAO))
+CLIMA <- fread("./DADOS/base_saopaulo2.csv", drop = c("V1","Estacao"))
+CLIMA$Data <- as.Date(CLIMA$Data, format = "%m/%d/%Y")
 ```
 
 
@@ -192,13 +195,16 @@ write.csv(CONSULTAS_CONS, file = "./consultas_cons.csv")
 ```
 
 ```{r}
+
+CONSULTAS_CONS <- fread("consultas_cons.csv", drop = c("V1"))
+
 CONSULTAS_CONS2 <- cbind(CONSULTAS_CONS,dummy(CONSULTAS_CONS$CID))
 write.csv(CONSULTAS_CONS2, file = "consultas_cons_dummies.csv")
 
 ```
 
 ```{r}
-CONSULTAS_CONS_CAP <- fread("consultas_cons.csv")
+CONSULTAS_CONS_CAP <- fread("consultas_cons.csv", drop = c("V1"))
 
 CONSULTAS_CONS_CAP$CID1 <- substr(CONSULTAS_CONS_CAP$CID,1,2)
 
@@ -232,7 +238,7 @@ CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "X",][, "CAP"] <-20
 CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "Y",][, "CAP"] <-20
 CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "Z",][, "CAP"] <-21
 
-tail(CONSULTAS_CONS_CAP)
+# tail(CONSULTAS_CONS_CAP)
 
 write.csv(CONSULTAS_CONS_CAP, file = "consultas_cons_cap.csv")
 

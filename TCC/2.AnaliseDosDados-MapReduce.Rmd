@@ -104,5 +104,19 @@ Reduce_IDADE_CAT_TempDelta_freq <- as.data.frame(table(Map_IDADE_CAT_TDelta))
 
 
 ```{r}
+l = as.list(ls(pattern = "Reduce"))
+typeof(l)
+typeof(l[1])
+
+as.list.data.frame(l)
+
+l <- do.call(rbindlist, lapply(l, function(x) x))
+
+CONSULTAS <- data.table::rbindlist(l,use.names = FALSE)
+
+CONSULTAS <- data.table::rbindlist(l = list(Reduce_CAT_Precip_freq,Reduce_CAT_TMax_freq),use.names = FALSE)
+
+l = list("a",'b','c')
+CONSULTAS <- lapply(l, function(x) rbindlist(l))
 ```
 
