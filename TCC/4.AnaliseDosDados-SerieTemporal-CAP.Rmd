@@ -34,13 +34,13 @@ if(!require(data.table)) {
 ```
 
 ```{r}
-CONSULTAS_CONS <- fread("consultas_cons.csv", drop = c("V1","V12","V13"))
+CONSULTAS_CONS <- fread("consultas_cons_cap.csv", drop = c("V1","V12","V13"))
 ```
 
 
 ```{r MapReduce1}
-Reduce_Data_CID_freq <- as.data.frame(unlist(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT)), stringsAsFactors = FALSE)
-names(Reduce_Data_CID_freq) <- c("Data","CAT","Freq")
+Reduce_Data_CAP_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP))
+names(Reduce_Data_CAP_freq) <- c("Data","CAP","Freq")
 
 Reduce_Data_SEX_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$SEXO_BENEFICIARIO))
 names(Reduce_Data_SEX_freq) <- c("Data","Sexo","Freq")
@@ -53,126 +53,112 @@ names(Reduce_Data_IDADE_freq) <- c("Data","Idade","Freq")
 
 ```{r}
 
-Reduce_Data_CID_SEX_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$CAT))
-names(Reduce_Data_CID_SEX_freq) <- c("Data","Sexo","CAT","Freq")
+Reduce_Data_CAP_SEX_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$CAP))
+names(Reduce_Data_CAP_SEX_freq) <- c("Data","Sexo","CAP","Freq")
 
-Reduce_Data_CID_IDADE_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$CAT))
-names(Reduce_Data_CID_IDADE_freq) <- c("Data","Idade","CAT","Freq")
-
-
-```
-
-```{r}
-
-Reduce_Data_Precip_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$CAT,CONSULTAS_CONS$Precip))
-names(Reduce_Data_Precip_freq) <- c("Data","CAT","Precip","Freq")
-
-Reduce_Data_TMax_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$CAT,CONSULTAS_CONS$TMax))
-names(Reduce_Data_TMax_freq) <- c("Data","CAT","TMax","Freq")
-
-Reduce_Data_Tmin_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$TMin))
-names(Reduce_Data_Tmin_freq) <- c("Data","CAT","TMin","Freq")
-
-Reduce_Data_Ins_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$Ins))
-names(Reduce_Data_Ins_freq) <- c("Data","CAT","Ins","Freq")
-
-Reduce_Data_EvapPiche_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$EvapPiche))
-names(Reduce_Data_EvapPiche_freq) <- c("Data","CAT","EvapPiche","Freq")
-
-Reduce_Data_TempCompMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$TempCompMedia))
-names(Reduce_Data_TempCompMed_freq) <- c("Data","CAT","TempCompMedia","Freq")
-
-Reduce_Data_UmidRelMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$UmidRelMed))
-names(Reduce_Data_UmidRelMed_freq) <- c("Data","CAT","UmidRelMed","Freq")
-
-Reduce_Data_VelVentMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$VelVentMed))
-names(Reduce_Data_VelVentMed_freq) <- c("Data","CAT","VelVentMed","Freq")
-
-Reduce_Data_TempDelta_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
-names(Reduce_Data_TempDelta_freq) <- c("Data","CAT","TDelta","Freq")
-
-
-```
-
-```{r}
-Reduce_SEX_Data_Precip_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Precip))
-names(Reduce_SEX_Data_Precip_freq) <- c("Data","CAT","Sexo","Precip","Freq")
-
-Reduce_SEX_Data_TMax_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$TMax))
-names(Reduce_SEX_Data_TMax_freq) <- c("Data","CAT","Sexo","TMax","Freq")
-
-Reduce_SEX_Data_Tmin_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$TMin))
-names(Reduce_SEX_Data_Tmin_freq) <- c("Data","CAT","Sexo","TMin","Freq")
-
-Reduce_SEX_Data_Ins_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Ins))
-names(Reduce_SEX_Data_Ins_freq) <- c("Data","CAT","Sexo","Ins","Freq")
-
-Reduce_SEX_Data_EvapPiche_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$EvapPiche))
-names(Reduce_SEX_Data_EvapPiche_freq) <- c("Data","CAT","Sexo","EvapPiche","Freq")
-
-Reduce_SEX_Data_TempCompMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$TempCompMedia))
-names(Reduce_SEX_Data_TempCompMed_freq) <- c("Data","CAT","Sexo","TempCompMedia","Freq")
-
-Reduce_SEX_Data_UmidRelMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$UmidRelMed))
-names(Reduce_SEX_Data_UmidRelMed_freq) <- c("Data","CAT","Sexo","UmidRelMed","Freq")
-
-Reduce_SEX_Data_VelVentMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$VelVentMed))
-names(Reduce_SEX_Data_VelVentMed_freq) <- c("Data","CAT","Sexo","VelVentMed","Freq")
-
-Reduce_SEX_Data_TempDelta_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$SEXO_BENEFICIARIO,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
-names(Reduce_SEX_Data_TempDelta_freq) <- c("Data","CAT","Sexo","TDelta","Freq")
+Reduce_Data_CAP_IDADE_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$CAP))
+names(Reduce_Data_CAP_IDADE_freq) <- c("Data","Idade","CAP","Freq")
 
 
 ```
 
 ```{r}
 
+Reduce_Data_Precip_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$CAP,CONSULTAS_CONS$Precip))
+names(Reduce_Data_Precip_freq) <- c("Data","CAP","Precip","Freq")
 
-Reduce_Data_IDADE_Precip_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$Precip))
-names(Reduce_Data_IDADE_Precip_freq) <- c("Data","CAT","Idade","Precip","Freq")
+Reduce_Data_TMax_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$CAP,CONSULTAS_CONS$TMax))
+names(Reduce_Data_TMax_freq) <- c("Data","CAP","TMax","Freq")
 
-Reduce_Data_IDADE_TMax_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$TMax))
-names(Reduce_Data_IDADE_TMax_freq) <- c("Data","CAT","idade","TMax","Freq")
+Reduce_Data_Tmin_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$TMin))
+names(Reduce_Data_Tmin_freq) <- c("Data","CAP","TMin","Freq")
 
-Reduce_Data_IDADE_Tmin_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$TMin))
-names(Reduce_Data_IDADE_Tmin_freq) <- c("Data","CAT","Idade","TMin","Freq")
+Reduce_Data_Ins_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$Ins))
+names(Reduce_Data_Ins_freq) <- c("Data","CAP","Ins","Freq")
 
-Reduce_Data_IDADE_Ins_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$Ins))
-names(Reduce_Data_IDADE_Ins_freq) <- c("Data","CAT","Idade","Ins","Freq")
+Reduce_Data_EvapPiche_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$EvapPiche))
+names(Reduce_Data_EvapPiche_freq) <- c("Data","CAP","EvapPiche","Freq")
 
-Reduce_Data_IDADE_EvapPiche_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$EvapPiche))
-names(Reduce_Data_IDADE_EvapPiche_freq) <- c("Data","CAT","Idade","EvapPiche","Freq")
+Reduce_Data_TempCompMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$TempCompMedia))
+names(Reduce_Data_TempCompMed_freq) <- c("Data","CAP","TempCompMedia","Freq")
 
-Reduce_Data_IDADE_TempCompMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$TempCompMedia))
-names(Reduce_Data_IDADE_TempCompMed_freq) <- c("Data","CAT","Idade","TempCompMedia","Freq")
+Reduce_Data_UmidRelMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$UmidRelMed))
+names(Reduce_Data_UmidRelMed_freq) <- c("Data","CAP","UmidRelMed","Freq")
 
-Reduce_Data_IDADE_UmidRelMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$UmidRelMed))
-names(Reduce_Data_IDADE_UmidRelMed_freq) <- c("Data","CAT","Idade","UmidRelMed","Freq")
+Reduce_Data_VelVentMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$VelVentMed))
+names(Reduce_Data_VelVentMed_freq) <- c("Data","CAP","VelVentMed","Freq")
 
-Reduce_Data_IDADE_VelVentMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$VelVentMed))
-names(Reduce_Data_IDADE_VelVentMed_freq) <- c("Data","CAT","Idade","VelVentMed","Freq")
+Reduce_Data_TempDelta_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
+names(Reduce_Data_TempDelta_freq) <- c("Data","CAP","TDelta","Freq")
 
-Reduce_Data_IDADE_TempDelta_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT,CONSULTAS_CONS$IDADE_BENEFICIARIO,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
-names(Reduce_Data_IDADE_TempDelta_freq) <- c("Data","CAT","Idade","TDelta","Freq")
+
+```
+
+```{r}
+Reduce_SEX_Data_Precip_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Precip))
+names(Reduce_SEX_Data_Precip_freq) <- c("Data","CAP","Sexo","Precip","Freq")
+
+Reduce_SEX_Data_TMax_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$TMax))
+names(Reduce_SEX_Data_TMax_freq) <- c("Data","CAP","Sexo","TMax","Freq")
+
+Reduce_SEX_Data_Tmin_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$TMin))
+names(Reduce_SEX_Data_Tmin_freq) <- c("Data","CAP","Sexo","TMin","Freq")
+
+Reduce_SEX_Data_Ins_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Ins))
+names(Reduce_SEX_Data_Ins_freq) <- c("Data","CAP","Sexo","Ins","Freq")
+
+Reduce_SEX_Data_EvapPiche_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$EvapPiche))
+names(Reduce_SEX_Data_EvapPiche_freq) <- c("Data","CAP","Sexo","EvapPiche","Freq")
+
+Reduce_SEX_Data_TempCompMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$TempCompMedia))
+names(Reduce_SEX_Data_TempCompMed_freq) <- c("Data","CAP","Sexo","TempCompMedia","Freq")
+
+Reduce_SEX_Data_UmidRelMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$UmidRelMed))
+names(Reduce_SEX_Data_UmidRelMed_freq) <- c("Data","CAP","Sexo","UmidRelMed","Freq")
+
+Reduce_SEX_Data_VelVentMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$VelVentMed))
+names(Reduce_SEX_Data_VelVentMed_freq) <- c("Data","CAP","Sexo","VelVentMed","Freq")
+
+Reduce_SEX_Data_TempDelta_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
+names(Reduce_SEX_Data_TempDelta_freq) <- c("Data","CAP","Sexo","TDelta","Freq")
+
+
+```
+
+```{r}
+
+
+Reduce_Data_IDADE_Precip_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$Precip))
+names(Reduce_Data_IDADE_Precip_freq) <- c("Data","CAP","Idade","Precip","Freq")
+
+Reduce_Data_IDADE_TMax_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$TMax))
+names(Reduce_Data_IDADE_TMax_freq) <- c("Data","CAP","idade","TMax","Freq")
+
+Reduce_Data_IDADE_Tmin_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$TMin))
+names(Reduce_Data_IDADE_Tmin_freq) <- c("Data","CAP","Idade","TMin","Freq")
+
+Reduce_Data_IDADE_Ins_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$Ins))
+names(Reduce_Data_IDADE_Ins_freq) <- c("Data","CAP","Idade","Ins","Freq")
+
+Reduce_Data_IDADE_EvapPiche_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$EvapPiche))
+names(Reduce_Data_IDADE_EvapPiche_freq) <- c("Data","CAP","Idade","EvapPiche","Freq")
+
+Reduce_Data_IDADE_TempCompMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$TempCompMedia))
+names(Reduce_Data_IDADE_TempCompMed_freq) <- c("Data","CAP","Idade","TempCompMedia","Freq")
+
+Reduce_Data_IDADE_UmidRelMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$UmidRelMed))
+names(Reduce_Data_IDADE_UmidRelMed_freq) <- c("Data","CAP","Idade","UmidRelMed","Freq")
+
+Reduce_Data_IDADE_VelVentMed_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$VelVentMed))
+names(Reduce_Data_IDADE_VelVentMed_freq) <- c("Data","CAP","Idade","VelVentMed","Freq")
+
+Reduce_Data_IDADE_TempDelta_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
+names(Reduce_Data_IDADE_TempDelta_freq) <- c("Data","CAP","Idade","TDelta","Freq")
 ```
 
 
-
-```{r MapReduce2}
-library(plyr)
-t <- unlist(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT))
-
-Reduce_Data_CID_freq <- as.data.frame(table(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7),CONSULTAS_CONS$CAT, exclude = NULL))
-names(Reduce_Data_CID_freq) <- c("Data","CAT","Freq")
-
-
-
-rm(t)
-t <- as.data.frame(paste(substr(CONSULTAS_CONS$DT_INTERNACAO,1,7), CONSULTAS_CONS$CAT, CONSULTAS_CONS$CAT, CONSULTAS_CONS$Precip))
-
-
-CONSULTAS_CONS$ANO_Inter <- substr(CONSULTAS_CONS$DT_INTERNACAO,1,4)
-CONSULTAS_CONS$MES_Inter <- substr(CONSULTAS_CONS$DT_INTERNACAO,6,7)
-CONSULTAS_CONS$DIA_Inter <- substr(CONSULTAS_CONS$DT_INTERNACAO,9,10)
-
+```{r}
+CONSULTAS_CONS_LN <- NULL
+CONSULTAS_CONS_LN <- log(CONSULTAS_CONS[5:12]/base::rbind(NA,CONSULTAS_CONS[5:12][-nrow(CONSULTAS_CONS[5:12]),]))
+CONSULTAS_CONS_LN <- CONSULTAS_CONS_LN[-1,]
 ```

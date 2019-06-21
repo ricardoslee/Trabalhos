@@ -171,3 +171,63 @@ lm(CONSULTAS_CONS$CAP~(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin))
 
 ```
 
+```{r}
+lm(CAT_EvapPiche_freq$Freq~CAT_EvapPiche_freq$EvapPiche)
+lm(CAT_Ins_freq$Freq~CAT_Ins_freq$Ins)
+lm(CAT_Precip_freq$Freq~CAT_Precip_freq$Precip)
+lm(CAT_TDelta_freq$Freq~CAT_TDelta_freq$TDelta)
+lm(CAT_TDeltaA_freq$Freq~CAT_TDeltaA_freq$TDelta)
+lm(CAT_TempCompMed_freq$Freq~CAT_TempCompMed_freq$TempCompMedia)
+lm(CAT_TMax_freq$Freq~CAT_TMax_freq$TMax)
+lm(CAT_Tmin_freq$Freq~CAT_Tmin_freq$TMin)
+lm(CAT_UmidRelMed_freq$Freq~CAT_UmidRelMed_freq$UmidRelMed)
+lm(CAT_VelVentMed_freq$Freq~CAT_VelVentMed_freq$VelVentMed)
+```
+
+
+```{r}
+CAP_EvapPiche.lm <- lm(CAT_EvapPiche_freq$FreqRel~CAT_EvapPiche_freq$CAP + CAT_EvapPiche_freq$EvapPiche)
+CAT_Ins_freq.lm <- lm(CAT_Ins_freq$Freq~CAT_Ins_freq$CAP + CAT_Ins_freq$Ins)
+CAT_Precip_freq.lm <- lm(CAT_Precip_freq$Freq~CAT_Precip_freq$CAP + CAT_Precip_freq$Precip)
+CAT_TDelta_freq.lm <- lm(CAT_TDelta_freq$Freq~CAT_TDelta_freq$CAP + CAT_TDelta_freq$TDelta)
+CAT_TDeltaA_freq.lm <- lm(CAT_TDeltaA_freq$Freq~CAT_TDeltaA_freq$CAP + CAT_TDeltaA_freq$TDelta)
+CAT_TempCompMed_freq.lm <- lm(CAT_TempCompMed_freq$Freq~CAT_TempCompMed_freq$CAP + CAT_TempCompMed_freq$TempCompMedia)
+CAT_TMax_freq.lm <- lm(CAT_TMax_freq$Freq~CAT_TMax_freq$CAP + CAT_TMax_freq$TMax)
+CAT_Tmin_freq.lm <- lm(CAT_Tmin_freq$Freq~CAT_Tmin_freq$CAP + CAT_Tmin_freq$TMin)
+CAT_UmidRelMed_freq.lm <- lm(CAT_UmidRelMed_freq$Freq~CAT_UmidRelMed_freq$CAP + CAT_UmidRelMed_freq$UmidRelMed)
+CAT_VelVentMed_freq.lm <- lm(CAT_VelVentMed_freq$Freq~CAT_VelVentMed_freq$CAP + CAT_VelVentMed_freq$VelVentMed)
+
+```
+
+```{r}
+cooks.distance(CAP_EvapPiche.lm)
+cooks.distance(CAT_Ins_freq.lm)
+cooks.distance(CAT_Precip_freq.lm)
+cooks.distance(CAT_TDelta_freq.lm)
+cooks.distance(CAT_TDeltaA_freq.lm)
+cooks.distance(CAT_TempCompMed_freq.lm)
+cooks.distance(CAT_TMax_freq.lm)
+cooks.distance(CAT_Tmin_freq.lm)
+cooks.distance(CAT_UmidRelMed_freq.lm)
+cooks.distance(CAT_VelVentMed_freq.lm)
+
+```
+
+
+```{r}
+CAP_EvapPiche.im <- influence.measures(CAP_EvapPiche.lm)
+CAT_Ins_freq.im <- influence.measures(CAT_Ins_freq.lm)
+CAT_Precip_freq.im <- influence.measures(CAT_Precip_freq.lm)
+CAT_TDelta_freq.im <- influence.measures(CAT_TDelta_freq.lm)
+CAT_TDeltaA_freq.im <- influence.measures(CAT_TDeltaA_freq.lm)
+CAT_TempCompMed_freq.im <- influence.measures(CAT_TempCompMed_freq.lm)
+CAT_TMax_freq.im <- influence.measures(CAT_TMax_freq.lm)
+CAT_Tmin_freq.im <- influence.measures(CAT_Tmin_freq.lm)
+CAT_UmidRelMed_freq.im <- influence.measures(CAT_UmidRelMed_freq.lm)
+CAT_VelVentMed_freq.im <- influence.measures(CAT_VelVentMed_freq.lm)
+
+```
+
+```{r}
+summary(CAP_EvapPiche.im)
+```
