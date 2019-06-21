@@ -1,0 +1,122 @@
+---
+title: "Trabalho de Conclusão de Cusros - FGV T4 Big Data e Analytics"
+author: "Ricardo Squassina Lee, Rafael Furlan, Djalma Gomes"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+  word_document: default
+---
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+---
+```{r Inicia Ambiente, message=FALSE, include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014") 
+# setwd("~/Tresors/zz-pessoal/FGV/git/TCC")
+setwd("./")
+```
+
+---
+```{r Carrega bibliotecas necessarias, message=FALSE, warning=TRUE, include=FALSE}
+if(!require(data.table)) {
+  install.packages("data.table")
+  library(data.table)
+}
+
+```
+
+```{r}
+CONSULTAS_CONS <- fread("consultas_cons.csv", drop = "V1")
+```
+
+# MapReduce
+```{r MapReduce - Map}
+Map_CAT_Precip <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$Precip)
+Map_CAT_TMax <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$TMax)
+Map_CAT_Tmin <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$TMin)
+Map_CAT_Ins <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$Ins)
+Map_CAT_EvapPiche <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$EvapPiche)
+Map_CAT_TempCompMed <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$TempCompMedia)
+Map_CAT_UmidRelMed <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$UmidRelMed)
+Map_CAT_VelVentMed <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$VelVentMed)
+Map_CAT_TDelta <- paste(CONSULTAS_CONS$CID,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin))
+
+Map_SEX_CAT_Precip <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Precip)
+Map_SEX_CAT_TMax <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$TMax)
+Map_SEX_CAT_Tmin <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$TMin)
+Map_SEX_CAT_Ins <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Ins)
+Map_SEX_CAT_EvapPiche <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$EvapPiche)
+Map_SEX_CAT_TempCompMed <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$TempCompMedia)
+Map_SEX_CAT_UmidRelMed <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$UmidRelMed)
+Map_SEX_CAT_VelVentMed <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$VelVentMed)
+Map_SEX_CAT_TDelta <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin))
+
+Map_IDADE_CAT_Precip <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$Precip)
+Map_IDADE_CAT_TMax <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$TMax)
+Map_IDADE_CAT_Tmin <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$TMin)
+Map_IDADE_CAT_Ins <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$Ins)
+Map_IDADE_CAT_EvapPiche <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$EvapPiche)
+Map_IDADE_CAT_TempCompMed <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$TempCompMedia)
+Map_IDADE_CAT_UmidRelMed <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$UmidRelMed)
+Map_IDADE_CAT_VelVentMed <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$VelVentMed)
+Map_IDADE_CAT_TDelta <- paste(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin))
+```
+
+```{r MapReduce - Reduce}
+Reduce_CAT_Precip_freq <- as.data.frame(table(Map_CAT_Precip))
+Reduce_CAT_TMax_freq <- as.data.frame(table(Map_CAT_TMax))
+Reduce_CAT_Tmin_freq <- as.data.frame(table(Map_CAT_Tmin))
+Reduce_CAT_Ins_freq <- as.data.frame(table(Map_CAT_Ins))
+Reduce_CAT_EvapPiche_freq <- as.data.frame(table(Map_CAT_EvapPiche))
+Reduce_CAT_TempCompMed_freq <- as.data.frame(table(Map_CAT_TempCompMed))
+Reduce_CAT_UmidRelMed_freq <- as.data.frame(table(Map_CAT_UmidRelMed))
+Reduce_CAT_VelVentMed_freq <- as.data.frame(table(Map_CAT_VelVentMed))
+Reduce_CAT_TempDelta_freq <- as.data.frame(table(Map_CAT_TDelta))
+
+Reduce_SEX_CAT_Precip_freq <- as.data.frame(table(Map_SEX_CAT_Precip))
+Reduce_SEX_CAT_TMax_freq <- as.data.frame(table(Map_SEX_CAT_TMax))
+Reduce_SEX_CAT_Tmin_freq <- as.data.frame(table(Map_SEX_CAT_Tmin))
+Reduce_SEX_CAT_Ins_freq <- as.data.frame(table(Map_SEX_CAT_Ins))
+Reduce_SEX_CAT_EvapPiche_freq <- as.data.frame(table(Map_SEX_CAT_EvapPiche))
+Reduce_SEX_CAT_TempCompMed_freq <- as.data.frame(table(Map_SEX_CAT_TempCompMed))
+Reduce_SEX_CAT_UmidRelMed_freq <- as.data.frame(table(Map_SEX_CAT_UmidRelMed))
+Reduce_SEX_CAT_VelVentMed_freq <- as.data.frame(table(Map_SEX_CAT_VelVentMed))
+Reduce_SEX_CAT_TempDelta_freq <- as.data.frame(table(Map_SEX_CAT_TDelta))
+
+Reduce_IDADE_CAT_Precip_freq <- as.data.frame(table(Map_IDADE_CAT_Precip))
+Reduce_IDADE_CAT_TMax_freq <- as.data.frame(table(Map_IDADE_CAT_TMax))
+Reduce_IDADE_CAT_Tmin_freq <- as.data.frame(table(Map_IDADE_CAT_Tmin))
+Reduce_IDADE_CAT_Ins_freq <- as.data.frame(table(Map_IDADE_CAT_Ins))
+Reduce_IDADE_CAT_EvapPiche_freq <- as.data.frame(table(Map_IDADE_CAT_EvapPiche))
+Reduce_IDADE_CAT_TempCompMed_freq <- as.data.frame(table(Map_IDADE_CAT_TempCompMed))
+Reduce_IDADE_CAT_UmidRelMed_freq <- as.data.frame(table(Map_IDADE_CAT_UmidRelMed))
+Reduce_IDADE_CAT_VelVentMed_freq <- as.data.frame(table(Map_IDADE_CAT_VelVentMed))
+Reduce_IDADE_CAT_TempDelta_freq <- as.data.frame(table(Map_IDADE_CAT_TDelta))
+```
+
+
+```{r}
+l = as.list(ls(pattern = "Reduce"))
+typeof(l)
+typeof(l[1])
+
+as.list.data.frame(l)
+
+l <- do.call(rbindlist, lapply(l, function(x) x))
+
+CONSULTAS <- data.table::rbindlist(l,use.names = FALSE)
+
+CONSULTAS <- data.table::rbindlist(l = list(Reduce_CAT_Precip_freq,Reduce_CAT_TMax_freq),use.names = FALSE)
+
+l = list("a",'b','c')
+CONSULTAS <- lapply(l, function(x) rbindlist(l))
+```
+

@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #Iniciando o ambiente
 rm(list = ls())
 cat("\014") 
-setwd("~/Tresors/zz-pessoal/FGV/git/TCC")
+setwd("./")
 ```
 
 ---
@@ -28,6 +28,10 @@ setwd("~/Tresors/zz-pessoal/FGV/git/TCC")
 if(!require(data.table)) {
   install.packages("data.table")
   library(data.table)
+}
+if(!require(dummies)) {
+  install.packages("dummies")
+  library(dummies)
 }
 ```
 
@@ -93,9 +97,9 @@ CONSULTAS <- do.call(rbind, lapply(list.files(path = "./DADOS"
                                     , full.names = TRUE)
                                     , function(x) fread(x,encoding = "Latin-1")))
 
-arquivos <- list.files(path = "./DADOS"
-                  , pattern = ".*CSV"
-                  , full.names = TRUE)
+# arquivos <- list.files(path = "./DADOS"
+#                   , pattern = ".*CSV"
+#                   , full.names = TRUE)
 
 # CID10 <- lapply(arquivos, function(x) fread(x, encoding = "Latin-1", sep = ";"))
 # names(CID10) <- substr(arquivos, 9, 32)
@@ -122,14 +126,6 @@ CONSULTAS <- CONSULTAS[CONSULTAS$CD_MUNIC_BENEFICIARIO == 355030,]
 summary(CONSULTAS)
 ```
 
-```{r NA treatment}
-CONSULTAS <- CONSULTAS[complete.cases(CONSULTAS),]
-```
-
-```{r understanding the data  - HOSPITAL - SP - after NA treatment}
-summary(CONSULTAS)
-```
-
 ```{r}
 CONSULTAS <- within(CONSULTAS, rm("#ID_EVENTO"
                                     ,"ID_PLANO"
@@ -148,35 +144,109 @@ CONSULTAS <- within(CONSULTAS, rm("#ID_EVENTO"
                                     ,"NR_DIARIAS_UTI"
                                     ,"LG_VALOR_PREESTABELECIDO"))
 
+summary(CONSULTAS)
+nrow(CONSULTAS)
+```
+
+```{r NA treatment}
+CONSULTAS <- CONSULTAS[complete.cases(CONSULTAS),]
+
+summary(CONSULTAS)
+nrow(CONSULTAS)
+
 ```
 
 
-
 ```{r listing all the CIDs available in the datafram in a single column}
-CID1 <- setnames(within(CONSULTAS[!which(CONSULTAS$CID_1 == "")], rm("CID_2","CID_3","CID_4")),"CID_1", "CID") 
+CID1 <- setnames(within(CONSULTAS[!which(CONSULTAS$CID_1 == "")], rm("CID_2","CID_3","CID_4")),"CID_1", "CID")
 CID2 <- setnames(within(CONSULTAS[!which(CONSULTAS$CID_2 == "")], rm("CID_1","CID_3","CID_4")),"CID_2", "CID")
 CID3 <- setnames(within(CONSULTAS[!which(CONSULTAS$CID_3 == "")], rm("CID_2","CID_1","CID_4")),"CID_3", "CID")
 CID4 <- setnames(within(CONSULTAS[!which(CONSULTAS$CID_4 == "")], rm("CID_2","CID_3","CID_1")),"CID_4", "CID")
 
-CONSULTAS <- rbind(CID1, CID2, CID3, CID4)
+CONSULTAS <- data.table::rbindlist(l = list(CID1, CID2, CID3, CID4),use.names = TRUE)
 rm(CID1, CID2, CID3, CID4)
 
 CONSULTAS$CID <- substr(CONSULTAS$CID,1,3)
 
 CONSULTAS$DT_INTERNACAO <- as.Date(CONSULTAS$DT_INTERNACAO, format = "%d/%m/%Y")
 
-write.csv(DataCidSPHospCons, file = "./DADOS/CONSULTAS.csv")
+nrow(CONSULTAS)
 ```
 
+
+```{r understanding the data  - HOSPITAL - SP - after NA treatment}
+summary(CONSULTAS)
+write.csv(CONSULTAS, file = "./consultas.csv")
+```
+
+
 ```{r}
-CLIMA <- fread("./DADOS/base_saopaulo.csv", drop = "V1")
-CLIMA$Data <- as.Date(CLIMA$Data)
+CONSULTAS <- fread("./consultas.csv", drop = "V1")
+CONSULTAS$DT_INTERNACAO <- as.Date((CONSULTAS$DT_INTERNACAO))
+CLIMA <- fread("./DADOS/base_saopaulo2.csv", drop = c("V1","Estacao"))
+CLIMA$Data <- as.Date(CLIMA$Data, format = "%m/%d/%Y")
 ```
 
 
 ```{r}
 CONSULTAS_CONS <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "Data")
 head(CONSULTAS_CONS)
-
 write.csv(CONSULTAS_CONS, file = "./consultas_cons.csv")
+```
+
+```{r}
+
+CONSULTAS_CONS <- fread("consultas_cons.csv", drop = c("V1"))
+
+CONSULTAS_CONS2 <- cbind(CONSULTAS_CONS,dummy(CONSULTAS_CONS$CID))
+write.csv(CONSULTAS_CONS2, file = "consultas_cons_dummies.csv")
+
+```
+
+```{r}
+CONSULTAS_CONS_CAP <- fread("consultas_cons.csv", drop = c("V1"))
+
+CONSULTAS_CONS_CAP$CID1 <- substr(CONSULTAS_CONS_CAP$CID,1,2)
+
+CONSULTAS_CONS_CAP$CAP <- 0
+
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "A", ][, "CAP"] <- 1
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "B", ][, "CAP"] <- 1
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "C", ][, "CAP"] <- 2
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "D" && substr(CONSULTAS_CONS_CAP$CID1,2,1) < 5,][, "CAP"] <-2# < 5
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "D" && substr(CONSULTAS_CONS_CAP$CID1,2,1) > 4,][, "CAP"] <-3 # > 4
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "E",][, "CAP"] <-4
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "F",][, "CAP"] <-5
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "G",][, "CAP"] <-6
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "H" && substr(CONSULTAS_CONS_CAP$CID1,2,1) < 6,][, "CAP"] <-7# < 6
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "H" && substr(CONSULTAS_CONS_CAP$CID1,2,1) > 5,][, "CAP"] <-8# > 5
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "I",][, "CAP"] <-9
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "J",][, "CAP"] <-10
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "K",][, "CAP"] <-11
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "L",][, "CAP"] <-12
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "M",][, "CAP"] <-13
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "N",][, "CAP"] <-14
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "O",][, "CAP"] <-15
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "P",][, "CAP"] <-16
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "Q",][, "CAP"] <-17
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "R",][, "CAP"] <-18
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "S",][, "CAP"] <-19
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "T",][, "CAP"] <-19
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "U",][, "CAP"] <-22
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "V",][, "CAP"] <-20
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "X",][, "CAP"] <-20
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "Y",][, "CAP"] <-20
+CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "Z",][, "CAP"] <-21
+
+# tail(CONSULTAS_CONS_CAP)
+
+write.csv(CONSULTAS_CONS_CAP, file = "consultas_cons_cap.csv")
+
+```
+
+
+```{r}
+CONSULTAS_CONS_CAP2 <- cbind(CONSULTAS_CONS_CAP,dummy(CONSULTAS_CONS_CAP$CAP))
+write.csv(CONSULTAS_CONS_CAP2, file = "consultas_cons_cap_dummies.csv")
+
 ```

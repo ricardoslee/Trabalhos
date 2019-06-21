@@ -1,0 +1,64 @@
+---
+title: "Trabalho de Conclusão de Cusros - FGV T4 Big Data e Analytics"
+author: "Ricardo Squassina Lee, Rafael Furlan, Djalma Gomes"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+  word_document: default
+---
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+---
+```{r Inicia Ambiente, message=FALSE, include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014") 
+setwd("./")
+```
+
+---
+```{r Carrega bibliotecas necessarias, message=FALSE, warning=TRUE, include=FALSE}
+if(!require(data.table)) {
+  install.packages("data.table")
+  library(data.table)
+}
+
+if(!require(car)) {
+  install.packages("car")
+  library(car)
+}
+
+if(!require(dummies)) {
+  install.packages("dummies")
+  library(dummies)
+}
+```
+
+```{r}
+CONSULTAS_CONS2 <- fread("consultas_cons_dummies.csv", drop = "V1")
+# summary(CONSULTAS_CONS2)
+```
+
+```{r}
+# scatterplotMatrix(CONSULTAS_CONS[,5:6])
+# cor.test(~ Precip
+#          + TMax
+#          , data = CONSULTAS_CONS)
+```
+
+```{r}
+MatrizCorr <- cor(CONSULTAS_CONS2[,4:1874])
+diag(MatrizCorr) <- 0
+MatrizCorr[lower.tri(MatrizCorr)] <- 0
+MatrizCorrDF <- as.data.frame(as.table(MatrizCorr))
+names(MatrizCorrDF) <- c("Variavel_1", "Variavel_2","Correlacao")
+Correlacoes <- MatrizCorrDF[order(abs(MatrizCorrDF$Correlacao),decreasing=T),]
+```
+
