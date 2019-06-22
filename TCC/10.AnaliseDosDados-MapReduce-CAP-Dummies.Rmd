@@ -162,66 +162,128 @@ boxplot(CAT_VelVentMed_freq$FreqRel ~ CAT_VelVentMed_freq$CAP)
 ```
 
 ```{r}
-rede_EvapPiche <- CONSULTAS_CONS[,15:34]
+# rede_EvapPiche <- CONSULTAS_CONS[,15:34]
 # nrow(CONSULTAS_CONS)
-rownames(rede_EvapPiche) <- paste(CONSULTAS_CONS[,1],CONSULTAS_CONS[,10])
-rede_EvapPiche
+# rownames(rede_EvapPiche) <- paste(CONSULTAS_CONS[,1],CONSULTAS_CONS[,10])
+# rede_EvapPiche
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_EvapPiche_freq[,2:3], 22)
+CAP_Cluster <- kmeans(CAT_EvapPiche_freq[,2:3], 22, nstart = 1)
 table(CAP_Cluster$cluster, CAT_EvapPiche_freq$EvapPiche)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_Ins_freq[,2:3], 22)
+CAP_Cluster <- kmeans(CAT_Ins_freq[,2:3], 22, nstart = 1)
 table(CAP_Cluster$cluster, CAT_Ins_freq$Ins)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_Precip_freq[,2:3], 22)
+CAP_Cluster <- kmeans(CAT_Precip_freq[,2:3], 22, nstart = 1)
 table(CAP_Cluster$cluster, CAT_Precip_freq$Precip)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_TDelta_freq[,2:3], 22)
+CAP_Cluster <- kmeans(CAT_TDelta_freq[,2:3], 22, nstart = 1)
 table(CAP_Cluster$cluster, CAT_TDelta_freq$TDelta)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_TempCompMed_freq[,2:3], 22)
+CAP_Cluster <- kmeans(CAT_TempCompMed_freq[,2:3], 22, nstart = 1)
 table(CAP_Cluster$cluster, CAT_TempCompMed_freq$TempCompMedia)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_TMax_freq[,2:3], 22)
+CAP_Cluster <- kmeans(CAT_TMax_freq[,2:3], 22, nstart = 1)
 table(CAP_Cluster$cluster, CAT_TMax_freq$TMax)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_Tmin_freq[,2:3], 22)
+CAP_Cluster <- kmeans(CAT_Tmin_freq[,2:3], 22, nstart = 1)
 table(CAP_Cluster$cluster, CAT_Tmin_freq$TMin)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_UmidRelMed_freq[,2:3], 22)
+CAP_Cluster <- kmeans(CAT_UmidRelMed_freq[,2:3], 22, nstart = 1)
 table(CAP_Cluster$cluster, CAT_UmidRelMed_freq$UmidRelMed)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_VelVentMed_freq[,2:3], 22)
+CAP_Cluster <- kmeans(CAT_VelVentMed_freq[,2:3], 22, nstart = 1)
 table(CAP_Cluster$cluster, CAT_VelVentMed_freq$VelVentMed)
 
 ```
 
+```{r}
+head(CAT_EvapPiche_freq[with(CAT_EvapPiche_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_Ins_freq[with(CAT_Ins_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_Precip_freq[with(CAT_Precip_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_TDelta_freq[with(CAT_TDelta_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_TempCompMed_freq[with(CAT_TempCompMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_TMax_freq[with(CAT_TMax_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_Tmin_freq[with(CAT_Tmin_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_UmidRelMed_freq[with(CAT_UmidRelMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_VelVentMed_freq[with(CAT_VelVentMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
 
+```
+
+
+```{r}
+# CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "A", ][, "CAP"] <- 1
+
+CONSULTAS_CONS[precip == 0,][,"precipI"] <- 0
+CONSULTAS_CONS[precip > 0,][,"precipI"] <- 1
+
+CONSULTAS_CONS[10 <= TMax | TMax < 15][,"TmaxI"] <- 10
+CONSULTAS_CONS[15 <= TMax | TMax < 20][,"TmaxI"] <- 15
+CONSULTAS_CONS[20 <= TMax | TMax < 25][,"TmaxI"] <- 20
+CONSULTAS_CONS[25 <= TMax | TMax < 30][,"TmaxI"] <- 25
+CONSULTAS_CONS[30 <= TMax | TMax < 35][,"TmaxI"] <- 30
+CONSULTAS_CONS[35 <= TMax | TMax < 40][,"TmaxI"] <- 35
+
+CONSULTAS_CONS[0 <= Tmin | Tmin < 5][,"TminI"] <- 0
+CONSULTAS_CONS[5 <= Tmin | Tmin < 10][,"TminI"] <- 5
+CONSULTAS_CONS[10 <= Tmin | Tmin < 15][,"TminI"] <- 10
+CONSULTAS_CONS[15 <= Tmin | Tmin < 20][,"TminI"] <- 15
+CONSULTAS_CONS[20 <= Tmin | Tmin < 25][,"TminI"] <- 20
+CONSULTAS_CONS[25 <= Tmin | Tmin < 30][,"TminI"] <- 25
+
+CONSULTAS_CONS[0 <= Ins | Ins < 7][,"InsI"] <- 5
+CONSULTAS_CONS[7 <= Ins | Ins < 14][,"InsI"] <- 10
+
+CONSULTAS_CONS[0 <= EvapPiche | EvapPiche < 7][,"EvapPicheI"] <- 4
+CONSULTAS_CONS[7 <= EvapPiche | EvapPiche < 14][,"EvapPicheI"] <- 11
+CONSULTAS_CONS[14 <= EvapPiche | EvapPiche < 22][,"EvapPicheI"] <- 18
+
+CONSULTAS_CONS[0 <= TempCompMedia | TempCompMedia < 5][,"TempCompMediaI"] <- 0
+CONSULTAS_CONS[5 <= TempCompMedia | TempCompMedia < 10][,"TempCompMediaI"] <- 5
+CONSULTAS_CONS[10 <= TempCompMedia | TempCompMedia < 15][,"TempCompMediaI"] <- 10
+CONSULTAS_CONS[15 <= TempCompMedia | TempCompMedia < 20][,"TempCompMediaI"] <- 15
+CONSULTAS_CONS[20 <= TempCompMedia | TempCompMedia < 25][,"TempCompMediaI"] <- 20
+CONSULTAS_CONS[25 <= TempCompMedia | TempCompMedia < 30][,"TempCompMediaI"] <- 25
+
+CONSULTAS_CONS[0 <= UmidRelMed | UmidRelMed < 10][,"UmidRelMedI"] <- 5
+CONSULTAS_CONS[10 <= UmidRelMed | UmidRelMed < 20][,"UmidRelMedI"] <- 15
+CONSULTAS_CONS[20 <= UmidRelMed | UmidRelMed < 30][,"UmidRelMedI"] <- 25
+CONSULTAS_CONS[30 <= UmidRelMed | UmidRelMed < 40][,"UmidRelMedI"] <- 35
+CONSULTAS_CONS[40 <= UmidRelMed | UmidRelMed < 50][,"UmidRelMedI"] <- 45
+CONSULTAS_CONS[50 <= UmidRelMed | UmidRelMed < 60][,"UmidRelMedI"] <- 55
+CONSULTAS_CONS[60 <= UmidRelMed | UmidRelMed < 70][,"UmidRelMedI"] <- 65
+CONSULTAS_CONS[70 <= UmidRelMed | UmidRelMed < 80][,"UmidRelMedI"] <- 75
+CONSULTAS_CONS[80 <= UmidRelMed | UmidRelMed < 90][,"UmidRelMedI"] <- 85
+CONSULTAS_CONS[90 <= UmidRelMed | UmidRelMed < 100][,"UmidRelMedI"] <- 95
+
+CONSULTAS_CONS[VelVentMed == 0,][,"VelVentMedI"] <- 0
+CONSULTAS_CONS[VelVentMed > 0,][,"VelVentMedI"] <- 1
+
+```
 
