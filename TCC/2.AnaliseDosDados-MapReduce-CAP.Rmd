@@ -2,11 +2,11 @@
 title: "Trabalho de Conclusão de Cusros - FGV T4 Big Data e Analytics"
 author: "Ricardo Squassina Lee, Rafael Furlan, Djalma Gomes"
 output:
-  html_document:
-    df_print: paged
+  word_document: default
   html_notebook: default
   pdf_document: default
-  word_document: default
+  html_document:
+    df_print: paged
 ---
 
 ---
@@ -40,26 +40,26 @@ CONSULTAS_CONS <- fread("consultas_cons_cap.csv", drop = c("V1","V12","V13","CID
 # MapReduce
 
 ```{r MapReduce}
-CAT_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$Precip))
+CAT_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$Precip, digits = 0)))
 names(CAT_Precip_freq) <- c("CAP","Precip","Freq")
 CAT_TMax_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TMax, digits = 0)))
 names(CAT_TMax_freq) <- c("CAP","TMax","Freq")
 CAT_Tmin_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TMin, digits = 0)))
 names(CAT_Tmin_freq) <- c("CAP","TMin","Freq")
-CAT_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$Ins))
+CAT_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$Ins, digits = 0)))
 names(CAT_Ins_freq) <- c("CAP","Ins","Freq")
-CAT_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$EvapPiche))
+CAT_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$EvapPiche, digits = 0)))
 names(CAT_EvapPiche_freq) <- c("CAP","EvapPiche","Freq")
-CAT_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TempCompMedia))
+CAT_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TempCompMedia, digits = 0)))
 names(CAT_TempCompMed_freq) <- c("CAP","TempCompMedia","Freq")
-CAT_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$UmidRelMed))
+CAT_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$UmidRelMed, digits = 0)))
 names(CAT_UmidRelMed_freq) <- c("CAP","UmidRelMed","Freq")
-CAT_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$VelVentMed))
+CAT_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$VelVentMed, digits = 0)))
 names(CAT_VelVentMed_freq) <- c("CAP","VelVentMed","Freq")
-CAT_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
+# CAT_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
+# names(CAT_TDelta_freq) <- c("CAP","TDelta","Freq")
+CAT_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round((CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin), digits = 0)))
 names(CAT_TDelta_freq) <- c("CAP","TDelta","Freq")
-CAT_TDeltaA_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round((CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin), digits = 0)))
-names(CAT_TDeltaA_freq) <- c("CAP","TDelta","Freq")
 
 # SEX_CAT_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Precip))
 # names(SEX_CAT_Precip_freq) <- c("CAP","Sex","Freq")
@@ -110,7 +110,7 @@ CAT_EvapPiche_freq$FreqRel <- CAT_EvapPiche_freq$Freq/nrow(CONSULTAS_CONS)
 CAT_Ins_freq$FreqRel <- CAT_Ins_freq$Freq/nrow(CONSULTAS_CONS)
 CAT_Precip_freq$FreqRel <- CAT_Precip_freq$Freq/nrow(CONSULTAS_CONS)
 CAT_TDelta_freq$FreqRel <- CAT_TDelta_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_TDeltaA_freq$FreqRel <- CAT_TDeltaA_freq$Freq/nrow(CONSULTAS_CONS)
+# CAT_TDeltaA_freq$FreqRel <- CAT_TDeltaA_freq$Freq/nrow(CONSULTAS_CONS)
 CAT_TempCompMed_freq$FreqRel <- CAT_TempCompMed_freq$Freq/nrow(CONSULTAS_CONS)
 CAT_TMax_freq$FreqRel <- CAT_TMax_freq$Freq/nrow(CONSULTAS_CONS)
 CAT_Tmin_freq$FreqRel <- CAT_Tmin_freq$Freq/nrow(CONSULTAS_CONS)
@@ -120,4 +120,29 @@ CAT_VelVentMed_freq$FreqRel <- CAT_VelVentMed_freq$Freq/nrow(CONSULTAS_CONS)
 ```
 
 
+```{r}
+hist(CAT_EvapPiche_freq$FreqRel)
+hist(CAT_Ins_freq$FreqRel)
+hist(CAT_Precip_freq$FreqRel)
+hist(CAT_TDelta_freq$FreqRel)
+hist(CAT_TempCompMed_freq$FreqRel)
+hist(CAT_TMax_freq$FreqRel)
+hist(CAT_Tmin_freq$FreqRel)
+hist(CAT_UmidRelMed_freq$FreqRel)
+hist(CAT_VelVentMed_freq$FreqRel)
+
+```
+
+```{r}
+boxplot(CAT_EvapPiche_freq$FreqRel ~ CAT_EvapPiche_freq$CAP)
+boxplot(CAT_Ins_freq$FreqRel ~ CAT_Ins_freq$CAP)
+boxplot(CAT_Precip_freq$FreqRel ~ CAT_Precip_freq$CAP)
+boxplot(CAT_TDelta_freq$FreqRel ~ CAT_TDelta_freq$CAP)
+boxplot(CAT_TempCompMed_freq$FreqRel ~ CAT_TempCompMed_freq$CAP)
+boxplot(CAT_TMax_freq$FreqRel ~ CAT_TMax_freq$CAP)
+boxplot(CAT_Tmin_freq$FreqRel ~ CAT_Tmin_freq$CAP)
+boxplot(CAT_UmidRelMed_freq$FreqRel ~ CAT_UmidRelMed_freq$CAP)
+boxplot(CAT_VelVentMed_freq$FreqRel ~ CAT_VelVentMed_freq$CAP)
+
+```
 
