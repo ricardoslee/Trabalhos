@@ -238,52 +238,72 @@ head(CAT_VelVentMed_freq[with(CAT_VelVentMed_freq, order(Freq, decreasing = TRUE
 
 
 ```{r}
-# CONSULTAS_CONS_CAP[substr(CONSULTAS_CONS_CAP$CID1,1,1) == "A", ][, "CAP"] <- 1
+CONSULTAS_CONS$PrecipI <- findInterval(CONSULTAS_CONS$Precip, c(0, 1), rightmost.closed = TRUE, left.open = TRUE)
 
-CONSULTAS_CONS[precip == 0,][,"precipI"] <- 0
-CONSULTAS_CONS[precip > 0,][,"precipI"] <- 1
+CONSULTAS_CONS$TmaxI <- findInterval(CONSULTAS_CONS$TMax, c(0, 5, 10, 15, 20, 30, 35, 40), rightmost.closed = TRUE, left.open = TRUE)
 
-CONSULTAS_CONS[10 <= TMax | TMax < 15][,"TmaxI"] <- 10
-CONSULTAS_CONS[15 <= TMax | TMax < 20][,"TmaxI"] <- 15
-CONSULTAS_CONS[20 <= TMax | TMax < 25][,"TmaxI"] <- 20
-CONSULTAS_CONS[25 <= TMax | TMax < 30][,"TmaxI"] <- 25
-CONSULTAS_CONS[30 <= TMax | TMax < 35][,"TmaxI"] <- 30
-CONSULTAS_CONS[35 <= TMax | TMax < 40][,"TmaxI"] <- 35
+CONSULTAS_CONS$TminI <- findInterval(CONSULTAS_CONS$TMin, c(0, 5, 10, 15, 20, 30, 35, 40), rightmost.closed = TRUE, left.open = TRUE)
 
-CONSULTAS_CONS[0 <= Tmin | Tmin < 5][,"TminI"] <- 0
-CONSULTAS_CONS[5 <= Tmin | Tmin < 10][,"TminI"] <- 5
-CONSULTAS_CONS[10 <= Tmin | Tmin < 15][,"TminI"] <- 10
-CONSULTAS_CONS[15 <= Tmin | Tmin < 20][,"TminI"] <- 15
-CONSULTAS_CONS[20 <= Tmin | Tmin < 25][,"TminI"] <- 20
-CONSULTAS_CONS[25 <= Tmin | Tmin < 30][,"TminI"] <- 25
+CONSULTAS_CONS$InsI <- findInterval(CONSULTAS_CONS$Ins, c(0, 7, 14), rightmost.closed = TRUE, left.open = TRUE)
 
-CONSULTAS_CONS[0 <= Ins | Ins < 7][,"InsI"] <- 5
-CONSULTAS_CONS[7 <= Ins | Ins < 14][,"InsI"] <- 10
+CONSULTAS_CONS$EvapPicheI <- findInterval(CONSULTAS_CONS$EvapPiche, c(0, 7, 14, 21), rightmost.closed = TRUE, left.open = TRUE)
 
-CONSULTAS_CONS[0 <= EvapPiche | EvapPiche < 7][,"EvapPicheI"] <- 4
-CONSULTAS_CONS[7 <= EvapPiche | EvapPiche < 14][,"EvapPicheI"] <- 11
-CONSULTAS_CONS[14 <= EvapPiche | EvapPiche < 22][,"EvapPicheI"] <- 18
+CONSULTAS_CONS$TempCompMediaI <- findInterval(CONSULTAS_CONS$TempCompMedia, c(0, 5, 10, 15, 20, 30, 35, 40), rightmost.closed = TRUE, left.open = TRUE)
 
-CONSULTAS_CONS[0 <= TempCompMedia | TempCompMedia < 5][,"TempCompMediaI"] <- 0
-CONSULTAS_CONS[5 <= TempCompMedia | TempCompMedia < 10][,"TempCompMediaI"] <- 5
-CONSULTAS_CONS[10 <= TempCompMedia | TempCompMedia < 15][,"TempCompMediaI"] <- 10
-CONSULTAS_CONS[15 <= TempCompMedia | TempCompMedia < 20][,"TempCompMediaI"] <- 15
-CONSULTAS_CONS[20 <= TempCompMedia | TempCompMedia < 25][,"TempCompMediaI"] <- 20
-CONSULTAS_CONS[25 <= TempCompMedia | TempCompMedia < 30][,"TempCompMediaI"] <- 25
+CONSULTAS_CONS$UmidRelMedI <- findInterval(CONSULTAS_CONS$UmidRelMed, c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100), rightmost.closed = TRUE, left.open = TRUE)
 
-CONSULTAS_CONS[0 <= UmidRelMed | UmidRelMed < 10][,"UmidRelMedI"] <- 5
-CONSULTAS_CONS[10 <= UmidRelMed | UmidRelMed < 20][,"UmidRelMedI"] <- 15
-CONSULTAS_CONS[20 <= UmidRelMed | UmidRelMed < 30][,"UmidRelMedI"] <- 25
-CONSULTAS_CONS[30 <= UmidRelMed | UmidRelMed < 40][,"UmidRelMedI"] <- 35
-CONSULTAS_CONS[40 <= UmidRelMed | UmidRelMed < 50][,"UmidRelMedI"] <- 45
-CONSULTAS_CONS[50 <= UmidRelMed | UmidRelMed < 60][,"UmidRelMedI"] <- 55
-CONSULTAS_CONS[60 <= UmidRelMed | UmidRelMed < 70][,"UmidRelMedI"] <- 65
-CONSULTAS_CONS[70 <= UmidRelMed | UmidRelMed < 80][,"UmidRelMedI"] <- 75
-CONSULTAS_CONS[80 <= UmidRelMed | UmidRelMed < 90][,"UmidRelMedI"] <- 85
-CONSULTAS_CONS[90 <= UmidRelMed | UmidRelMed < 100][,"UmidRelMedI"] <- 95
-
-CONSULTAS_CONS[VelVentMed == 0,][,"VelVentMedI"] <- 0
-CONSULTAS_CONS[VelVentMed > 0,][,"VelVentMedI"] <- 1
+CONSULTAS_CONS$VelVentMedI <- findInterval(CONSULTAS_CONS$VelVentMed, c(0, 1), rightmost.closed = TRUE, left.open = TRUE)
 
 ```
+
+
+
+
+```{r}
+CAT_PrecipI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$PrecipI))
+names(CAT_PrecipI_freq) <- c("CAP","Precip","Freq")
+CAT_TMaxI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TMax))
+names(CAT_TMaxI_freq) <- c("CAP","TMax","Freq")
+CAT_TminI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TminI))
+names(CAT_TminI_freq) <- c("CAP","TMin","Freq")
+CAT_InsI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$InsI))
+names(CAT_InsI_freq) <- c("CAP","Ins","Freq")
+CAT_EvapPicheI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$EvapPicheI))
+names(CAT_EvapPicheI_freq) <- c("CAP","EvapPiche","Freq")
+CAT_TempCompMedI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TempCompMediaI))
+names(CAT_TempCompMedI_freq) <- c("CAP","TempCompMedia","Freq")
+CAT_UmidRelMedI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$UmidRelMedI))
+names(CAT_UmidRelMedI_freq) <- c("CAP","UmidRelMed","Freq")
+CAT_VelVentMedI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$VelVentMedI))
+names(CAT_VelVentMedI_freq) <- c("CAP","VelVentMed","Freq")
+```
+
+```{r}
+CAT_EvapPicheI_freq$FreqRel <- CAT_EvapPicheI_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_InsI_freq$FreqRel <- CAT_InsI_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_PrecipI_freq$FreqRel <- CAT_PrecipI_freq$Freq/nrow(CONSULTAS_CONS)
+# CAT_TDeltaI_freq$FreqRel <- CAT_TDeltaI_freq$Freq/nrow(CONSULTAS_CONS)
+# CAT_TDeltaA_freq$FreqRel <- CAT_TDeltaA_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_TempCompMedI_freq$FreqRel <- CAT_TempCompMedI_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_TMaxI_freq$FreqRel <- CAT_TMaxI_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_TminI_freq$FreqRel <- CAT_TminI_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_UmidRelMedI_freq$FreqRel <- CAT_UmidRelMedI_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_VelVentMedI_freq$FreqRel <- CAT_VelVentMedI_freq$Freq/nrow(CONSULTAS_CONS)
+
+```
+
+
+```{r}
+head(CAT_EvapPicheI_freq[with(CAT_EvapPicheI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_InsI_freq[with(CAT_InsI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_PrecipI_freq[with(CAT_PrecipI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+# head(CAT_TDelta_freq[with(CAT_TDelta_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_TempCompMedI_freq[with(CAT_TempCompMedI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_TMaxI_freq[with(CAT_TMaxI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_TminI_freq[with(CAT_TminI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_UmidRelMedI_freq[with(CAT_UmidRelMedI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_VelVentMedI_freq[with(CAT_VelVentMedI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+
+```
+
 
