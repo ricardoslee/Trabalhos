@@ -30,39 +30,109 @@ if(!require(data.table)) {
   library(data.table)
 }
 
-if(!require(car)) {
-  install.packages("car")
-  library(car)
+# if(!require(car)) {
+#   install.packages("car")
+#   library(car)
+# }
+# 
+# if(!require(dummies)) {
+#   install.packages("dummies")
+#   library(dummies)
+# }
+```
+
+```{r}
+CONSULTAS_CONS <- fread("consultas_cons_cap.csv", drop = c("V1","V12","V13","CID1"))
+# summary(CONSULTAS_CONS)
+```
+
+```{r}
+lm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$Precip)
+lm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$TMax)
+lm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$TMin)
+lm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$Ins)
+lm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$EvapPiche)
+lm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$TempCompMedia)
+lm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$UmidRelMed)
+lm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$VelVentMed)
+
+```
+
+```{r}
+glm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$Precip)
+glm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$TMax)
+glm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$TMin)
+glm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$Ins)
+glm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$EvapPiche)
+glm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$TempCompMedia)
+glm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$UmidRelMed)
+glm(CONSULTAS_CONS$CAP ~ CONSULTAS_CONS$VelVentMed)
+
+```
+
+```{r}
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$Precip)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TMax)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TMin)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TMax-CONSULTAS_CONS$TMin)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$Ins)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$EvapPiche)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TempCompMedia)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$UmidRelMed)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$VelVentMed)
+
+```
+
+```{r}
+CONSULTAS_CONS$PrecipI <- findInterval(CONSULTAS_CONS$Precip, c(0, 1), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$TMaxI <- findInterval(CONSULTAS_CONS$TMax, c(0, 5, 10, 15, 20, 30, 35, 40), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$TMinI <- findInterval(CONSULTAS_CONS$TMin, c(0, 5, 10, 15, 20, 30, 35, 40), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$InsI <- findInterval(CONSULTAS_CONS$Ins, c(0, 7, 14), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$EvapPicheI <- findInterval(CONSULTAS_CONS$EvapPiche, c(0, 7, 14, 21), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$TempCompMediaI <- findInterval(CONSULTAS_CONS$TempCompMedia, c(0, 5, 10, 15, 20, 30, 35, 40), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$UmidRelMedI <- findInterval(CONSULTAS_CONS$UmidRelMed, c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$VelVentMedI <- findInterval(CONSULTAS_CONS$VelVentMed, c(0, 1), rightmost.closed = TRUE, left.open = TRUE)
+
+```
+
+
+```{r}
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$PrecipI)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TMaxI)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TMinI)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$InsI)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$EvapPicheI)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TempCompMediaI)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$UmidRelMedI)
+cor(CONSULTAS_CONS$CAP,CONSULTAS_CONS$VelVentMedI)
+```
+
+```{r}
+cor(CONSULTAS_CONS$CID,CONSULTAS_CONS$PrecipI)
+cor(CONSULTAS_CONS$CID,CONSULTAS_CONS$TMaxI)
+cor(CONSULTAS_CONS$CID,CONSULTAS_CONS$TMinI)
+cor(CONSULTAS_CONS$CID,CONSULTAS_CONS$InsI)
+cor(CONSULTAS_CONS$CID,CONSULTAS_CONS$EvapPicheI)
+cor(CONSULTAS_CONS$CID,CONSULTAS_CONS$TempCompMediaI)
+cor(CONSULTAS_CONS$CID,CONSULTAS_CONS$UmidRelMedI)
+cor(CONSULTAS_CONS$CID,CONSULTAS_CONS$VelVentMedI)
+```
+
+```{r}
+if(!require(amap)) {
+  install.packages("amap")
+  library(amap)
 }
 
-if(!require(dummies)) {
-  install.packages("dummies")
-  library(dummies)
-}
-```
+pop_CONSULTAS_CONS <- as.factor(CONSULTAS_CONS[,5:13])
 
-```{r}
-CONSULTAS_CONS2 <- fread("consultas_cons_cap_dummies.csv", drop = 1:2)
-# summary(CONSULTAS_CONS2)
-```
-
-```{r}
-
-CONSULTAS_CONS2$DeltaT <- 0
-
-CONSULTAS_CONS2[CONSULTAS_CONS2$TMax > 0,][,"DeltaT"] <- CONSULTAS_CONS2[CONSULTAS_CONS2$TMax > 0,]$TMax - CONSULTAS_CONS2[CONSULTAS_CONS2$TMax > 0,]$TMin
-
-
-
-```
-
-
-```{r}
-MatrizCorr <- cor(CONSULTAS_CONS2[,c(5:12,15:33)])
-diag(MatrizCorr) <- 0
-MatrizCorr[lower.tri(MatrizCorr)] <- 0
-MatrizCorrDF <- as.data.frame(as.table(MatrizCorr))
-names(MatrizCorrDF) <- c("Variavel_1", "Variavel_2","Correlacao")
-Correlacoes <- MatrizCorrDF[order(abs(MatrizCorrDF$Correlacao),decreasing=T),]
+pop(pop_CONSULTAS_CONS)
 ```
 

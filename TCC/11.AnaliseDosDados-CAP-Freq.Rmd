@@ -1,0 +1,491 @@
+---
+title: "Trabalho de Conclusão de Cusros - FGV T4 Big Data e Analytics"
+author: "Ricardo Squassina Lee, Rafael Furlan, Djalma Gomes"
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+---
+```{r Inicia Ambiente, message=FALSE, include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014") 
+# setwd("~/Tresors/zz-pessoal/FGV/git/TCC")
+setwd("./")
+```
+
+---
+```{r Carrega bibliotecas necessarias, message=FALSE, warning=TRUE, include=FALSE}
+if(!require(data.table)) {
+  install.packages("data.table")
+  library(data.table)
+}
+
+if(!require(MASS)) {
+  install.packages("MASS")
+  library(MASS)
+}
+
+# if(!require(network)) {
+#   install.packages("network")
+#   library(network)
+# }
+# 
+# if(!require(sna)) {
+#   install.packages("sna")
+#   library(sna)
+# }
+# 
+# if(!require(rgl)) {
+#   install.packages("rgl")
+#   library(rgl)
+# }
+
+```
+
+```{r}
+CONSULTAS_CONS <- fread("consultas_cons_cap.csv", drop = c("V1","V12","V13","CID1"))
+```
+
+# Calculando as frequências de cada Capítulo com relação às variáveis climáticas.
+
+```{r Calculo das Frequencias}
+CAT_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$Precip, digits = 0)))
+names(CAT_Precip_freq) <- c("CAP","Precip","Freq")
+CAT_TMax_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TMax, digits = 0)))
+names(CAT_TMax_freq) <- c("CAP","TMax","Freq")
+CAT_Tmin_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TMin, digits = 0)))
+names(CAT_Tmin_freq) <- c("CAP","TMin","Freq")
+CAT_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$Ins, digits = 0)))
+names(CAT_Ins_freq) <- c("CAP","Ins","Freq")
+CAT_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$EvapPiche, digits = 0)))
+names(CAT_EvapPiche_freq) <- c("CAP","EvapPiche","Freq")
+CAT_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TempCompMedia, digits = 0)))
+names(CAT_TempCompMed_freq) <- c("CAP","TempCompMedia","Freq")
+CAT_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$UmidRelMed, digits = 0)))
+names(CAT_UmidRelMed_freq) <- c("CAP","UmidRelMed","Freq")
+CAT_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$VelVentMed, digits = 0)))
+names(CAT_VelVentMed_freq) <- c("CAP","VelVentMed","Freq")
+CAT_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round((CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin), digits = 0)))
+names(CAT_TDelta_freq) <- c("CAP","TDelta","Freq")
+
+```
+
+
+# Cálculo das Frequências Relativas
+```{r}
+CAT_EvapPiche_freq$FreqRel <- CAT_EvapPiche_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_Ins_freq$FreqRel <- CAT_Ins_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_Precip_freq$FreqRel <- CAT_Precip_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_TDelta_freq$FreqRel <- CAT_TDelta_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_TempCompMed_freq$FreqRel <- CAT_TempCompMed_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_TMax_freq$FreqRel <- CAT_TMax_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_Tmin_freq$FreqRel <- CAT_Tmin_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_UmidRelMed_freq$FreqRel <- CAT_UmidRelMed_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_VelVentMed_freq$FreqRel <- CAT_VelVentMed_freq$Freq/nrow(CONSULTAS_CONS)
+
+```
+
+```{r}
+head(CAT_EvapPiche_freq[with(CAT_EvapPiche_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_Ins_freq[with(CAT_Ins_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_Precip_freq[with(CAT_Precip_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_TDelta_freq[with(CAT_TDelta_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_TempCompMed_freq[with(CAT_TempCompMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_TMax_freq[with(CAT_TMax_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_Tmin_freq[with(CAT_Tmin_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_UmidRelMed_freq[with(CAT_UmidRelMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAT_VelVentMed_freq[with(CAT_VelVentMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
+
+```
+
+
+```{r}
+cor(as.numeric(CAT_EvapPiche_freq$EvapPiche),CAT_EvapPiche_freq$Freq)
+cor(as.numeric(CAT_Ins_freq$Ins),CAT_Ins_freq$Freq)
+cor(as.numeric(CAT_Precip_freq$Precip),CAT_Precip_freq$Freq)
+cor(as.numeric(CAT_TDelta_freq$TDelta),CAT_TDelta_freq$Freq)
+cor(as.numeric(CAT_TempCompMed_freq$TempCompMedia),CAT_TempCompMed_freq$Freq)
+cor(as.numeric(CAT_TMax_freq$TMax),CAT_TMax_freq$Freq)
+cor(as.numeric(CAT_Tmin_freq$TMin),CAT_Tmin_freq$Freq)
+cor(as.numeric(CAT_UmidRelMed_freq$UmidRelMed),CAT_UmidRelMed_freq$Freq)
+cor(as.numeric(CAT_VelVentMed_freq$VelVentMed),CAT_VelVentMed_freq$Freq)
+
+```
+
+```{r}
+CAT_EvapPiche_freq <- cbind(CAT_EvapPiche_freq,dummies::dummy(CAT_EvapPiche_freq$CAP))
+CAT_Ins_freq <- cbind(CAT_Ins_freq,dummies::dummy(CAT_Ins_freq$CAP))
+CAT_Precip_freq <- cbind(CAT_Precip_freq,dummies::dummy(CAT_Precip_freq$CAP))
+CAT_TDelta_freq <- cbind(CAT_TDelta_freq,dummies::dummy(CAT_TDelta_freq$CAP))
+CAT_TempCompMed_freq <- cbind(CAT_TempCompMed_freq,dummies::dummy(CAT_TempCompMed_freq$CAP))
+CAT_TMax_freq <- cbind(CAT_TMax_freq,dummies::dummy(CAT_TMax_freq$CAP))
+CAT_Tmin_freq <- cbind(CAT_Tmin_freq,dummies::dummy(CAT_Tmin_freq$CAP))
+CAT_UmidRelMed_freq <- cbind(CAT_UmidRelMed_freq,dummies::dummy(CAT_UmidRelMed_freq$CAP))
+CAT_VelVentMed_freq <- cbind(CAT_VelVentMed_freq,dummies::dummy(CAT_VelVentMed_freq$CAP))
+
+```
+
+```{r}
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq0,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq1,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq2,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq4,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq5,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq6,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq9,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq10,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq11,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq12,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq13,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq14,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq15,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq16,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq17,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq18,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq19,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq20,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq21,CAT_EvapPiche_freq$Freq)
+# cor(CAT_EvapPiche_freq$CAT_EvapPiche_freq22,CAT_EvapPiche_freq$Freq)
+
+```
+
+```{r}
+# cor(CAT_Ins_freq$CAT_Ins_freq0,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq1,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq2,CAT_Ins_freq$Freq)
+# # cor(CAT_Ins_freq$CAT_Ins_freq3,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq4,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq5,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq6,CAT_Ins_freq$Freq)
+# # cor(CAT_Ins_freq$CAT_Ins_freq7,CAT_Ins_freq$Freq)
+# # cor(CAT_Ins_freq$CAT_Ins_freq8,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq9,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq10,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq11,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq12,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq13,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq14,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq15,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq16,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq17,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq18,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq19,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq20,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq21,CAT_Ins_freq$Freq)
+# cor(CAT_Ins_freq$CAT_Ins_freq22,CAT_Ins_freq$Freq)
+
+```
+
+
+```{r}
+# cor(CAT_Precip_freq$CAT_Precip_freq0,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq1,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq2,CAT_Precip_freq$Freq)
+# # cor(CAT_Precip_freq$CAT_Precip_freq3,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq4,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq5,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq6,CAT_Precip_freq$Freq)
+# # cor(CAT_Precip_freq$CAT_Precip_freq7,CAT_Precip_freq$Freq)
+# # cor(CAT_Precip_freq$CAT_Precip_freq8,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq9,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq10,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq11,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq12,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq13,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq14,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq15,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq16,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq17,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq18,CAT_Precip_freq$Freq)
+# cor(CAT_Precip_freq$CAT_Precip_freq19,CAT_Precip_freq$Freq)
+
+```
+
+```{r}
+# cor(CAT_TDelta_freq$CAT_TDelta_freq0,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq1,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq2,CAT_TDelta_freq$Freq)
+# # cor(CAT_TDelta_freq$CAT_TDelta_freq3,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq4,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq5,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq6,CAT_TDelta_freq$Freq)
+# # cor(CAT_TDelta_freq$CAT_TDelta_freq7,CAT_TDelta_freq$Freq)
+# # cor(CAT_TDelta_freq$CAT_TDelta_freq8,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq9,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq10,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq11,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq12,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq13,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq14,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq15,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq16,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq17,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq18,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq19,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq20,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq21,CAT_TDelta_freq$Freq)
+# cor(CAT_TDelta_freq$CAT_TDelta_freq22,CAT_TDelta_freq$Freq)
+
+```
+
+
+```{r}
+# cor(CAT_TMax_freq$CAT_TMax_freq0,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq1,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq2,CAT_TMax_freq$Freq)
+# # cor(CAT_TMax_freq$CAT_TMax_freq3,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq4,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq5,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq6,CAT_TMax_freq$Freq)
+# # cor(CAT_TMax_freq$CAT_TMax_freq7,CAT_TMax_freq$Freq)
+# # cor(CAT_TMax_freq$CAT_TMax_freq8,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq9,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq10,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq11,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq12,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq13,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq14,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq15,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq16,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq17,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq18,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq19,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq20,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq21,CAT_TMax_freq$Freq)
+# cor(CAT_TMax_freq$CAT_TMax_freq22,CAT_TMax_freq$Freq)
+
+```
+
+
+```{r}
+# cor(CAT_Tmin_freq$CAT_Tmin_freq0,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq1,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq2,CAT_Tmin_freq$Freq)
+# # cor(CAT_Tmin_freq$CAT_Tmin_freq3,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq4,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq5,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq6,CAT_Tmin_freq$Freq)
+# # cor(CAT_Tmin_freq$CAT_Tmin_freq7,CAT_Tmin_freq$Freq)
+# # cor(CAT_Tmin_freq$CAT_Tmin_freq8,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq9,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq10,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq11,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq12,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq13,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq14,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq15,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq16,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq17,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq18,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq19,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq20,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq21,CAT_Tmin_freq$Freq)
+# cor(CAT_Tmin_freq$CAT_Tmin_freq22,CAT_Tmin_freq$Freq)
+
+
+```
+
+
+
+```{r}
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq0,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq1,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq2,CAT_TempCompMed_freq$Freq)
+# # cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq3,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq4,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq5,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq6,CAT_TempCompMed_freq$Freq)
+# # cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq7,CAT_TempCompMed_freq$Freq)
+# # cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq8,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq9,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq10,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq11,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq12,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq13,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq14,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq15,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq16,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq17,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq18,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq19,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq20,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq21,CAT_TempCompMed_freq$Freq)
+# cor(CAT_TempCompMed_freq$CAT_TempCompMed_freq22,CAT_TempCompMed_freq$Freq)
+
+```
+
+
+```{r}
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq0,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq1,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq2,CAT_UmidRelMed_freq$Freq)
+# # cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq3,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq4,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq5,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq6,CAT_UmidRelMed_freq$Freq)
+# # cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq7,CAT_UmidRelMed_freq$Freq)
+# # cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq8,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq9,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq10,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq11,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq12,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq13,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq14,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq15,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq16,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq17,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq18,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq19,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq20,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq21,CAT_UmidRelMed_freq$Freq)
+# cor(CAT_UmidRelMed_freq$CAT_UmidRelMed_freq22,CAT_UmidRelMed_freq$Freq)
+
+```
+
+
+```{r}
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq0,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq1,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq2,CAT_VelVentMed_freq$Freq)
+# # cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq3,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq4,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq5,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq6,CAT_VelVentMed_freq$Freq)
+# # cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq7,CAT_VelVentMed_freq$Freq)
+# # cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq8,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq9,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq10,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq11,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq12,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq13,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq14,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq15,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq16,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq17,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq18,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq19,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq20,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq21,CAT_VelVentMed_freq$Freq)
+# cor(CAT_VelVentMed_freq$CAT_VelVentMed_freq22,CAT_VelVentMed_freq$Freq)
+
+```
+
+
+```{r}
+CAT_EvapPiche_freq.Media <- sum(CAT_EvapPiche_freq$Freq)/nrow(CAT_EvapPiche_freq)
+CAT_EvapPiche_freq.Var <- sum((CAT_EvapPiche_freq$Freq-CAT_EvapPiche_freq.Media)^2)/(nrow(CAT_EvapPiche_freq)-1)
+CAT_EvapPiche_freq.DP <- (CAT_EvapPiche_freq.Var)^(1/2)
+
+```
+
+```{r}
+
+ap <- as.data.frame(cbind(CAT_EvapPiche_freq$CAP,CAT_EvapPiche_freq$EvapPiche))
+colnames(ap) <- c("CAP","EvapPiche")
+
+lmEvapPiche <- lm(CAT_EvapPiche_freq$Freq ~ EvapPiche + CAP
+                     , data=ap)
+
+summary(lmEvapPiche)
+
+
+rlmEvapPiche <- rlm(CAT_EvapPiche_freq$Freq ~ EvapPiche + CAP
+                     , data=ap)
+
+summary(rlmEvapPiche)
+
+loglmEvapPiche <- loglm(CAT_EvapPiche_freq$Freq ~ EvapPiche + CAP
+                     , data=ap)
+
+summary(loglmEvapPiche)
+
+```
+
+```{r}
+
+ap <- as.data.frame(cbind(CAT_Ins_freq$CAP,CAT_Ins_freq$Ins,CAT_Ins_freq$Freq))
+colnames(ap) <- c("CAP","Ins")
+
+lmIns <- lm(CAT_Ins_freq$Freq ~ Ins + CAP
+                     , data=ap)
+
+summary(lmIns)
+
+
+rlmIns <- rlm(CAT_Ins_freq$Freq ~ Ins + CAP
+                     , data=ap)
+
+summary(rlmIns)
+
+loglmIns <- loglm(CAT_Ins_freq$Freq ~ Ins + CAP
+                     , data=ap)
+
+summary(loglmIns)
+
+```
+
+
+# Cálculos Intermediários para criação do modelo
+
+Limpando as linhas que tem 0 de frequência
+```{r}
+CAT_EvapPiche_freq <- subset(CAT_EvapPiche_freq, Freq!=0)
+CAT_Ins_freq <- subset(CAT_Ins_freq, Freq!=0)
+CAT_Precip_freq <- subset(CAT_Precip_freq, Freq!=0)
+CAT_TDelta_freq <- subset(CAT_TDelta_freq, Freq!=0)
+CAT_TempCompMed_freq <- subset(CAT_TempCompMed_freq, Freq!=0)
+CAT_TMax_freq <- subset(CAT_TMax_freq, Freq!=0)
+CAT_Tmin_freq <- subset(CAT_Tmin_freq, Freq!=0)
+CAT_UmidRelMed_freq <- subset(CAT_UmidRelMed_freq, Freq!=0)
+CAT_VelVentMed_freq <- subset(CAT_VelVentMed_freq, Freq!=0)
+
+```
+
+
+O que eu quero prever: Fequência de Internações (y) baseado nas variações climáticas (x)
+
+```{r}
+
+Media_EvapPiche_y <- sum(CAT_EvapPiche_freq$Freq)/nrow(CAT_EvapPiche_freq)
+Media_Ins_y <- sum(CAT_Ins_freq$Freq)/nrow(CAT_Ins_freq)
+Media_Precip_y <- sum(CAT_Precip_freq$Freq)/nrow(CAT_Precip_freq)
+Media_TDelta_y <- sum(CAT_TDelta_freq$Freq)/nrow(CAT_TDelta_freq)
+Media_TempCompMed_y <- sum(CAT_TempCompMed_freq$Freq)/nrow(CAT_TempCompMed_freq)
+Media_TMax_y <- sum(CAT_TMax_freq$Freq)/nrow(CAT_TMax_freq)
+Media_Tmin_y <- sum(CAT_Tmin_freq$Freq)/nrow(CAT_Tmin_freq)
+Media_UmidRelMed_y <- sum(CAT_UmidRelMed_freq$Freq)/nrow(CAT_UmidRelMed_freq)
+Media_VelVentMed_y <- sum(CAT_VelVentMed_freq$Freq)/nrow(CAT_VelVentMed_freq)
+
+# Media_EvapPiche_x <- sum(CAT_EvapPiche_freq$EvapPiche)/nrow(CAT_EvapPiche_freq)
+# Media_Ins_x <- sum(CAT_Ins_freq$Ins)/nrow(CAT_Ins_freq)
+# Media_Precip_x <- sum(CAT_Precip_freq$Precip)/nrow(CAT_Precip_freq)
+# Media_TDelta_x <- sum(CAT_TDelta_freq$TDelta)/nrow(CAT_TDelta_freq)
+# Media_TempCompMed_x <- sum(CAT_TempCompMed_freq$TempCompMedia)/nrow(CAT_TempCompMed_freq)
+# Media_TMax_x <- sum(CAT_TMax_freq$TMax)/nrow(CAT_TMax_freq)
+# Media_Tmin_x <- sum(CAT_Tmin_freq$TMin)/nrow(CAT_Tmin_freq)
+# Media_UmidRelMed_x <- sum(CAT_UmidRelMed_freq$UmidRelMed)/nrow(CAT_UmidRelMed_freq)
+# Media_VelVentMed_x <- sum(CAT_VelVentMed_freq$VelVentMed)/nrow(CAT_VelVentMed_freq)
+
+
+CAT_EvapPiche_freq$FreqRel <- CAT_EvapPiche_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_Ins_freq$FreqRel <- CAT_Ins_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_Precip_freq$FreqRel <- CAT_Precip_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_TDelta_freq$FreqRel <- CAT_TDelta_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_TempCompMed_freq$FreqRel <- CAT_TempCompMed_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_TMax_freq$FreqRel <- CAT_TMax_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_Tmin_freq$FreqRel <- CAT_Tmin_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_UmidRelMed_freq$FreqRel <- CAT_UmidRelMed_freq$Freq/nrow(CONSULTAS_CONS)
+CAT_VelVentMed_freq$FreqRel <- CAT_VelVentMed_freq$Freq/nrow(CONSULTAS_CONS)
+
+```
