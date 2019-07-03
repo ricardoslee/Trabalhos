@@ -1,0 +1,103 @@
+---
+title: "Trabalho de Conclusão de Cusros - FGV T4 Big Data e Analytics"
+author: "Ricardo Squassina Lee, Rafael Furlan, Djalma Gomes"
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+---
+```{r Inicia Ambiente, message=FALSE, include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014") 
+setwd("./")
+```
+
+---
+```{r Carrega bibliotecas necessarias, message=FALSE, warning=TRUE, include=FALSE}
+if(!require(data.table)) {
+  install.packages("data.table")
+  library(data.table)
+}
+
+if(!require(dbscan)) {
+  install.packages("dbscan")
+  library(dbscan)
+}
+
+```
+
+```{r}
+CONSULTAS_CONS <- fread("consultas_cons_cap_dummies.csv", drop = "V1")
+# summary(CONSULTAS_CONS)
+```
+
+```{r}
+x <- CONSULTAS_CONS[,c("CAP","TMax","TMin")]
+rm(y)
+y <- CONSULTAS_CONS[,c("CAP","TMax")]
+y$TMax <- round(x$TMax-x$TMin,0) 
+plot(y, pch=100)
+
+```
+
+```{r}
+CAP_Precip_freq <- as.data.frame(table(paste(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$Precip, digits = 0))))
+names(CAP_Precip_freq) <- c("CAP+Precip","Freq")
+CAP_TMax_freq <- as.data.frame(table(paste(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TMax, digits = 0))))
+names(CAP_TMax_freq) <- c("CAP+TMax","Freq")
+CAP_Tmin_freq <- as.data.frame(table(paste(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TMin, digits = 0))))
+names(CAP_Tmin_freq) <- c("CAP+TMin","Freq")
+CAP_Ins_freq <- as.data.frame(table(paste(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$Ins, digits = 0))))
+names(CAP_Ins_freq) <- c("CAP+Ins","Freq")
+CAP_EvapPiche_freq <- as.data.frame(table(paste(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$EvapPiche, digits = 0))))
+names(CAP_EvapPiche_freq) <- c("CAP+EvapPiche","Freq")
+CAP_TempCompMed_freq <- as.data.frame(table(paste(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TempCompMedia, digits = 0))))
+names(CAP_TempCompMed_freq) <- c("CAP+TempCompMedia","Freq")
+CAP_UmidRelMed_freq <- as.data.frame(table(paste(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$UmidRelMed, digits = 0))))
+names(CAP_UmidRelMed_freq) <- c("CAP+UmidRelMed","Freq")
+CAP_VelVentMed_freq <- as.data.frame(table(paste(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$VelVentMed, digits = 0))))
+names(CAP_VelVentMed_freq) <- c("CAP+VelVentMed","Freq")
+CAP_TDelta_freq <- as.data.frame(table(paste(CONSULTAS_CONS$CAP,round((CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin), digits = 0))))
+names(CAP_TDelta_freq) <- c("CAP+TDelta","Freq")
+
+```
+
+
+```{r}
+plot(CAP_EvapPiche_freq,pch=19)
+plot(CAP_Ins_freq,pch=19)
+plot(CAP_Precip_freq,pch=19)
+plot(CAP_TDelta_freq,pch=19)
+plot(CAP_TempCompMed_freq,pch=19)
+plot(CAP_TMax_freq,pch=19)
+plot(CAP_Tmin_freq,pch=19)
+plot(CAP_UmidRelMed_freq,pch=19)
+plot(CAP_VelVentMed_freq,pch=19)
+
+```
+
+
+```{r}
+#plot(CAP_EvapPiche_freq,pch=19)
+# kNNdist(x = CAP_EvapPiche_freq,k = 4)
+```
+
+```{r}
+# CAP_DUMMIES <- CONSULTAS_CONS[,6:36]
+# CAP_DUMMIES <- within(CAP_DUMMIES, rm("CAP"))
+# CAP_DUMMIES_kNNdist <- kNNdist(x = CAP_DUMMIES, k = 4)
+# CAP_DUMMIES_DBSCAN <- dbscan(x = CAP_DUMMIES, eps = max(CAP_DUMMIES_kNNdist), minPts = 5)
+```
+
+

@@ -49,70 +49,70 @@ if(!require(rgl)) {
 ```
 
 ```{r}
-CONSULTAS_CONS <- fread("consultas_cons_cap_dummies.csv", drop = c("V1","V12","V13","CID1"))
+CONSULTAS_CONS <- fread("consultas_cons7.csv", drop = c("V1"))
 ```
 
 # MapReduce
 
 ```{r MapReduce}
-CAT_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$Precip, digits = 0)))
-names(CAT_Precip_freq) <- c("CID","Precip","Freq")
-CAT_TMax_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$TMax, digits = 0)))
-names(CAT_TMax_freq) <- c("CID","TMax","Freq")
-CAT_Tmin_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$TMin, digits = 0)))
-names(CAT_Tmin_freq) <- c("CID","TMin","Freq")
-CAT_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$Ins, digits = 0)))
-names(CAT_Ins_freq) <- c("CID","Ins","Freq")
-CAT_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$EvapPiche, digits = 0)))
-names(CAT_EvapPiche_freq) <- c("CID","EvapPiche","Freq")
-CAT_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$TempCompMedia, digits = 0)))
-names(CAT_TempCompMed_freq) <- c("CID","TempCompMedia","Freq")
-CAT_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$UmidRelMed, digits = 0)))
-names(CAT_UmidRelMed_freq) <- c("CID","UmidRelMed","Freq")
-CAT_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$VelVentMed, digits = 0)))
-names(CAT_VelVentMed_freq) <- c("CID","VelVentMed","Freq")
-# CAT_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CID,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
-# names(CAT_TDelta_freq) <- c("CID","TDelta","Freq")
-CAT_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round((CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin), digits = 0)))
-names(CAT_TDelta_freq) <- c("CID","TDelta","Freq")
+CID_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$Precip, digits = 0)))
+names(CID_Precip_freq) <- c("CID","Precip","Freq")
+CID_TMax_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$TMax, digits = 0)))
+names(CID_TMax_freq) <- c("CID","TMax","Freq")
+CID_Tmin_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$TMin, digits = 0)))
+names(CID_Tmin_freq) <- c("CID","TMin","Freq")
+CID_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$Ins, digits = 0)))
+names(CID_Ins_freq) <- c("CID","Ins","Freq")
+CID_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$EvapPiche, digits = 0)))
+names(CID_EvapPiche_freq) <- c("CID","EvapPiche","Freq")
+CID_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$TempCompMedia, digits = 0)))
+names(CID_TempCompMed_freq) <- c("CID","TempCompMedia","Freq")
+CID_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$UmidRelMed, digits = 0)))
+names(CID_UmidRelMed_freq) <- c("CID","UmidRelMed","Freq")
+CID_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round(CONSULTAS_CONS$VelVentMed, digits = 0)))
+names(CID_VelVentMed_freq) <- c("CID","VelVentMed","Freq")
+# CID_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CID,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
+# names(CID_TDelta_freq) <- c("CID","TDelta","Freq")
+CID_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CID,round((CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin), digits = 0)))
+names(CID_TDelta_freq) <- c("CID","TDelta","Freq")
 
-# SEX_CAT_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Precip))
-# names(SEX_CAT_Precip_freq) <- c("CID","Sex","Freq")
-# SEX_CAT_TMax_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,round(CONSULTAS_CONS$TMax, digits = 0)))
-# names(SEX_CAT_TMax_freq) <- c("CID","Sex","Tmax","Freq")
-# SEX_CAT_Tmin_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,round(CONSULTAS_CONS$TMin, digits =0 )))
-# names(SEX_CAT_Tmin_freq) <- c("CID","Sex","TMin","Freq")
-# SEX_CAT_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Ins))
-# names(SEX_CAT_Ins_freq) <- c("CID","Sex","Ins","Freq")
-# SEX_CAT_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$EvapPiche))
-# names(SEX_CAT_EvapPiche_freq) <- c("CID","Sex","EvapPiche","Freq")
-# SEX_CAT_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$TempCompMedia))
-# names(SEX_CAT_TempCompMed_freq) <- c("CID","Sex","TempCompMed","Freq")
-# SEX_CAT_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$UmidRelMed))
-# names(SEX_CAT_UmidRelMed_freq) <- c("CID","Sex","UmidRelMed","Freq")
-# SEX_CAT_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$VelVentMed))
-# names(SEX_CAT_VelVentMed_freq) <- c("CID","Sex","VelVentMed","Freq")
-# SEX_CAT_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
-# names(SEX_CAT_TDelta_freq) <- c("CID","Sex","TDelta","Freq")
+# SEX_CID_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Precip))
+# names(SEX_CID_Precip_freq) <- c("CID","Sex","Freq")
+# SEX_CID_TMax_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,round(CONSULTAS_CONS$TMax, digits = 0)))
+# names(SEX_CID_TMax_freq) <- c("CID","Sex","Tmax","Freq")
+# SEX_CID_Tmin_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,round(CONSULTAS_CONS$TMin, digits =0 )))
+# names(SEX_CID_Tmin_freq) <- c("CID","Sex","TMin","Freq")
+# SEX_CID_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Ins))
+# names(SEX_CID_Ins_freq) <- c("CID","Sex","Ins","Freq")
+# SEX_CID_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$EvapPiche))
+# names(SEX_CID_EvapPiche_freq) <- c("CID","Sex","EvapPiche","Freq")
+# SEX_CID_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$TempCompMedia))
+# names(SEX_CID_TempCompMed_freq) <- c("CID","Sex","TempCompMed","Freq")
+# SEX_CID_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$UmidRelMed))
+# names(SEX_CID_UmidRelMed_freq) <- c("CID","Sex","UmidRelMed","Freq")
+# SEX_CID_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$VelVentMed))
+# names(SEX_CID_VelVentMed_freq) <- c("CID","Sex","VelVentMed","Freq")
+# SEX_CID_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$SEXO_BENEFICIARIO,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
+# names(SEX_CID_TDelta_freq) <- c("CID","Sex","TDelta","Freq")
 # 
-# IDADE_CAT_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$Precip))
-# names(IDADE_CAT_Precip_freq) <- c("CID","Idade","Precip","Freq")
-# IDADE_CAT_TMax_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,round(CONSULTAS_CONS$TMax, digits = 0)))
-# names(IDADE_CAT_TMax_freq) <- c("CID","Idade","TMax","Freq")
-# IDADE_CAT_Tmin_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,round(CONSULTAS_CONS$TMin, digits = 0)))
-# names(IDADE_CAT_Tmin_freq) <- c("CID","Idade","TMin","Freq")
-# IDADE_CAT_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$Ins))
-# names(IDADE_CAT_Ins_freq) <- c("CID","Idade","Ins","Freq")
-# IDADE_CAT_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$EvapPiche))
-# names(IDADE_CAT_EvapPiche_freq) <- c("CID","Idade","EvapPiche","Freq")
-# IDADE_CAT_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$TempCompMedia))
-# names(IDADE_CAT_TempCompMed_freq) <- c("CID","Idade","TempCompMed","Freq")
-# IDADE_CAT_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$UmidRelMed))
-# names(IDADE_CAT_UmidRelMed_freq) <- c("CID","Idade","UmidRelMed","Freq")
-# IDADE_CAT_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$VelVentMed))
-# names(IDADE_CAT_VelVentMed_freq) <- c("CID","Idade","VelVentMed","Freq")
-# IDADE_CAT_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
-# names(IDADE_CAT_TDelta_freq) <- c("CID","Idade","TDelta","Freq")
+# IDADE_CID_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$Precip))
+# names(IDADE_CID_Precip_freq) <- c("CID","Idade","Precip","Freq")
+# IDADE_CID_TMax_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,round(CONSULTAS_CONS$TMax, digits = 0)))
+# names(IDADE_CID_TMax_freq) <- c("CID","Idade","TMax","Freq")
+# IDADE_CID_Tmin_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,round(CONSULTAS_CONS$TMin, digits = 0)))
+# names(IDADE_CID_Tmin_freq) <- c("CID","Idade","TMin","Freq")
+# IDADE_CID_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$Ins))
+# names(IDADE_CID_Ins_freq) <- c("CID","Idade","Ins","Freq")
+# IDADE_CID_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$EvapPiche))
+# names(IDADE_CID_EvapPiche_freq) <- c("CID","Idade","EvapPiche","Freq")
+# IDADE_CID_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$TempCompMedia))
+# names(IDADE_CID_TempCompMed_freq) <- c("CID","Idade","TempCompMed","Freq")
+# IDADE_CID_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$UmidRelMed))
+# names(IDADE_CID_UmidRelMed_freq) <- c("CID","Idade","UmidRelMed","Freq")
+# IDADE_CID_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$VelVentMed))
+# names(IDADE_CID_VelVentMed_freq) <- c("CID","Idade","VelVentMed","Freq")
+# IDADE_CID_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$IDADE_BENEFICIARIO,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
+# names(IDADE_CID_TDelta_freq) <- c("CID","Idade","TDelta","Freq")
 ```
 
 
@@ -121,43 +121,86 @@ nrow(CONSULTAS_CONS)
 ```
 
 ```{r}
-CAT_EvapPiche_freq$FreqRel <- CAT_EvapPiche_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_Ins_freq$FreqRel <- CAT_Ins_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_Precip_freq$FreqRel <- CAT_Precip_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_TDelta_freq$FreqRel <- CAT_TDelta_freq$Freq/nrow(CONSULTAS_CONS)
-# CAT_TDeltaA_freq$FreqRel <- CAT_TDeltaA_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_TempCompMed_freq$FreqRel <- CAT_TempCompMed_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_TMax_freq$FreqRel <- CAT_TMax_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_Tmin_freq$FreqRel <- CAT_Tmin_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_UmidRelMed_freq$FreqRel <- CAT_UmidRelMed_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_VelVentMed_freq$FreqRel <- CAT_VelVentMed_freq$Freq/nrow(CONSULTAS_CONS)
+CID_EvapPiche_freq <- CID_EvapPiche_freq[CID_EvapPiche_freq$Freq>0,]
+CID_Ins_freq <- CID_Ins_freq[CID_Ins_freq$Freq>0,]
+CID_Precip_freq <- CID_Precip_freq[CID_Precip_freq$Freq>0,]
+CID_TDelta_freq <- CID_TDelta_freq[CID_TDelta_freq$Freq>0,]
+CID_TempCompMed_freq <- CID_TempCompMed_freq[CID_TempCompMed_freq$Freq>0,]
+CID_TMax_freq <- CID_TMax_freq[CID_TMax_freq$Freq>0,]
+CID_Tmin_freq <- CID_Tmin_freq[CID_Tmin_freq$Freq>0,]
+CID_UmidRelMed_freq <- CID_UmidRelMed_freq[CID_UmidRelMed_freq$Freq>0,]
+CID_VelVentMed_freq <- CID_VelVentMed_freq[CID_VelVentMed_freq$Freq>0,]
+
+```
+
+
+
+```{r}
+CID_EvapPiche_freq$FreqRel <- CID_EvapPiche_freq$Freq/nrow(CONSULTAS_CONS)
+CID_Ins_freq$FreqRel <- CID_Ins_freq$Freq/nrow(CONSULTAS_CONS)
+CID_Precip_freq$FreqRel <- CID_Precip_freq$Freq/nrow(CONSULTAS_CONS)
+CID_TDelta_freq$FreqRel <- CID_TDelta_freq$Freq/nrow(CONSULTAS_CONS)
+# CID_TDeltaA_freq$FreqRel <- CID_TDeltaA_freq$Freq/nrow(CONSULTAS_CONS)
+CID_TempCompMed_freq$FreqRel <- CID_TempCompMed_freq$Freq/nrow(CONSULTAS_CONS)
+CID_TMax_freq$FreqRel <- CID_TMax_freq$Freq/nrow(CONSULTAS_CONS)
+CID_Tmin_freq$FreqRel <- CID_Tmin_freq$Freq/nrow(CONSULTAS_CONS)
+CID_UmidRelMed_freq$FreqRel <- CID_UmidRelMed_freq$Freq/nrow(CONSULTAS_CONS)
+CID_VelVentMed_freq$FreqRel <- CID_VelVentMed_freq$Freq/nrow(CONSULTAS_CONS)
+
+```
+
+```{r}
+hist(CID_EvapPiche_freq$Freq)
+hist(CID_Ins_freq$Freq)
+hist(CID_Precip_freq$Freq)
+hist(CID_TDelta_freq$Freq)
+hist(CID_TempCompMed_freq$Freq)
+hist(CID_TMax_freq$Freq)
+hist(CID_Tmin_freq$Freq)
+hist(CID_UmidRelMed_freq$Freq)
+hist(CID_VelVentMed_freq$Freq)
+
+```
+
+
+
+```{r}
+hist(CID_EvapPiche_freq$FreqRel)
+hist(CID_Ins_freq$FreqRel)
+hist(CID_Precip_freq$FreqRel)
+hist(CID_TDelta_freq$FreqRel)
+hist(CID_TempCompMed_freq$FreqRel)
+hist(CID_TMax_freq$FreqRel)
+hist(CID_Tmin_freq$FreqRel)
+hist(CID_UmidRelMed_freq$FreqRel)
+hist(CID_VelVentMed_freq$FreqRel)
+
+```
+
+```{r}
+boxplot(CID_EvapPiche_freq$Freq ~ CID_EvapPiche_freq$CID)
+boxplot(CID_Ins_freq$Freq ~ CID_Ins_freq$CID)
+boxplot(CID_Precip_freq$Freq ~ CID_Precip_freq$CID)
+boxplot(CID_TDelta_freq$Freq ~ CID_TDelta_freq$CID)
+boxplot(CID_TempCompMed_freq$Freq ~ CID_TempCompMed_freq$CID)
+boxplot(CID_TMax_freq$Freq ~ CID_TMax_freq$CID)
+boxplot(CID_Tmin_freq$Freq ~ CID_Tmin_freq$CID)
+boxplot(CID_UmidRelMed_freq$Freq ~ CID_UmidRelMed_freq$CID)
+boxplot(CID_VelVentMed_freq$Freq ~ CID_VelVentMed_freq$CID)
 
 ```
 
 
 ```{r}
-hist(CAT_EvapPiche_freq$FreqRel)
-hist(CAT_Ins_freq$FreqRel)
-hist(CAT_Precip_freq$FreqRel)
-hist(CAT_TDelta_freq$FreqRel)
-hist(CAT_TempCompMed_freq$FreqRel)
-hist(CAT_TMax_freq$FreqRel)
-hist(CAT_Tmin_freq$FreqRel)
-hist(CAT_UmidRelMed_freq$FreqRel)
-hist(CAT_VelVentMed_freq$FreqRel)
-
-```
-
-```{r}
-boxplot(CAT_EvapPiche_freq$FreqRel ~ CAT_EvapPiche_freq$CID)
-boxplot(CAT_Ins_freq$FreqRel ~ CAT_Ins_freq$CID)
-boxplot(CAT_Precip_freq$FreqRel ~ CAT_Precip_freq$CID)
-boxplot(CAT_TDelta_freq$FreqRel ~ CAT_TDelta_freq$CID)
-boxplot(CAT_TempCompMed_freq$FreqRel ~ CAT_TempCompMed_freq$CID)
-boxplot(CAT_TMax_freq$FreqRel ~ CAT_TMax_freq$CID)
-boxplot(CAT_Tmin_freq$FreqRel ~ CAT_Tmin_freq$CID)
-boxplot(CAT_UmidRelMed_freq$FreqRel ~ CAT_UmidRelMed_freq$CID)
-boxplot(CAT_VelVentMed_freq$FreqRel ~ CAT_VelVentMed_freq$CID)
+boxplot(CID_EvapPiche_freq$FreqRel ~ CID_EvapPiche_freq$CID)
+boxplot(CID_Ins_freq$FreqRel ~ CID_Ins_freq$CID)
+boxplot(CID_Precip_freq$FreqRel ~ CID_Precip_freq$CID)
+boxplot(CID_TDelta_freq$FreqRel ~ CID_TDelta_freq$CID)
+boxplot(CID_TempCompMed_freq$FreqRel ~ CID_TempCompMed_freq$CID)
+boxplot(CID_TMax_freq$FreqRel ~ CID_TMax_freq$CID)
+boxplot(CID_Tmin_freq$FreqRel ~ CID_Tmin_freq$CID)
+boxplot(CID_UmidRelMed_freq$FreqRel ~ CID_UmidRelMed_freq$CID)
+boxplot(CID_VelVentMed_freq$FreqRel ~ CID_VelVentMed_freq$CID)
 
 ```
 
@@ -170,69 +213,69 @@ boxplot(CAT_VelVentMed_freq$FreqRel ~ CAT_VelVentMed_freq$CID)
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_EvapPiche_freq[,2:3], 22, nstart = 1)
-table(CAP_Cluster$cluster, CAT_EvapPiche_freq$EvapPiche)
+CAP_Cluster <- kmeans(CID_EvapPiche_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CID_EvapPiche_freq$EvapPiche)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_Ins_freq[,2:3], 22, nstart = 1)
-table(CAP_Cluster$cluster, CAT_Ins_freq$Ins)
+CAP_Cluster <- kmeans(CID_Ins_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CID_Ins_freq$Ins)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_Precip_freq[,2:3], 22, nstart = 1)
-table(CAP_Cluster$cluster, CAT_Precip_freq$Precip)
+CAP_Cluster <- kmeans(CID_Precip_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CID_Precip_freq$Precip)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_TDelta_freq[,2:3], 22, nstart = 1)
-table(CAP_Cluster$cluster, CAT_TDelta_freq$TDelta)
+CAP_Cluster <- kmeans(CID_TDelta_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CID_TDelta_freq$TDelta)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_TempCompMed_freq[,2:3], 22, nstart = 1)
-table(CAP_Cluster$cluster, CAT_TempCompMed_freq$TempCompMedia)
+CAP_Cluster <- kmeans(CID_TempCompMed_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CID_TempCompMed_freq$TempCompMedia)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_TMax_freq[,2:3], 22, nstart = 1)
-table(CAP_Cluster$cluster, CAT_TMax_freq$TMax)
+CAP_Cluster <- kmeans(CID_TMax_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CID_TMax_freq$TMax)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_Tmin_freq[,2:3], 22, nstart = 1)
-table(CAP_Cluster$cluster, CAT_Tmin_freq$TMin)
+CAP_Cluster <- kmeans(CID_Tmin_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CID_Tmin_freq$TMin)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_UmidRelMed_freq[,2:3], 22, nstart = 1)
-table(CAP_Cluster$cluster, CAT_UmidRelMed_freq$UmidRelMed)
+CAP_Cluster <- kmeans(CID_UmidRelMed_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CID_UmidRelMed_freq$UmidRelMed)
 
 ```
 
 ```{r}
-CAP_Cluster <- kmeans(CAT_VelVentMed_freq[,2:3], 22, nstart = 1)
-table(CAP_Cluster$cluster, CAT_VelVentMed_freq$VelVentMed)
+CAP_Cluster <- kmeans(CID_VelVentMed_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CID_VelVentMed_freq$VelVentMed)
 
 ```
 
 ```{r}
-head(CAT_EvapPiche_freq[with(CAT_EvapPiche_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_Ins_freq[with(CAT_Ins_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_Precip_freq[with(CAT_Precip_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_TDelta_freq[with(CAT_TDelta_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_TempCompMed_freq[with(CAT_TempCompMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_TMax_freq[with(CAT_TMax_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_Tmin_freq[with(CAT_Tmin_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_UmidRelMed_freq[with(CAT_UmidRelMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_VelVentMed_freq[with(CAT_VelVentMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_EvapPiche_freq[with(CID_EvapPiche_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_Ins_freq[with(CID_Ins_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_Precip_freq[with(CID_Precip_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_TDelta_freq[with(CID_TDelta_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_TempCompMed_freq[with(CID_TempCompMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_TMax_freq[with(CID_TMax_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_Tmin_freq[with(CID_Tmin_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_UmidRelMed_freq[with(CID_UmidRelMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_VelVentMed_freq[with(CID_VelVentMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
 
 ```
 
@@ -260,49 +303,49 @@ CONSULTAS_CONS$VelVentMedI <- findInterval(CONSULTAS_CONS$VelVentMed, c(0, 1), r
 
 
 ```{r}
-CAT_PrecipI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$PrecipI))
-names(CAT_PrecipI_freq) <- c("CID","Precip","Freq")
-CAT_TMaxI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$TMax))
-names(CAT_TMaxI_freq) <- c("CID","TMax","Freq")
-CAT_TminI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$TminI))
-names(CAT_TminI_freq) <- c("CID","TMin","Freq")
-CAT_InsI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$InsI))
-names(CAT_InsI_freq) <- c("CID","Ins","Freq")
-CAT_EvapPicheI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$EvapPicheI))
-names(CAT_EvapPicheI_freq) <- c("CID","EvapPiche","Freq")
-CAT_TempCompMedI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$TempCompMediaI))
-names(CAT_TempCompMedI_freq) <- c("CID","TempCompMedia","Freq")
-CAT_UmidRelMedI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$UmidRelMedI))
-names(CAT_UmidRelMedI_freq) <- c("CID","UmidRelMed","Freq")
-CAT_VelVentMedI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$VelVentMedI))
-names(CAT_VelVentMedI_freq) <- c("CID","VelVentMed","Freq")
+CID_PrecipI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$PrecipI))
+names(CID_PrecipI_freq) <- c("CID","Precip","Freq")
+CID_TMaxI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$TMax))
+names(CID_TMaxI_freq) <- c("CID","TMax","Freq")
+CID_TminI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$TminI))
+names(CID_TminI_freq) <- c("CID","TMin","Freq")
+CID_InsI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$InsI))
+names(CID_InsI_freq) <- c("CID","Ins","Freq")
+CID_EvapPicheI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$EvapPicheI))
+names(CID_EvapPicheI_freq) <- c("CID","EvapPiche","Freq")
+CID_TempCompMedI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$TempCompMediaI))
+names(CID_TempCompMedI_freq) <- c("CID","TempCompMedia","Freq")
+CID_UmidRelMedI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$UmidRelMedI))
+names(CID_UmidRelMedI_freq) <- c("CID","UmidRelMed","Freq")
+CID_VelVentMedI_freq <- as.data.frame(table(CONSULTAS_CONS$CID,CONSULTAS_CONS$VelVentMedI))
+names(CID_VelVentMedI_freq) <- c("CID","VelVentMed","Freq")
 ```
 
 ```{r}
-CAT_EvapPicheI_freq$FreqRel <- CAT_EvapPicheI_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_InsI_freq$FreqRel <- CAT_InsI_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_PrecipI_freq$FreqRel <- CAT_PrecipI_freq$Freq/nrow(CONSULTAS_CONS)
-# CAT_TDeltaI_freq$FreqRel <- CAT_TDeltaI_freq$Freq/nrow(CONSULTAS_CONS)
-# CAT_TDeltaA_freq$FreqRel <- CAT_TDeltaA_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_TempCompMedI_freq$FreqRel <- CAT_TempCompMedI_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_TMaxI_freq$FreqRel <- CAT_TMaxI_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_TminI_freq$FreqRel <- CAT_TminI_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_UmidRelMedI_freq$FreqRel <- CAT_UmidRelMedI_freq$Freq/nrow(CONSULTAS_CONS)
-CAT_VelVentMedI_freq$FreqRel <- CAT_VelVentMedI_freq$Freq/nrow(CONSULTAS_CONS)
+CID_EvapPicheI_freq$FreqRel <- CID_EvapPicheI_freq$Freq/nrow(CONSULTAS_CONS)
+CID_InsI_freq$FreqRel <- CID_InsI_freq$Freq/nrow(CONSULTAS_CONS)
+CID_PrecipI_freq$FreqRel <- CID_PrecipI_freq$Freq/nrow(CONSULTAS_CONS)
+# CID_TDeltaI_freq$FreqRel <- CID_TDeltaI_freq$Freq/nrow(CONSULTAS_CONS)
+# CID_TDeltaA_freq$FreqRel <- CID_TDeltaA_freq$Freq/nrow(CONSULTAS_CONS)
+CID_TempCompMedI_freq$FreqRel <- CID_TempCompMedI_freq$Freq/nrow(CONSULTAS_CONS)
+CID_TMaxI_freq$FreqRel <- CID_TMaxI_freq$Freq/nrow(CONSULTAS_CONS)
+CID_TminI_freq$FreqRel <- CID_TminI_freq$Freq/nrow(CONSULTAS_CONS)
+CID_UmidRelMedI_freq$FreqRel <- CID_UmidRelMedI_freq$Freq/nrow(CONSULTAS_CONS)
+CID_VelVentMedI_freq$FreqRel <- CID_VelVentMedI_freq$Freq/nrow(CONSULTAS_CONS)
 
 ```
 
 
 ```{r}
-head(CAT_EvapPicheI_freq[with(CAT_EvapPicheI_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_InsI_freq[with(CAT_InsI_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_PrecipI_freq[with(CAT_PrecipI_freq, order(Freq, decreasing = TRUE)),],n = 10)
-# head(CAT_TDelta_freq[with(CAT_TDelta_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_TempCompMedI_freq[with(CAT_TempCompMedI_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_TMaxI_freq[with(CAT_TMaxI_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_TminI_freq[with(CAT_TminI_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_UmidRelMedI_freq[with(CAT_UmidRelMedI_freq, order(Freq, decreasing = TRUE)),],n = 10)
-head(CAT_VelVentMedI_freq[with(CAT_VelVentMedI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_EvapPicheI_freq[with(CID_EvapPicheI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_InsI_freq[with(CID_InsI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_PrecipI_freq[with(CID_PrecipI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+# head(CID_TDelta_freq[with(CID_TDelta_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_TempCompMedI_freq[with(CID_TempCompMedI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_TMaxI_freq[with(CID_TMaxI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_TminI_freq[with(CID_TminI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_UmidRelMedI_freq[with(CID_UmidRelMedI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CID_VelVentMedI_freq[with(CID_VelVentMedI_freq, order(Freq, decreasing = TRUE)),],n = 10)
 
 ```
 

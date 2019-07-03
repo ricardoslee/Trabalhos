@@ -265,3 +265,148 @@ CONSULTAS_CONS_CAP2 <- cbind(CONSULTAS_CONS_CAP,dummy(CONSULTAS_CONS_CAP$CAP))
 write.csv(CONSULTAS_CONS_CAP2, file = "consultas_cons_cap_dummies.csv")
 
 ```
+
+
+```{r ajuste datas2 - data-x}
+CONSULTAS <- fread("./consultas.csv", drop = "V1")
+CONSULTAS$DT_INTERNACAO <- as.Date((CONSULTAS$DT_INTERNACAO))
+CLIMA <- fread("./Rafael/DADOS/base_saopaulo.csv", drop = c("V1","Estacao"))
+CLIMA$Data <- as.Date(CLIMA$Data, format = "%Y-%m-%d")
+```
+
+
+```{r merge das tabelas - data-7}
+CLIMA$DATA_ANT <- CLIMA$Data + 7
+CONSULTAS_CONS7 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+# CONSULTAS_CONS7 <- within(CONSULTAS_CONS7, rm("Data"))
+write.csv(CONSULTAS_CONS7, file = "./consultas_cons7-Rafa.csv")
+```
+
+
+```{r merge das tabelas - data-6}
+
+CLIMA$DATA_ANT <- CLIMA$Data + 6
+CONSULTAS_CONS6 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS6 <- within(CONSULTAS_CONS6, rm("Data"))
+write.csv(CONSULTAS_CONS6, file = "./consultas_cons6.csv")
+```
+
+
+```{r merge das tabelas - data-5}
+
+CLIMA$DATA_ANT <- CLIMA$Data + 5
+CONSULTAS_CONS5 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS5 <- within(CONSULTAS_CONS5, rm("Data"))
+write.csv(CONSULTAS_CONS5, file = "./consultas_cons5.csv")
+```
+
+
+```{r merge das tabelas - data-4}
+
+CLIMA$DATA_ANT <- CLIMA$Data + 4
+CONSULTAS_CONS4 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS4 <- within(CONSULTAS_CONS4, rm("Data"))
+write.csv(CONSULTAS_CONS4, file = "./consultas_cons4.csv")
+```
+
+
+```{r merge das tabelas - data-3}
+
+CLIMA$DATA_ANT <- CLIMA$Data + 3
+CONSULTAS_CONS3 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS3 <- within(CONSULTAS_CONS3, rm("Data"))
+write.csv(CONSULTAS_CONS3, file = "./consultas_cons3.csv")
+```
+
+
+```{r merge das tabelas - data-2}
+
+CLIMA$DATA_ANT <- CLIMA$Data + 2
+CONSULTAS_CONS2 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS2 <- within(CONSULTAS_CONS2, rm("Data"))
+write.csv(CONSULTAS_CONS2, file = "./consultas_cons2.csv")
+```
+
+
+```{r merge das tabelas - data-1}
+
+CLIMA$DATA_ANT <- CLIMA$Data + 1
+CONSULTAS_CONS1 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS1 <- within(CONSULTAS_CONS1, rm("Data"))
+write.csv(CONSULTAS_CONS1, file = "./consultas_cons1.csv")
+
+```
+
+
+```{r ajuste datas2 - CAP - data-x}
+CONSULTAS <- fread("consultas_cons_cap.csv", drop = c("V1"))
+CONSULTAS$DT_INTERNACAO <- as.Date((CONSULTAS$DT_INTERNACAO))
+CLIMA <- fread("./Rafael/DADOS/base_saopaulo.csv", drop = c("V1","Estacao"))
+CLIMA$Data <- as.Date(CLIMA$Data, format = "%Y-%m-%d")
+CONSULTAS <- CONSULTAS[,c(1:5,14)]
+```
+
+
+```{r merge das tabelas - CAP - data-7}
+CLIMA$DATA_ANT <- CLIMA$Data + 7
+CONSULTAS_CONS7 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS7 <- within(CONSULTAS_CONS7, rm("Data"))
+write.csv(CONSULTAS_CONS7, file = "./consultas_cons_cap7.csv")
+```
+
+
+```{r merge das tabelas - CAP - data-6}
+
+CLIMA$DATA_ANT <- CLIMA$Data + 6
+CONSULTAS_CONS6 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS6 <- within(CONSULTAS_CONS6, rm("Data"))
+write.csv(CONSULTAS_CONS6, file = "./consultas_cons_cap6.csv")
+```
+
+
+```{r merge das tabelas - CAP - data-5}
+
+CLIMA$DATA_ANT <- CLIMA$Data + 5
+CONSULTAS_CONS5 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS5 <- within(CONSULTAS_CONS5, rm("Data"))
+write.csv(CONSULTAS_CONS5, file = "./consultas_cons_cap5.csv")
+```
+
+
+```{r merge das tabelas - CAP - data-4}
+
+CLIMA$DATA_ANT <- CLIMA$Data + 4
+CONSULTAS_CONS4 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS4 <- within(CONSULTAS_CONS4, rm("Data"))
+write.csv(CONSULTAS_CONS4, file = "./consultas_cons_cap4.csv")
+```
+
+
+```{r merge das tabelas - CAP - data-3}
+
+CLIMA$DATA_ANT <- CLIMA$Data + 3
+CONSULTAS_CONS3 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS3 <- within(CONSULTAS_CONS3, rm("Data"))
+write.csv(CONSULTAS_CONS3, file = "./consultas_cons_cap3.csv")
+```
+
+
+```{r merge das tabelas - CAP - data-2}
+
+CLIMA$DATA_ANT <- CLIMA$Data + 2
+CONSULTAS_CONS2 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS2 <- within(CONSULTAS_CONS2, rm("Data"))
+write.csv(CONSULTAS_CONS2, file = "./consultas_cons_cap2.csv")
+```
+
+
+```{r merge das tabelas - CAP - data-1}
+
+CLIMA$DATA_ANT <- CLIMA$Data + 1
+CONSULTAS_CONS1 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
+CONSULTAS_CONS1 <- within(CONSULTAS_CONS1, rm("Data"))
+write.csv(CONSULTAS_CONS1, file = "./consultas_cons_cap1.csv")
+
+```
+
+

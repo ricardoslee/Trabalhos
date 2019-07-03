@@ -1,0 +1,363 @@
+---
+title: "Trabalho de Conclusão de Cusros - FGV T4 Big Data e Analytics"
+author: "Ricardo Squassina Lee, Rafael Furlan, Djalma Gomes"
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+---
+```{r Inicia Ambiente, message=FALSE, include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014") 
+# setwd("~/Tresors/zz-pessoal/FGV/git/TCC")
+setwd("./")
+```
+
+---
+```{r Carrega bibliotecas necessarias, message=FALSE, warning=TRUE, include=FALSE}
+if(!require(data.table)) {
+  install.packages("data.table")
+  library(data.table)
+}
+
+if(!require(network)) {
+  install.packages("network")
+  library(network)
+}
+
+if(!require(sna)) {
+  install.packages("sna")
+  library(sna)
+}
+
+if(!require(rgl)) {
+  install.packages("rgl")
+  library(rgl)
+}
+
+```
+
+```{r}
+CONSULTAS_CONS <- fread("consultas_cons_cap7.csv", drop = c("V1"))
+```
+
+# MapReduce
+
+```{r MapReduce}
+CAP_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$Precip, digits = 0)))
+names(CAP_Precip_freq) <- c("CAP","Precip","Freq")
+CAP_TMax_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TMax, digits = 0)))
+names(CAP_TMax_freq) <- c("CAP","TMax","Freq")
+CAP_Tmin_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TMin, digits = 0)))
+names(CAP_Tmin_freq) <- c("CAP","TMin","Freq")
+CAP_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$Ins, digits = 0)))
+names(CAP_Ins_freq) <- c("CAP","Ins","Freq")
+CAP_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$EvapPiche, digits = 0)))
+names(CAP_EvapPiche_freq) <- c("CAP","EvapPiche","Freq")
+CAP_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TempCompMedia, digits = 0)))
+names(CAP_TempCompMed_freq) <- c("CAP","TempCompMedia","Freq")
+CAP_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$UmidRelMed, digits = 0)))
+names(CAP_UmidRelMed_freq) <- c("CAP","UmidRelMed","Freq")
+CAP_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$VelVentMed, digits = 0)))
+names(CAP_VelVentMed_freq) <- c("CAP","VelVentMed","Freq")
+# CAP_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
+# names(CAP_TDelta_freq) <- c("CAP","TDelta","Freq")
+CAP_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round((CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin), digits = 0)))
+names(CAP_TDelta_freq) <- c("CAP","TDelta","Freq")
+
+# SEX_CAP_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Precip))
+# names(SEX_CAP_Precip_freq) <- c("CAP","Sex","Freq")
+# SEX_CAP_TMax_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,round(CONSULTAS_CONS$TMax, digits = 0)))
+# names(SEX_CAP_TMax_freq) <- c("CAP","Sex","Tmax","Freq")
+# SEX_CAP_Tmin_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,round(CONSULTAS_CONS$TMin, digits =0 )))
+# names(SEX_CAP_Tmin_freq) <- c("CAP","Sex","TMin","Freq")
+# SEX_CAP_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$Ins))
+# names(SEX_CAP_Ins_freq) <- c("CAP","Sex","Ins","Freq")
+# SEX_CAP_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$EvapPiche))
+# names(SEX_CAP_EvapPiche_freq) <- c("CAP","Sex","EvapPiche","Freq")
+# SEX_CAP_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$TempCompMedia))
+# names(SEX_CAP_TempCompMed_freq) <- c("CAP","Sex","TempCompMed","Freq")
+# SEX_CAP_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$UmidRelMed))
+# names(SEX_CAP_UmidRelMed_freq) <- c("CAP","Sex","UmidRelMed","Freq")
+# SEX_CAP_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,CONSULTAS_CONS$VelVentMed))
+# names(SEX_CAP_VelVentMed_freq) <- c("CAP","Sex","VelVentMed","Freq")
+# SEX_CAP_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$SEXO_BENEFICIARIO,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
+# names(SEX_CAP_TDelta_freq) <- c("CAP","Sex","TDelta","Freq")
+# 
+# IDADE_CAP_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$Precip))
+# names(IDADE_CAP_Precip_freq) <- c("CAP","Idade","Precip","Freq")
+# IDADE_CAP_TMax_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,round(CONSULTAS_CONS$TMax, digits = 0)))
+# names(IDADE_CAP_TMax_freq) <- c("CAP","Idade","TMax","Freq")
+# IDADE_CAP_Tmin_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,round(CONSULTAS_CONS$TMin, digits = 0)))
+# names(IDADE_CAP_Tmin_freq) <- c("CAP","Idade","TMin","Freq")
+# IDADE_CAP_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$Ins))
+# names(IDADE_CAP_Ins_freq) <- c("CAP","Idade","Ins","Freq")
+# IDADE_CAP_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$EvapPiche))
+# names(IDADE_CAP_EvapPiche_freq) <- c("CAP","Idade","EvapPiche","Freq")
+# IDADE_CAP_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$TempCompMedia))
+# names(IDADE_CAP_TempCompMed_freq) <- c("CAP","Idade","TempCompMed","Freq")
+# IDADE_CAP_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$UmidRelMed))
+# names(IDADE_CAP_UmidRelMed_freq) <- c("CAP","Idade","UmidRelMed","Freq")
+# IDADE_CAP_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,CONSULTAS_CONS$VelVentMed))
+# names(IDADE_CAP_VelVentMed_freq) <- c("CAP","Idade","VelVentMed","Freq")
+# IDADE_CAP_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$IDADE_BENEFICIARIO,(CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin)))
+# names(IDADE_CAP_TDelta_freq) <- c("CAP","Idade","TDelta","Freq")
+```
+
+
+```{r}
+nrow(CONSULTAS_CONS)
+```
+
+```{r}
+CAP_EvapPiche_freq <- CAP_EvapPiche_freq[CAP_EvapPiche_freq$Freq>0,]
+CAP_Ins_freq <- CAP_Ins_freq[CAP_Ins_freq$Freq>0,]
+CAP_Precip_freq <- CAP_Precip_freq[CAP_Precip_freq$Freq>0,]
+CAP_TDelta_freq <- CAP_TDelta_freq[CAP_TDelta_freq$Freq>0,]
+CAP_TempCompMed_freq <- CAP_TempCompMed_freq[CAP_TempCompMed_freq$Freq>0,]
+CAP_TMax_freq <- CAP_TMax_freq[CAP_TMax_freq$Freq>0,]
+CAP_Tmin_freq <- CAP_Tmin_freq[CAP_Tmin_freq$Freq>0,]
+CAP_UmidRelMed_freq <- CAP_UmidRelMed_freq[CAP_UmidRelMed_freq$Freq>0,]
+CAP_VelVentMed_freq <- CAP_VelVentMed_freq[CAP_VelVentMed_freq$Freq>0,]
+
+```
+
+
+
+```{r}
+CAP_EvapPiche_freq$FreqRel <- CAP_EvapPiche_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_Ins_freq$FreqRel <- CAP_Ins_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_Precip_freq$FreqRel <- CAP_Precip_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_TDelta_freq$FreqRel <- CAP_TDelta_freq$Freq/nrow(CONSULTAS_CONS)
+# CAP_TDeltaA_freq$FreqRel <- CAP_TDeltaA_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_TempCompMed_freq$FreqRel <- CAP_TempCompMed_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_TMax_freq$FreqRel <- CAP_TMax_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_Tmin_freq$FreqRel <- CAP_Tmin_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_UmidRelMed_freq$FreqRel <- CAP_UmidRelMed_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_VelVentMed_freq$FreqRel <- CAP_VelVentMed_freq$Freq/nrow(CONSULTAS_CONS)
+
+```
+
+```{r}
+hist(CAP_EvapPiche_freq$Freq)
+hist(CAP_Ins_freq$Freq)
+hist(CAP_Precip_freq$Freq)
+hist(CAP_TDelta_freq$Freq)
+hist(CAP_TempCompMed_freq$Freq)
+hist(CAP_TMax_freq$Freq)
+hist(CAP_Tmin_freq$Freq)
+hist(CAP_UmidRelMed_freq$Freq)
+hist(CAP_VelVentMed_freq$Freq)
+
+```
+
+
+
+```{r}
+hist(CAP_EvapPiche_freq$FreqRel)
+hist(CAP_Ins_freq$FreqRel)
+hist(CAP_Precip_freq$FreqRel)
+hist(CAP_TDelta_freq$FreqRel)
+hist(CAP_TempCompMed_freq$FreqRel)
+hist(CAP_TMax_freq$FreqRel)
+hist(CAP_Tmin_freq$FreqRel)
+hist(CAP_UmidRelMed_freq$FreqRel)
+hist(CAP_VelVentMed_freq$FreqRel)
+
+```
+
+```{r}
+boxplot(CAP_EvapPiche_freq$Freq ~ CAP_EvapPiche_freq$CAP)
+boxplot(CAP_Ins_freq$Freq ~ CAP_Ins_freq$CAP)
+boxplot(CAP_Precip_freq$Freq ~ CAP_Precip_freq$CAP)
+boxplot(CAP_TDelta_freq$Freq ~ CAP_TDelta_freq$CAP)
+boxplot(CAP_TempCompMed_freq$Freq ~ CAP_TempCompMed_freq$CAP)
+boxplot(CAP_TMax_freq$Freq ~ CAP_TMax_freq$CAP)
+boxplot(CAP_Tmin_freq$Freq ~ CAP_Tmin_freq$CAP)
+boxplot(CAP_UmidRelMed_freq$Freq ~ CAP_UmidRelMed_freq$CAP)
+boxplot(CAP_VelVentMed_freq$Freq ~ CAP_VelVentMed_freq$CAP)
+
+```
+
+
+```{r}
+boxplot(CAP_EvapPiche_freq$FreqRel ~ CAP_EvapPiche_freq$CAP)
+boxplot(CAP_Ins_freq$FreqRel ~ CAP_Ins_freq$CAP)
+boxplot(CAP_Precip_freq$FreqRel ~ CAP_Precip_freq$CAP)
+boxplot(CAP_TDelta_freq$FreqRel ~ CAP_TDelta_freq$CAP)
+boxplot(CAP_TempCompMed_freq$FreqRel ~ CAP_TempCompMed_freq$CAP)
+boxplot(CAP_TMax_freq$FreqRel ~ CAP_TMax_freq$CAP)
+boxplot(CAP_Tmin_freq$FreqRel ~ CAP_Tmin_freq$CAP)
+boxplot(CAP_UmidRelMed_freq$FreqRel ~ CAP_UmidRelMed_freq$CAP)
+boxplot(CAP_VelVentMed_freq$FreqRel ~ CAP_VelVentMed_freq$CAP)
+
+```
+
+```{r}
+# rede_EvapPiche <- CONSULTAS_CONS[,15:34]
+# nrow(CONSULTAS_CONS)
+# rownames(rede_EvapPiche) <- paste(CONSULTAS_CONS[,1],CONSULTAS_CONS[,10])
+# rede_EvapPiche
+
+```
+
+```{r}
+CAP_Cluster <- kmeans(CAP_EvapPiche_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CAP_EvapPiche_freq$EvapPiche)
+
+```
+
+```{r}
+CAP_Cluster <- kmeans(CAP_Ins_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CAP_Ins_freq$Ins)
+
+```
+
+```{r}
+CAP_Cluster <- kmeans(CAP_Precip_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CAP_Precip_freq$Precip)
+
+```
+
+```{r}
+CAP_Cluster <- kmeans(CAP_TDelta_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CAP_TDelta_freq$TDelta)
+
+```
+
+```{r}
+CAP_Cluster <- kmeans(CAP_TempCompMed_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CAP_TempCompMed_freq$TempCompMedia)
+
+```
+
+```{r}
+CAP_Cluster <- kmeans(CAP_TMax_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CAP_TMax_freq$TMax)
+
+```
+
+```{r}
+CAP_Cluster <- kmeans(CAP_Tmin_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CAP_Tmin_freq$TMin)
+
+```
+
+```{r}
+CAP_Cluster <- kmeans(CAP_UmidRelMed_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CAP_UmidRelMed_freq$UmidRelMed)
+
+```
+
+```{r}
+CAP_Cluster <- kmeans(CAP_VelVentMed_freq[,2:3], 22, nstart = 1)
+table(CAP_Cluster$cluster, CAP_VelVentMed_freq$VelVentMed)
+
+```
+
+```{r}
+head(CAP_EvapPiche_freq[with(CAP_EvapPiche_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_Ins_freq[with(CAP_Ins_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_Precip_freq[with(CAP_Precip_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_TDelta_freq[with(CAP_TDelta_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_TempCompMed_freq[with(CAP_TempCompMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_TMax_freq[with(CAP_TMax_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_Tmin_freq[with(CAP_Tmin_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_UmidRelMed_freq[with(CAP_UmidRelMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_VelVentMed_freq[with(CAP_VelVentMed_freq, order(Freq, decreasing = TRUE)),],n = 10)
+
+```
+
+
+```{r}
+CONSULTAS_CONS$PrecipI <- findInterval(CONSULTAS_CONS$Precip, c(0, 1), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$TmaxI <- findInterval(CONSULTAS_CONS$TMax, c(0, 5, 10, 15, 20, 30, 35, 40), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$TminI <- findInterval(CONSULTAS_CONS$TMin, c(0, 5, 10, 15, 20, 30, 35, 40), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$InsI <- findInterval(CONSULTAS_CONS$Ins, c(0, 7, 14), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$EvapPicheI <- findInterval(CONSULTAS_CONS$EvapPiche, c(0, 7, 14, 21), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$TempCompMediaI <- findInterval(CONSULTAS_CONS$TempCompMedia, c(0, 5, 10, 15, 20, 30, 35, 40), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$UmidRelMedI <- findInterval(CONSULTAS_CONS$UmidRelMed, c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100), rightmost.closed = TRUE, left.open = TRUE)
+
+CONSULTAS_CONS$VelVentMedI <- findInterval(CONSULTAS_CONS$VelVentMed, c(0, 1), rightmost.closed = TRUE, left.open = TRUE)
+
+```
+
+
+
+
+```{r}
+CAP_PrecipI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$PrecipI))
+names(CAP_PrecipI_freq) <- c("CAP","Precip","Freq")
+CAP_TMaxI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TMax))
+names(CAP_TMaxI_freq) <- c("CAP","TMax","Freq")
+CAP_TminI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TminI))
+names(CAP_TminI_freq) <- c("CAP","TMin","Freq")
+CAP_InsI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$InsI))
+names(CAP_InsI_freq) <- c("CAP","Ins","Freq")
+CAP_EvapPicheI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$EvapPicheI))
+names(CAP_EvapPicheI_freq) <- c("CAP","EvapPiche","Freq")
+CAP_TempCompMedI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$TempCompMediaI))
+names(CAP_TempCompMedI_freq) <- c("CAP","TempCompMedia","Freq")
+CAP_UmidRelMedI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$UmidRelMedI))
+names(CAP_UmidRelMedI_freq) <- c("CAP","UmidRelMed","Freq")
+CAP_VelVentMedI_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,CONSULTAS_CONS$VelVentMedI))
+names(CAP_VelVentMedI_freq) <- c("CAP","VelVentMed","Freq")
+```
+
+```{r}
+CAP_EvapPicheI_freq$FreqRel <- CAP_EvapPicheI_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_InsI_freq$FreqRel <- CAP_InsI_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_PrecipI_freq$FreqRel <- CAP_PrecipI_freq$Freq/nrow(CONSULTAS_CONS)
+# CAP_TDeltaI_freq$FreqRel <- CAP_TDeltaI_freq$Freq/nrow(CONSULTAS_CONS)
+# CAP_TDeltaA_freq$FreqRel <- CAP_TDeltaA_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_TempCompMedI_freq$FreqRel <- CAP_TempCompMedI_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_TMaxI_freq$FreqRel <- CAP_TMaxI_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_TminI_freq$FreqRel <- CAP_TminI_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_UmidRelMedI_freq$FreqRel <- CAP_UmidRelMedI_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_VelVentMedI_freq$FreqRel <- CAP_VelVentMedI_freq$Freq/nrow(CONSULTAS_CONS)
+
+```
+
+
+```{r}
+head(CAP_EvapPicheI_freq[with(CAP_EvapPicheI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_InsI_freq[with(CAP_InsI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_PrecipI_freq[with(CAP_PrecipI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+# head(CAP_TDelta_freq[with(CAP_TDelta_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_TempCompMedI_freq[with(CAP_TempCompMedI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_TMaxI_freq[with(CAP_TMaxI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_TminI_freq[with(CAP_TminI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_UmidRelMedI_freq[with(CAP_UmidRelMedI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+head(CAP_VelVentMedI_freq[with(CAP_VelVentMedI_freq, order(Freq, decreasing = TRUE)),],n = 10)
+
+```
+
+
+```{r}
+CAP_freq <- as.data.frame(table(CONSULTAS_CONS$CAP))
+names(CAP_freq) <- c("CAP","Freq")
+CAP_freq$FreqRel <- CAP_freq$Freq/nrow(CONSULTAS_CONS)
+
+head(CAP_freq[with(CAP_freq, order(Freq, decreasing = TRUE)),],n = 100)
+
+write.csv(CAP_freq, file = "CAP_freq7.csv")
+
+```
+
