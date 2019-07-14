@@ -49,7 +49,7 @@ if(!require(rgl)) {
 ```
 
 ```{r}
-CONSULTAS_CONS <- fread("consultas_cons1.csv", drop = c("V1"))
+CONSULTAS_CONS <- fread("consultas_cons4.csv", drop = c("V1"))
 ```
 
 # MapReduce

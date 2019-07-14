@@ -195,7 +195,7 @@ write.csv(CONSULTAS, file = "./consultas.csv")
 ```{r ajuste datas}
 CONSULTAS <- fread("./consultas.csv", drop = "V1")
 CONSULTAS$DT_INTERNACAO <- as.Date((CONSULTAS$DT_INTERNACAO))
-CLIMA <- fread("./DADOS/base_saopaulo2.csv", drop = c("V1","Estacao"))
+CLIMA <- fread("./DADOS/base_saopaulo.csv", drop = c("V1","Estacao"))
 CLIMA$Data <- as.Date(CLIMA$Data, format = "%m/%d/%Y")
 ```
 
@@ -278,7 +278,7 @@ CLIMA$Data <- as.Date(CLIMA$Data, format = "%Y-%m-%d")
 ```{r merge das tabelas - data-7}
 CLIMA$DATA_ANT <- CLIMA$Data + 7
 CONSULTAS_CONS7 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
-# CONSULTAS_CONS7 <- within(CONSULTAS_CONS7, rm("Data"))
+CONSULTAS_CONS7 <- within(CONSULTAS_CONS7, rm("Data"))
 write.csv(CONSULTAS_CONS7, file = "./consultas_cons7-Rafa.csv")
 ```
 
