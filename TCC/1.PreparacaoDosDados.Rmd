@@ -279,7 +279,7 @@ CLIMA$Data <- as.Date(CLIMA$Data, format = "%Y-%m-%d")
 CLIMA$DATA_ANT <- CLIMA$Data + 7
 CONSULTAS_CONS7 <- merge(CONSULTAS, CLIMA, by.x = "DT_INTERNACAO", by.y = "DATA_ANT")
 CONSULTAS_CONS7 <- within(CONSULTAS_CONS7, rm("Data"))
-write.csv(CONSULTAS_CONS7, file = "./consultas_cons7-Rafa.csv")
+write.csv(CONSULTAS_CONS7, file = "./consultas_cons7.csv")
 ```
 
 
@@ -341,8 +341,8 @@ write.csv(CONSULTAS_CONS1, file = "./consultas_cons1.csv")
 ```{r ajuste datas2 - CAP - data-x}
 CONSULTAS <- fread("consultas_cons_cap.csv", drop = c("V1"))
 CONSULTAS$DT_INTERNACAO <- as.Date((CONSULTAS$DT_INTERNACAO))
-CLIMA <- fread("./Rafael/DADOS/base_saopaulo.csv", drop = c("V1","Estacao"))
-CLIMA$Data <- as.Date(CLIMA$Data, format = "%Y-%m-%d")
+CLIMA <- fread("./DADOS/base_saopaulo.csv", drop = c("V1","Estacao"))
+CLIMA$Data <- as.Date(CLIMA$Data, format = "%m/%d/%Y")
 CONSULTAS <- CONSULTAS[,c(1:5,14)]
 ```
 

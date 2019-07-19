@@ -1,0 +1,171 @@
+---
+title: "Trabalho de Conclusão de Cusros - FGV T4 Big Data e Analytics"
+author: "Ricardo Squassina Lee, Rafael Furlan, Djalma Gomes"
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+---
+```{r Inicia Ambiente, message=FALSE, include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014") 
+# setwd("~/Tresors/zz-pessoal/FGV/git/TCC")
+setwd("./")
+```
+
+---
+```{r Carrega bibliotecas necessarias, message=FALSE, warning=TRUE, include=FALSE}
+if(!require(data.table)) {
+  install.packages("data.table")
+  library(data.table)
+}
+
+if(!require(network)) {
+  install.packages("network")
+  library(network)
+}
+
+if(!require(sna)) {
+  install.packages("sna")
+  library(sna)
+}
+
+if(!require(rgl)) {
+  install.packages("rgl")
+  library(rgl)
+}
+
+```
+
+```{r}
+CONSULTAS_CONS <- fread("consultas_cons_cap_dummies.csv", drop = c("V1"))
+```
+
+```{r}
+
+MATRIX_PRECIP_FULL <- CONSULTAS_CONS[,c(6,15:36)]
+MATRIX_PRECIP_FULL$Precip <- round(MATRIX_PRECIP_FULL$Precip,0)
+MATRIX_PRECIP_UNIQ <- unique(MATRIX_PRECIP_FULL)
+
+MATRIX_TMAX_FULL <- CONSULTAS_CONS[,c(7,15:36)]
+MATRIX_TMAX_FULL$TMax <- round(MATRIX_TMAX_FULL$TMax,0)
+MATRIX_TMAX_UNIQ <- unique(MATRIX_TMAX_FULL)
+
+MATRIX_TMIN_FULL <- CONSULTAS_CONS[,c(8,15:36)]
+MATRIX_TMIN_FULL$TMin <- round(MATRIX_TMIN_FULL$TMin,0)
+MATRIX_TMIN_UNIQ <- unique(MATRIX_TMIN_FULL)
+
+MATRIX_INS_FULL <- CONSULTAS_CONS[,c(9,15:36)]
+MATRIX_INS_FULL$Ins <- round(MATRIX_INS_FULL$Ins,0)
+MATRIX_INS_UNIQ <- unique(MATRIX_INS_FULL)
+
+MATRIX_EVAPPICHE_FULL <- CONSULTAS_CONS[,c(10,15:36)]
+MATRIX_EVAPPICHE_FULL$EvapPiche <- round(MATRIX_EVAPPICHE_FULL$EvapPiche,0)
+MATRIX_EVAPPICHE_UNIQ <- unique(MATRIX_EVAPPICHE_FULL)
+
+MATRIX_TEMPCOMPMED_FULL <- CONSULTAS_CONS[,c(11,15:36)]
+MATRIX_TEMPCOMPMED_FULL$TempCompMedia <- round(MATRIX_TEMPCOMPMED_FULL$TempCompMedia,0)
+MATRIX_TEMPCOMPMED_UNIQ <- unique(MATRIX_TEMPCOMPMED_FULL)
+
+MATRIX_UMIDRELMED_FULL <- CONSULTAS_CONS[,c(12,15:36)]
+MATRIX_UMIDRELMED_FULL$UmidRelMed <- round(MATRIX_UMIDRELMED_FULL$UmidRelMed,0)
+MATRIX_UMIDRELMED_UNIQ <- unique(MATRIX_UMIDRELMED_FULL)
+
+MATRIX_VELVENTMED_FULL <- CONSULTAS_CONS[,c(13,15:36)]
+MATRIX_VELVENTMED_FULL$VelVentMed <- round(MATRIX_VELVENTMED_FULL$VelVentMed,0)
+MATRIX_VELVENTMED_UNIQ <- unique(MATRIX_VELVENTMED_FULL)
+
+MATRIX_TDELTA_FULL <- CONSULTAS_CONS[,c(7:8,15:36)]
+MATRIX_TDELTA_FULL$TDelta <- MATRIX_TDELTA_FULL$TMax-MATRIX_TDELTA_FULL$TMin
+MATRIX_TDELTA_FULL <- MATRIX_TDELTA_FULL[,c(25,3:24)]
+MATRIX_TDELTA_FULL$TDelta <- round(MATRIX_TDELTA_FULL$TDelta,0)
+MATRIX_TDELTA_UNIQ <- unique(MATRIX_TDELTA_FULL)
+
+
+```
+
+
+## Análise dos grafos:
+
+```{r}
+
+sna::gden(as.matrix(MATRIX_PRECIP_UNIQ))
+
+# max(sna::evcent(as.matrix(MATRIX_PRECIP_UNIQ), use.eigen = TRUE, diag = TRUE))
+
+```
+
+```{r}
+
+sna::gden(as.matrix(MATRIX_TMAX_UNIQ))
+
+# max(sna::evcent(as.matrix(MATRIX_TMAX_UNIQ), use.eigen = TRUE, diag = TRUE))
+
+```
+
+```{r}
+
+sna::gden(as.matrix(MATRIX_TMIN_UNIQ))
+
+# max(sna::evcent(as.matrix(MATRIX_TMIN_UNIQ), use.eigen = TRUE, diag = TRUE))
+
+```
+
+```{r}
+
+sna::gden(as.matrix(MATRIX_INS_UNIQ))
+
+# max(sna::evcent(as.matrix(MATRIX_INS_UNIQ), use.eigen = TRUE, diag = TRUE))
+
+```
+
+```{r}
+
+sna::gden(as.matrix(MATRIX_EVAPPICHE_UNIQ))
+
+# max(sna::evcent(as.matrix(MATRIX_EVAPPICHE_UNIQ), use.eigen = TRUE, diag = TRUE))
+
+```
+
+```{r}
+
+sna::gden(as.matrix(MATRIX_TEMPCOMPMED_UNIQ))
+
+# max(sna::evcent(as.matrix(MATRIX_TEMPCOMPMED_UNIQ), use.eigen = TRUE, diag = TRUE))
+
+```
+
+```{r}
+
+sna::gden(as.matrix(MATRIX_UMIDRELMED_UNIQ))
+
+# max(sna::evcent(as.matrix(MATRIX_UMIDRELMED_UNIQ), use.eigen = TRUE, diag = TRUE))
+
+```
+
+```{r}
+
+sna::gden(as.matrix(MATRIX_VELVENTMED_UNIQ))
+
+# sna::evcent(as.matrix(MATRIX_VELVENTMED_UNIQ), use.eigen = TRUE, diag = TRUE)
+
+```
+
+```{r}
+
+sna::gden(as.matrix(MATRIX_TDELTA_UNIQ))
+
+# max(sna::evcent(as.matrix(MATRIX_TDELTA_UNIQ), use.eigen = TRUE, diag = TRUE))
+
+```

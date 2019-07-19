@@ -1,0 +1,538 @@
+---
+title: "Trabalho de Conclusão de Cusros - FGV T4 Big Data e Analytics"
+author: "Ricardo Squassina Lee, Rafael Furlan, Djalma Gomes"
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+---
+```{r Inicia Ambiente, message=FALSE, include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014") 
+# setwd("~/Tresors/zz-pessoal/FGV/git/TCC")
+setwd("./")
+```
+
+---
+```{r Carrega bibliotecas necessarias, message=FALSE, warning=TRUE, include=FALSE}
+if(!require(data.table)) {
+  install.packages("data.table")
+  library(data.table)
+}
+
+if(!require(network)) {
+  install.packages("network")
+  library(network)
+}
+
+if(!require(sna)) {
+  install.packages("sna")
+  library(sna)
+}
+
+if(!require(rgl)) {
+  install.packages("rgl")
+  library(rgl)
+}
+
+```
+
+```{r}
+CONSULTAS_CONS <- fread("consultas_cons_cap7.csv", drop = c("V1"))
+```
+
+# MapReduce
+
+```{r MapReduce}
+CAP_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$Precip, digits = 0)))
+names(CAP_Precip_freq) <- c("CAP","Precip","Freq")
+
+CAP_TMax_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TMax, digits = 0)))
+names(CAP_TMax_freq) <- c("CAP","TMax","Freq")
+
+CAP_Tmin_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TMin, digits = 0)))
+names(CAP_Tmin_freq) <- c("CAP","TMin","Freq")
+
+CAP_Ins_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$Ins, digits = 0)))
+names(CAP_Ins_freq) <- c("CAP","Ins","Freq")
+
+CAP_EvapPiche_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$EvapPiche, digits = 0)))
+names(CAP_EvapPiche_freq) <- c("CAP","EvapPiche","Freq")
+
+CAP_TempCompMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$TempCompMedia, digits = 0)))
+names(CAP_TempCompMed_freq) <- c("CAP","TempCompMedia","Freq")
+
+CAP_UmidRelMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$UmidRelMed, digits = 0)))
+names(CAP_UmidRelMed_freq) <- c("CAP","UmidRelMed","Freq")
+
+CAP_VelVentMed_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$VelVentMed, digits = 0)))
+names(CAP_VelVentMed_freq) <- c("CAP","VelVentMed","Freq")
+
+CAP_TDelta_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round((CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin), digits = 0)))
+names(CAP_TDelta_freq) <- c("CAP","TDelta","Freq")
+
+
+```
+
+
+```{r}
+CAP_EvapPiche_freq$FreqRel <- CAP_EvapPiche_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_Ins_freq$FreqRel <- CAP_Ins_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_Precip_freq$FreqRel <- CAP_Precip_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_TDelta_freq$FreqRel <- CAP_TDelta_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_TempCompMed_freq$FreqRel <- CAP_TempCompMed_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_TMax_freq$FreqRel <- CAP_TMax_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_Tmin_freq$FreqRel <- CAP_Tmin_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_UmidRelMed_freq$FreqRel <- CAP_UmidRelMed_freq$Freq/nrow(CONSULTAS_CONS)
+CAP_VelVentMed_freq$FreqRel <- CAP_VelVentMed_freq$Freq/nrow(CONSULTAS_CONS)
+
+```
+
+
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_EvapPiche_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_EvapPiche_freq$EvapPiche)))
+
+MATRIX_EVAPPICHE <- matrix(CAP_EvapPiche_freq$Freq, nrow = nrow, ncol = ncol)
+
+rownames(MATRIX_EVAPPICHE) <- unique(CAP_EvapPiche_freq$CAP)
+colnames(MATRIX_EVAPPICHE) <- unique(CAP_EvapPiche_freq$EvapPiche)
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_Ins_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_Ins_freq$Ins)))
+
+MATRIX_INS <- matrix(CAP_Ins_freq$Freq, nrow = nrow, ncol = ncol)
+
+rownames(MATRIX_INS) <- unique(CAP_Ins_freq$CAP)
+colnames(MATRIX_INS) <- unique(CAP_Ins_freq$Ins)
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_Precip_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_Precip_freq$Precip)))
+
+MATRIX_PRECIP <- matrix(CAP_Precip_freq$Freq, nrow = nrow, ncol = ncol)
+
+rownames(MATRIX_PRECIP) <- unique(CAP_Precip_freq$CAP)
+colnames(MATRIX_PRECIP) <- unique(CAP_Precip_freq$Precip)
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_TDelta_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_TDelta_freq$TDelta)))
+
+MATRIX_TDELTA <- matrix(CAP_TDelta_freq$Freq, nrow = nrow, ncol = ncol)
+
+
+rownames(MATRIX_TDELTA) <- unique(CAP_TDelta_freq$CAP)
+colnames(MATRIX_TDELTA) <- unique(CAP_TDelta_freq$TDelta)
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_TempCompMed_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_TempCompMed_freq$TempCompMedia)))
+
+MATRIX_TEMPCOMPMED <- matrix(CAP_TempCompMed_freq$Freq, nrow = nrow, ncol = ncol)
+
+
+rownames(MATRIX_TEMPCOMPMED) <- unique(CAP_TempCompMed_freq$CAP)
+colnames(MATRIX_TEMPCOMPMED) <- unique(CAP_TempCompMed_freq$TempCompMedia)
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_TMax_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_TMax_freq$TMax)))
+
+MATRIX_TMAX <- matrix(CAP_TMax_freq$Freq, nrow = nrow, ncol = ncol)
+
+rownames(MATRIX_TMAX) <- unique(CAP_TMax_freq$CAP)
+colnames(MATRIX_TMAX) <- unique(CAP_TMax_freq$TMax)
+
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_Tmin_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_Tmin_freq$TMin)))
+
+MATRIX_TMIN <- matrix(CAP_Tmin_freq$Freq, nrow = nrow, ncol = ncol)
+
+rownames(MATRIX_TMIN) <- unique(CAP_Tmin_freq$CAP)
+colnames(MATRIX_TMIN) <- unique(CAP_Tmin_freq$TMin)
+
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_UmidRelMed_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_UmidRelMed_freq$UmidRelMed)))
+
+MATRIX_UMIDRELMED <- matrix(CAP_UmidRelMed_freq$Freq, nrow = nrow, ncol = ncol)
+
+
+rownames(MATRIX_UMIDRELMED) <- unique(CAP_UmidRelMed_freq$CAP)
+colnames(MATRIX_UMIDRELMED) <- unique(CAP_UmidRelMed_freq$UmidRelMed)
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_VelVentMed_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_VelVentMed_freq$VelVentMed)))
+
+MATRIX_VELVENTMED <- matrix(CAP_VelVentMed_freq$Freq, nrow = nrow, ncol = ncol)
+
+
+rownames(MATRIX_VELVENTMED) <- unique(CAP_VelVentMed_freq$CAP)
+colnames(MATRIX_VELVENTMED) <- unique(CAP_VelVentMed_freq$VelVentMed)
+
+```
+
+
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_EvapPiche_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_EvapPiche_freq$EvapPiche)))
+
+MATRIX_EVAPPICHE_REL <- matrix(CAP_EvapPiche_freq$FreqRel, nrow = nrow, ncol = ncol)
+
+rownames(MATRIX_EVAPPICHE_REL) <- unique(CAP_EvapPiche_freq$CAP)
+colnames(MATRIX_EVAPPICHE_REL) <- unique(CAP_EvapPiche_freq$EvapPiche)
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_Ins_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_Ins_freq$Ins)))
+
+MATRIX_INS_REL <- matrix(CAP_Ins_freq$FreqRel, nrow = nrow, ncol = ncol)
+
+rownames(MATRIX_INS_REL) <- unique(CAP_Ins_freq$CAP)
+colnames(MATRIX_INS_REL) <- unique(CAP_Ins_freq$Ins)
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_Precip_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_Precip_freq$Precip)))
+
+MATRIX_PRECIP_REL <- matrix(CAP_Precip_freq$FreqRel, nrow = nrow, ncol = ncol)
+
+rownames(MATRIX_PRECIP_REL) <- unique(CAP_Precip_freq$CAP)
+colnames(MATRIX_PRECIP_REL) <- unique(CAP_Precip_freq$Precip)
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_TDelta_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_TDelta_freq$TDelta)))
+
+MATRIX_TDELTA_REL <- matrix(CAP_TDelta_freq$FreqRel, nrow = nrow, ncol = ncol)
+
+
+rownames(MATRIX_TDELTA_REL) <- unique(CAP_TDelta_freq$CAP)
+colnames(MATRIX_TDELTA_REL) <- unique(CAP_TDelta_freq$TDelta)
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_TempCompMed_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_TempCompMed_freq$TempCompMedia)))
+
+MATRIX_TEMPCOMPMED_REL <- matrix(CAP_TempCompMed_freq$FreqRel, nrow = nrow, ncol = ncol)
+
+
+rownames(MATRIX_TEMPCOMPMED_REL) <- unique(CAP_TempCompMed_freq$CAP)
+colnames(MATRIX_TEMPCOMPMED_REL) <- unique(CAP_TempCompMed_freq$TempCompMedia)
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_TMax_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_TMax_freq$TMax)))
+
+MATRIX_TMAX_REL <- matrix(CAP_TMax_freq$FreqRel, nrow = nrow, ncol = ncol)
+
+rownames(MATRIX_TMAX_REL) <- unique(CAP_TMax_freq$CAP)
+colnames(MATRIX_TMAX_REL) <- unique(CAP_TMax_freq$TMax)
+
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_Tmin_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_Tmin_freq$TMin)))
+
+MATRIX_TMIN_REL <- matrix(CAP_Tmin_freq$FreqRel, nrow = nrow, ncol = ncol)
+
+rownames(MATRIX_TMIN_REL) <- unique(CAP_Tmin_freq$CAP)
+colnames(MATRIX_TMIN_REL) <- unique(CAP_Tmin_freq$TMin)
+
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_UmidRelMed_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_UmidRelMed_freq$UmidRelMed)))
+
+MATRIX_UMIDRELMED_REL <- matrix(CAP_UmidRelMed_freq$FreqRel, nrow = nrow, ncol = ncol)
+
+
+rownames(MATRIX_UMIDRELMED_REL) <- unique(CAP_UmidRelMed_freq$CAP)
+colnames(MATRIX_UMIDRELMED_REL) <- unique(CAP_UmidRelMed_freq$UmidRelMed)
+
+```
+
+```{r}
+
+nrow <- max(unique(as.integer(CAP_VelVentMed_freq$CAP)))
+ncol <- max(unique(as.integer(CAP_VelVentMed_freq$VelVentMed)))
+
+MATRIX_VELVENTMED_REL <- matrix(CAP_VelVentMed_freq$FreqRel, nrow = nrow, ncol = ncol)
+
+
+rownames(MATRIX_VELVENTMED_REL) <- unique(CAP_VelVentMed_freq$CAP)
+colnames(MATRIX_VELVENTMED_REL) <- unique(CAP_VelVentMed_freq$VelVentMed)
+
+```
+
+
+## Análise dos grafos:
+
+```{r}
+degree(MATRIX_TDELTA,gmode="twomode",cmode="indegree")
+closeness(MATRIX_TDELTA,gmode="twomode")
+betweenness(MATRIX_TDELTA,gmode="twomode")
+
+gplot(MATRIX_TDELTA,gmode="twomode",displaylabels = TRUE, 
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_TDELTA,gmode="twomode")*3)
+
+```
+
+```{r}
+degree(MATRIX_TMAX,gmode="twomode",cmode="indegree")
+closeness(MATRIX_TMAX,gmode="twomode")
+betweenness(MATRIX_TMAX,gmode="twomode")
+
+gplot(MATRIX_TMAX,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_TMAX,gmode="twomode")*3)
+```
+```{r}
+degree(MATRIX_TMIN,gmode="twomode",cmode="indegree")
+closeness(MATRIX_TMIN,gmode="twomode")
+betweenness(MATRIX_TMIN,gmode="twomode")
+
+gplot(MATRIX_TMIN,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_TMIN,gmode="twomode")*3)
+```
+
+
+```{r}
+degree(MATRIX_TEMPCOMPMED,gmode="twomode",cmode="indegree")
+closeness(MATRIX_TEMPCOMPMED,gmode="twomode")
+betweenness(MATRIX_TEMPCOMPMED,gmode="twomode")
+
+gplot(MATRIX_TEMPCOMPMED,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_TEMPCOMPMED,gmode="twomode")*3)
+```
+
+
+```{r}
+degree(MATRIX_EVAPPICHE,gmode="twomode",cmode="indegree")
+closeness(MATRIX_EVAPPICHE,gmode="twomode")
+betweenness(MATRIX_EVAPPICHE,gmode="twomode")
+
+gplot(MATRIX_EVAPPICHE,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_EVAPPICHE,gmode="twomode")*3)
+```
+
+
+```{r}
+degree(MATRIX_INS,gmode="twomode",cmode="indegree")
+closeness(MATRIX_INS,gmode="twomode")
+betweenness(MATRIX_INS,gmode="twomode")
+
+gplot(MATRIX_INS,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_INS,gmode="twomode")*3)
+```
+
+
+
+```{r}
+degree(MATRIX_PRECIP,gmode="twomode",cmode="indegree")
+closeness(MATRIX_PRECIP,gmode="twomode")
+betweenness(MATRIX_PRECIP,gmode="twomode")
+
+gplot(MATRIX_PRECIP,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_PRECIP,gmode="twomode")*3)
+```
+
+
+```{r}
+degree(MATRIX_UMIDRELMED,gmode="twomode",cmode="indegree")
+closeness(MATRIX_UMIDRELMED,gmode="twomode")
+betweenness(MATRIX_UMIDRELMED,gmode="twomode")
+
+gplot(MATRIX_UMIDRELMED,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_UMIDRELMED,gmode="twomode")*3)
+```
+
+
+```{r}
+degree(MATRIX_VELVENTMED,gmode="twomode",cmode="indegree")
+closeness(MATRIX_VELVENTMED,gmode="twomode")
+betweenness(MATRIX_VELVENTMED,gmode="twomode")
+
+gplot(MATRIX_VELVENTMED,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE, thresh = 0,
+      vertex.cex = closeness(MATRIX_VELVENTMED,gmode="twomode")*3)
+```
+
+
+## Análise dos grafos considerando as frequências relativas:
+
+```{r}
+degree(MATRIX_TDELTA_REL,gmode="twomode",cmode="indegree")
+closeness(MATRIX_TDELTA_REL,gmode="twomode")
+betweenness(MATRIX_TDELTA_REL,gmode="twomode")
+
+gplot(MATRIX_TDELTA_REL,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_TDELTA_REL,gmode="twomode")*3)
+```
+
+```{r}
+degree(MATRIX_TMAX_REL,gmode="twomode",cmode="indegree")
+closeness(MATRIX_TMAX_REL,gmode="twomode")
+betweenness(MATRIX_TMAX_REL,gmode="twomode")
+
+gplot(MATRIX_TMAX_REL,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_TMAX_REL,gmode="twomode")*3)
+```
+```{r}
+degree(MATRIX_TMIN_REL,gmode="twomode",cmode="indegree")
+closeness(MATRIX_TMIN_REL,gmode="twomode")
+betweenness(MATRIX_TMIN_REL,gmode="twomode")
+
+gplot(MATRIX_TMIN_REL,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_TMIN_REL,gmode="twomode")*3)
+```
+
+
+```{r}
+degree(MATRIX_TEMPCOMPMED_REL,gmode="twomode",cmode="indegree")
+closeness(MATRIX_TEMPCOMPMED_REL,gmode="twomode")
+betweenness(MATRIX_TEMPCOMPMED_REL,gmode="twomode")
+
+gplot(MATRIX_TEMPCOMPMED_REL,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_TEMPCOMPMED_REL,gmode="twomode")*3)
+```
+
+
+```{r}
+degree(MATRIX_EVAPPICHE_REL,gmode="twomode",cmode="indegree")
+closeness(MATRIX_EVAPPICHE_REL,gmode="twomode")
+betweenness(MATRIX_EVAPPICHE_REL,gmode="twomode")
+
+gplot(MATRIX_EVAPPICHE_REL,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_EVAPPICHE_REL,gmode="twomode")*3)
+```
+
+
+```{r}
+degree(MATRIX_INS_REL,gmode="twomode",cmode="indegree")
+closeness(MATRIX_INS_REL,gmode="twomode")
+betweenness(MATRIX_INS_REL,gmode="twomode")
+
+gplot(MATRIX_INS_REL,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_INS_REL,gmode="twomode")*3)
+```
+
+
+
+```{r}
+degree(MATRIX_PRECIP_REL,gmode="twomode",cmode="indegree")
+closeness(MATRIX_PRECIP_REL,gmode="twomode")
+betweenness(MATRIX_PRECIP_REL,gmode="twomode")
+
+gplot(MATRIX_PRECIP_REL,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_PRECIP_REL,gmode="twomode")*3)
+```
+
+
+```{r}
+degree(MATRIX_UMIDRELMED_REL,gmode="twomode",cmode="indegree")
+closeness(MATRIX_UMIDRELMED_REL,gmode="twomode")
+betweenness(MATRIX_UMIDRELMED_REL,gmode="twomode")
+
+gplot(MATRIX_UMIDRELMED_REL,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE,
+      vertex.cex = closeness(MATRIX_UMIDRELMED_REL,gmode="twomode")*3)
+```
+
+
+```{r}
+degree(MATRIX_VELVENTMED_REL,gmode="twomode",cmode="indegree")
+closeness(MATRIX_VELVENTMED_REL,gmode="twomode")
+betweenness(MATRIX_VELVENTMED_REL,gmode="twomode")
+
+gplot(MATRIX_VELVENTMED_REL,gmode="twomode",displaylabels = TRUE,
+      edge.col="gray",label.cex = 0.7,usearrows=FALSE, thresh = 0,
+      vertex.cex = closeness(MATRIX_VELVENTMED_REL,gmode="twomode")*3)
+```
+
+
+```{r}
+as.sociomatrix.sna(MATRIX_VELVENTMED)
+as.sociomatrix.sna(MATRIX_VELVENTMED_REL)
+```
+
