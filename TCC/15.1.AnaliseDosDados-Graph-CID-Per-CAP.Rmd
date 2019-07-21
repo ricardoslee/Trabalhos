@@ -822,7 +822,6 @@ analise <- ls(pattern = "CID_.*[1-9]")
 
 ```{r}
 lapply(analise, function(x) {
-  x <- "CID_EvapPiche_freq_01"
   df <- get(x)
   nrow <- length(unique(df$CID))
   ncol <- length(unique(df$Clima))
