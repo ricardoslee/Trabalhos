@@ -1,0 +1,852 @@
+---
+title: "Trabalho de Conclusão de Cusros - FGV T4 Big Data e Analytics"
+author: "Ricardo Squassina Lee, Rafael Furlan, Djalma Gomes"
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+---
+```{r Inicia Ambiente, message=FALSE, include=FALSE}
+#Iniciando o ambiente
+rm(list = ls())
+cat("\014")
+# setwd("~/Tresors/zz-pessoal/FGV/git/TCC")
+setwd("./")
+```
+
+---
+```{r Carrega bibliotecas necessarias, message=FALSE, warning=TRUE, include=FALSE}
+if(!require(data.table)) {
+  install.packages("data.table")
+  library(data.table)
+}
+
+if (!require(network)) {
+  install.packages("network")
+  library(network)
+}
+
+if (!require(sna)) {
+  install.packages("sna")
+  library(sna)
+}
+
+if (!require(rgl)) {
+  install.packages("rgl")
+  library(rgl)
+}
+
+```
+
+```{r}
+CONSULTAS_CONS <- fread("consultas_cons_cap7.csv", drop = c("V1"))
+```
+
+# MapReduce
+
+```{r MapReduce}
+CID_Precip_freq <-
+  as.data.frame(table(CONSULTAS_CONS$CID , round(CONSULTAS_CONS$Precip, digits = 0)))
+names(CID_Precip_freq) <- c("CID", "Clima", "Freq")
+
+CID_TMax_freq <-
+  as.data.frame(table(CONSULTAS_CONS$CID, round(CONSULTAS_CONS$TMax, digits = 0)))
+names(CID_TMax_freq) <- c("CID", "Clima", "Freq")
+
+CID_Tmin_freq <-
+  as.data.frame(table(CONSULTAS_CONS$CID, round(CONSULTAS_CONS$TMin, digits = 0)))
+names(CID_Tmin_freq) <- c("CID", "Clima", "Freq")
+
+CID_Ins_freq <-
+  as.data.frame(table(CONSULTAS_CONS$CID, round(CONSULTAS_CONS$Ins, digits = 0)))
+names(CID_Ins_freq) <- c("CID", "Clima", "Freq")
+
+CID_EvapPiche_freq <-
+  as.data.frame(table(
+    CONSULTAS_CONS$CID ,
+    round(CONSULTAS_CONS$EvapPiche, digits = 0)
+  ))
+names(CID_EvapPiche_freq) <- c("CID", "Clima", "Freq")
+
+CID_TempCompMed_freq <-
+  as.data.frame(table(
+    CONSULTAS_CONS$CID,
+    round(CONSULTAS_CONS$TempCompMedia, digits = 0)
+  ))
+names(CID_TempCompMed_freq) <- c("CID", "Clima", "Freq")
+
+CID_UmidRelMed_freq <-
+  as.data.frame(table(
+    CONSULTAS_CONS$CID,
+    round(CONSULTAS_CONS$UmidRelMed, digits = 0)
+  ))
+names(CID_UmidRelMed_freq) <- c("CID", "Clima", "Freq")
+
+CID_VelVentMed_freq <-
+  as.data.frame(table(
+    CONSULTAS_CONS$CID,
+    round(CONSULTAS_CONS$VelVentMed, digits = 0)
+  ))
+names(CID_VelVentMed_freq) <- c("CID", "Clima", "Freq")
+
+CID_TDelta_freq <-
+  as.data.frame(table(CONSULTAS_CONS$CID, round((CONSULTAS_CONS$TMax - CONSULTAS_CONS$TMin), digits = 0
+  )))
+names(CID_TDelta_freq) <- c("CID", "Clima", "Freq")
+
+```
+
+
+```{r}
+CID_EvapPiche_freq$FreqRel <-
+  CID_EvapPiche_freq$Freq / nrow(CONSULTAS_CONS)
+CID_Ins_freq$FreqRel <- CID_Ins_freq$Freq / nrow(CONSULTAS_CONS)
+CID_Precip_freq$FreqRel <- CID_Precip_freq$Freq / nrow(CONSULTAS_CONS)
+CID_TDelta_freq$FreqRel <- CID_TDelta_freq$Freq / nrow(CONSULTAS_CONS)
+CID_TempCompMed_freq$FreqRel <-
+  CID_TempCompMed_freq$Freq / nrow(CONSULTAS_CONS)
+CID_TMax_freq$FreqRel <- CID_TMax_freq$Freq / nrow(CONSULTAS_CONS)
+CID_Tmin_freq$FreqRel <- CID_Tmin_freq$Freq / nrow(CONSULTAS_CONS)
+CID_UmidRelMed_freq$FreqRel <-
+  CID_UmidRelMed_freq$Freq / nrow(CONSULTAS_CONS)
+CID_VelVentMed_freq$FreqRel <-
+  CID_VelVentMed_freq$Freq / nrow(CONSULTAS_CONS)
+
+```
+
+
+```{r}
+CID_EvapPiche_freq_01 <-
+  data.table::rbindlist(l = list(CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "A", ],
+                                 CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "B", ]),
+                        use.names = TRUE)
+
+CID_EvapPiche_freq_02 <-
+  data.table::rbindlist(l = list(CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "C", ],
+                                 CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "D" &
+                                                      substr(CID_EvapPiche_freq$CID, 2, 2) < 5, ]),
+                        use.names = TRUE)
+
+
+CID_EvapPiche_freq_03 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "D" &
+                       substr(CID_EvapPiche_freq$CID, 2, 2) > 4, ]
+CID_EvapPiche_freq_04 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "E", ]
+CID_EvapPiche_freq_05 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "F", ]
+CID_EvapPiche_freq_06 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "G", ]
+CID_EvapPiche_freq_07 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "H" &
+                       substr(CID_EvapPiche_freq$CID, 2, 2) < 6, ]
+CID_EvapPiche_freq_08 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "H" &
+                       substr(CID_EvapPiche_freq$CID, 2, 2) > 5, ]
+CID_EvapPiche_freq_09 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "I", ]
+CID_EvapPiche_freq_10 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "J", ]
+CID_EvapPiche_freq_11 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "K", ]
+CID_EvapPiche_freq_12 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "L", ]
+CID_EvapPiche_freq_13 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "M", ]
+CID_EvapPiche_freq_14 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "N", ]
+CID_EvapPiche_freq_15 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "O", ]
+CID_EvapPiche_freq_16 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "P", ]
+CID_EvapPiche_freq_17 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "Q", ]
+CID_EvapPiche_freq_18 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "R", ]
+CID_EvapPiche_freq_19 <-
+  data.table::rbindlist(l = list(CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "S", ],
+                                 CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "T", ]),
+                        use.names = TRUE)
+CID_EvapPiche_freq_22 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "U", ]
+CID_EvapPiche_freq_20 <-
+  data.table::rbindlist(
+    l = list(
+      CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "V", ],
+      CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "W", ],
+      CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "X", ],
+      CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "Y", ]
+    ),
+    use.names = TRUE
+  )
+CID_EvapPiche_freq_21 <-
+  CID_EvapPiche_freq[substr(CID_EvapPiche_freq$CID, 1, 1) == "Z", ]
+
+```
+
+```{r}
+CID_Ins_freq_01 <-
+  data.table::rbindlist(l = list(CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "A", ],
+                                 CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "B", ]),
+                        use.names = TRUE)
+
+CID_Ins_freq_02 <-
+  data.table::rbindlist(l = list(CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "C", ],
+                                 CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "D" &
+                                                substr(CID_Ins_freq$CID, 2, 2) < 5, ]),
+                        use.names = TRUE)
+
+
+CID_Ins_freq_03 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "D" &
+                 substr(CID_Ins_freq$CID, 2, 2) > 4, ]
+CID_Ins_freq_04 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "E", ]
+CID_Ins_freq_05 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "F", ]
+CID_Ins_freq_06 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "G", ]
+CID_Ins_freq_07 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "H" &
+                 substr(CID_Ins_freq$CID, 2, 2) < 6, ]
+CID_Ins_freq_08 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "H" &
+                 substr(CID_Ins_freq$CID, 2, 2) > 5, ]
+CID_Ins_freq_09 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "I", ]
+CID_Ins_freq_10 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "J", ]
+CID_Ins_freq_11 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "K", ]
+CID_Ins_freq_12 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "L", ]
+CID_Ins_freq_13 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "M", ]
+CID_Ins_freq_14 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "N", ]
+CID_Ins_freq_15 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "O", ]
+CID_Ins_freq_16 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "P", ]
+CID_Ins_freq_17 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "Q", ]
+CID_Ins_freq_18 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "R", ]
+CID_Ins_freq_19 <-
+  data.table::rbindlist(l = list(CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "S", ],
+                                 CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "T", ]),
+                        use.names = TRUE)
+CID_Ins_freq_22 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "U", ]
+CID_Ins_freq_20 <-
+  data.table::rbindlist(
+    l = list(CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "V", ],
+             CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "W", ],
+             CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "X", ],
+             CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "Y", ]),
+    use.names = TRUE
+  )
+CID_Ins_freq_21 <-
+  CID_Ins_freq[substr(CID_Ins_freq$CID, 1, 1) == "Z", ]
+
+```
+
+```{r}
+CID_Precip_freq_01 <-
+  data.table::rbindlist(l = list(CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "A", ],
+                                 CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "B", ]),
+                        use.names = TRUE)
+
+CID_Precip_freq_02 <-
+  data.table::rbindlist(l = list(CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "C", ],
+                                 CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "D" &
+                                                   substr(CID_Precip_freq$CID, 2, 2) < 5, ]),
+                        use.names = TRUE)
+
+
+
+CID_Precip_freq_03 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "D" &
+                    substr(CID_Precip_freq$CID, 2, 2) > 4, ]
+CID_Precip_freq_04 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "E", ]
+CID_Precip_freq_05 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "F", ]
+CID_Precip_freq_06 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "G", ]
+CID_Precip_freq_07 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "H" &
+                    substr(CID_Precip_freq$CID, 2, 2) < 6, ]
+CID_Precip_freq_08 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "H" &
+                    substr(CID_Precip_freq$CID, 2, 2) > 5, ]
+CID_Precip_freq_09 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "I", ]
+CID_Precip_freq_10 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "J", ]
+CID_Precip_freq_11 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "K", ]
+CID_Precip_freq_12 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "L", ]
+CID_Precip_freq_13 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "M", ]
+CID_Precip_freq_14 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "N", ]
+CID_Precip_freq_15 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "O", ]
+CID_Precip_freq_16 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "P", ]
+CID_Precip_freq_17 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "Q", ]
+CID_Precip_freq_18 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "R", ]
+CID_Precip_freq_19 <-
+  data.table::rbindlist(l = list(CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "S", ],
+                                 CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "T", ]),
+                        use.names = TRUE)
+CID_Precip_freq_22 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "U", ]
+CID_Precip_freq_20 <-
+  data.table::rbindlist(
+    l = list(
+      CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "V", ],
+      CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "W", ],
+      CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "X", ],
+      CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "Y", ]
+    ),
+    use.names = TRUE
+  )
+CID_Precip_freq_21 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "Z", ]
+
+```
+
+```{r}
+CID_Precip_freq_01 <-
+  data.table::rbindlist(l = list(CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "A", ],
+                                 CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "B", ]),
+                        use.names = TRUE)
+
+CID_Precip_freq_02 <-
+  data.table::rbindlist(l = list(CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "C", ],
+                                 CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "D" &
+                                                   substr(CID_Precip_freq$CID, 2, 2) < 5, ]),
+                        use.names = TRUE)
+
+
+CID_Precip_freq_03 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "D" &
+                    substr(CID_Precip_freq$CID, 2, 2) > 4, ]
+CID_Precip_freq_04 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "E", ]
+CID_Precip_freq_05 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "F", ]
+CID_Precip_freq_06 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "G", ]
+CID_Precip_freq_07 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "H" &
+                    substr(CID_Precip_freq$CID, 2, 2) < 6, ]
+CID_Precip_freq_08 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "H" &
+                    substr(CID_Precip_freq$CID, 2, 2) > 5, ]
+CID_Precip_freq_09 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "I", ]
+CID_Precip_freq_10 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "J", ]
+CID_Precip_freq_11 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "K", ]
+CID_Precip_freq_12 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "L", ]
+CID_Precip_freq_13 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "M", ]
+CID_Precip_freq_14 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "N", ]
+CID_Precip_freq_15 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "O", ]
+CID_Precip_freq_16 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "P", ]
+CID_Precip_freq_17 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "Q", ]
+CID_Precip_freq_18 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "R", ]
+CID_Precip_freq_19 <-
+  data.table::rbindlist(l = list(CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "S", ],
+                                 CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "T", ]),
+                        use.names = TRUE)
+CID_Precip_freq_22 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "U", ]
+CID_Precip_freq_20 <-
+  data.table::rbindlist(
+    l = list(
+      CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "V", ],
+      CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "W", ],
+      CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "X", ],
+      CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "Y", ]
+    ),
+    use.names = TRUE
+  )
+CID_Precip_freq_21 <-
+  CID_Precip_freq[substr(CID_Precip_freq$CID, 1, 1) == "Z", ]
+
+```
+
+```{r}
+CID_TDelta_freq_01 <-
+  data.table::rbindlist(l = list(CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "A", ],
+                                 CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "B", ]),
+                        use.names = TRUE)
+
+CID_TDelta_freq_02 <-
+  data.table::rbindlist(l = list(CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "C", ],
+                                 CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "D" &
+                                                   substr(CID_TDelta_freq$CID, 2, 2) < 5, ]),
+                        use.names = TRUE)
+
+
+CID_TDelta_freq_03 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "D" &
+                    substr(CID_TDelta_freq$CID, 2, 2) > 4, ]
+CID_TDelta_freq_04 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "E", ]
+CID_TDelta_freq_05 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "F", ]
+CID_TDelta_freq_06 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "G", ]
+CID_TDelta_freq_07 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "H" &
+                    substr(CID_TDelta_freq$CID, 2, 2) < 6, ]
+CID_TDelta_freq_08 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "H" &
+                    substr(CID_TDelta_freq$CID, 2, 2) > 5, ]
+CID_TDelta_freq_09 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "I", ]
+CID_TDelta_freq_10 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "J", ]
+CID_TDelta_freq_11 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "K", ]
+CID_TDelta_freq_12 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "L", ]
+CID_TDelta_freq_13 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "M", ]
+CID_TDelta_freq_14 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "N", ]
+CID_TDelta_freq_15 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "O", ]
+CID_TDelta_freq_16 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "P", ]
+CID_TDelta_freq_17 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "Q", ]
+CID_TDelta_freq_18 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "R", ]
+CID_TDelta_freq_19 <-
+  data.table::rbindlist(l = list(CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "S", ],
+                                 CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "T", ]),
+                        use.names = TRUE)
+CID_TDelta_freq_22 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "U", ]
+CID_TDelta_freq_20 <-
+  data.table::rbindlist(
+    l = list(
+      CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "V", ],
+      CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "W", ],
+      CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "X", ],
+      CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "Y", ]
+    ),
+    use.names = TRUE
+  )
+CID_TDelta_freq_21 <-
+  CID_TDelta_freq[substr(CID_TDelta_freq$CID, 1, 1) == "Z", ]
+
+```
+
+```{r}
+CID_TempCompMed_freq_01 <-
+  data.table::rbindlist(l = list(CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "A", ],
+                                 CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "B", ]),
+                        use.names = TRUE)
+
+CID_TempCompMed_freq_02 <-
+  data.table::rbindlist(l = list(CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "C", ],
+                                 CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "D" &
+                                                        substr(CID_TempCompMed_freq$CID, 2, 2) < 5, ]),
+                        use.names = TRUE)
+
+
+CID_TempCompMed_freq_03 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "D" &
+                         substr(CID_TempCompMed_freq$CID, 2, 2) > 4, ]
+CID_TempCompMed_freq_04 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "E", ]
+CID_TempCompMed_freq_05 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "F", ]
+CID_TempCompMed_freq_06 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "G", ]
+CID_TempCompMed_freq_07 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "H" &
+                         substr(CID_TempCompMed_freq$CID, 2, 2) < 6, ]
+CID_TempCompMed_freq_08 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "H" &
+                         substr(CID_TempCompMed_freq$CID, 2, 2) > 5, ]
+CID_TempCompMed_freq_09 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "I", ]
+CID_TempCompMed_freq_10 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "J", ]
+CID_TempCompMed_freq_11 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "K", ]
+CID_TempCompMed_freq_12 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "L", ]
+CID_TempCompMed_freq_13 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "M", ]
+CID_TempCompMed_freq_14 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "N", ]
+CID_TempCompMed_freq_15 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "O", ]
+CID_TempCompMed_freq_16 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "P", ]
+CID_TempCompMed_freq_17 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "Q", ]
+CID_TempCompMed_freq_18 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "R", ]
+CID_TempCompMed_freq_19 <-
+  data.table::rbindlist(l = list(CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "S", ],
+                                 CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "T", ]),
+                        use.names = TRUE)
+CID_TempCompMed_freq_22 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "U", ]
+CID_TempCompMed_freq_20 <-
+  data.table::rbindlist(
+    l = list(
+      CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "V", ],
+      CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "W", ],
+      CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "X", ],
+      CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "Y", ]
+    ),
+    use.names = TRUE
+  )
+CID_TempCompMed_freq_21 <-
+  CID_TempCompMed_freq[substr(CID_TempCompMed_freq$CID, 1, 1) == "Z", ]
+
+```
+
+```{r}
+CID_TMax_freq_01 <-
+  data.table::rbindlist(l = list(CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "A", ],
+                                 CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "B", ]),
+                        use.names = TRUE)
+
+CID_TMax_freq_02 <-
+  data.table::rbindlist(l = list(CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "C", ],
+                                 CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "D" &
+                                                 substr(CID_TMax_freq$CID, 2, 2) < 5, ]),
+                        use.names = TRUE)
+
+CID_TMax_freq_03 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "D" &
+                  substr(CID_TMax_freq$CID, 2, 2) > 4, ]
+CID_TMax_freq_04 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "E", ]
+CID_TMax_freq_05 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "F", ]
+CID_TMax_freq_06 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "G", ]
+CID_TMax_freq_07 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "H" &
+                  substr(CID_TMax_freq$CID, 2, 2) < 6, ]
+CID_TMax_freq_08 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "H" &
+                  substr(CID_TMax_freq$CID, 2, 2) > 5, ]
+CID_TMax_freq_09 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "I", ]
+CID_TMax_freq_10 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "J", ]
+CID_TMax_freq_11 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "K", ]
+CID_TMax_freq_12 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "L", ]
+CID_TMax_freq_13 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "M", ]
+CID_TMax_freq_14 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "N", ]
+CID_TMax_freq_15 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "O", ]
+CID_TMax_freq_16 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "P", ]
+CID_TMax_freq_17 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "Q", ]
+CID_TMax_freq_18 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "R", ]
+CID_TMax_freq_19 <-
+  data.table::rbindlist(l = list(CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "S", ],
+                                 CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "T", ]),
+                        use.names = TRUE)
+CID_TMax_freq_22 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "U", ]
+CID_TMax_freq_20 <-
+  data.table::rbindlist(
+    l = list(
+      CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "V", ],
+      CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "W", ],
+      CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "X", ],
+      CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "Y", ]
+    ),
+    use.names = TRUE
+  )
+CID_TMax_freq_21 <-
+  CID_TMax_freq[substr(CID_TMax_freq$CID, 1, 1) == "Z", ]
+
+```
+
+```{r}
+CID_Tmin_freq_01 <-
+  data.table::rbindlist(l = list(CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "A", ],
+                                 CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "B", ]),
+                        use.names = TRUE)
+
+CID_Tmin_freq_02 <-
+  data.table::rbindlist(l = list(CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "C", ],
+                                 CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "D" &
+                                                 substr(CID_Tmin_freq$CID, 2, 2) < 5, ]),
+                        use.names = TRUE)
+
+
+CID_Tmin_freq_03 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "D" &
+                  substr(CID_Tmin_freq$CID, 2, 2) > 4, ]
+CID_Tmin_freq_04 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "E", ]
+CID_Tmin_freq_05 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "F", ]
+CID_Tmin_freq_06 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "G", ]
+CID_Tmin_freq_07 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "H" &
+                  substr(CID_Tmin_freq$CID, 2, 2) < 6, ]
+CID_Tmin_freq_08 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "H" &
+                  substr(CID_Tmin_freq$CID, 2, 2) > 5, ]
+CID_Tmin_freq_09 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "I", ]
+CID_Tmin_freq_10 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "J", ]
+CID_Tmin_freq_11 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "K", ]
+CID_Tmin_freq_12 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "L", ]
+CID_Tmin_freq_13 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "M", ]
+CID_Tmin_freq_14 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "N", ]
+CID_Tmin_freq_15 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "O", ]
+CID_Tmin_freq_16 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "P", ]
+CID_Tmin_freq_17 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "Q", ]
+CID_Tmin_freq_18 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "R", ]
+CID_Tmin_freq_19 <-
+  data.table::rbindlist(l = list(CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "S", ],
+                                 CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "T", ]),
+                        use.names = TRUE)
+CID_Tmin_freq_22 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "U", ]
+CID_Tmin_freq_20 <-
+  data.table::rbindlist(
+    l = list(
+      CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "V", ],
+      CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "W", ],
+      CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "X", ],
+      CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "Y", ]
+    ),
+    use.names = TRUE
+  )
+CID_Tmin_freq_21 <-
+  CID_Tmin_freq[substr(CID_Tmin_freq$CID, 1, 1) == "Z", ]
+
+```
+
+
+```{r}
+CID_UmidRelMed_freq_01 <-
+  data.table::rbindlist(l = list(CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "A", ],
+                                 CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "B", ]),
+                        use.names = TRUE)
+
+CID_UmidRelMed_freq_02 <-
+  data.table::rbindlist(l = list(CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "C", ],
+                                 CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "D" &
+                                                       substr(CID_UmidRelMed_freq$CID, 2, 2) < 5, ]),
+                        use.names = TRUE)
+
+
+CID_UmidRelMed_freq_03 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "D" &
+                        substr(CID_UmidRelMed_freq$CID, 2, 2) > 4, ]
+CID_UmidRelMed_freq_04 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "E", ]
+CID_UmidRelMed_freq_05 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "F", ]
+CID_UmidRelMed_freq_06 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "G", ]
+CID_UmidRelMed_freq_07 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "H" &
+                        substr(CID_UmidRelMed_freq$CID, 2, 2) < 6, ]
+CID_UmidRelMed_freq_08 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "H" &
+                        substr(CID_UmidRelMed_freq$CID, 2, 2) > 5, ]
+CID_UmidRelMed_freq_09 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "I", ]
+CID_UmidRelMed_freq_10 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "J", ]
+CID_UmidRelMed_freq_11 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "K", ]
+CID_UmidRelMed_freq_12 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "L", ]
+CID_UmidRelMed_freq_13 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "M", ]
+CID_UmidRelMed_freq_14 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "N", ]
+CID_UmidRelMed_freq_15 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "O", ]
+CID_UmidRelMed_freq_16 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "P", ]
+CID_UmidRelMed_freq_17 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "Q", ]
+CID_UmidRelMed_freq_18 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "R", ]
+CID_UmidRelMed_freq_19 <-
+  data.table::rbindlist(l = list(CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "S", ],
+                                 CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "T", ]),
+                        use.names = TRUE)
+CID_UmidRelMed_freq_22 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "U", ]
+CID_UmidRelMed_freq_20 <-
+  data.table::rbindlist(
+    l = list(
+      CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "V", ],
+      CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "W", ],
+      CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "X", ],
+      CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "Y", ]
+    ),
+    use.names = TRUE
+  )
+CID_UmidRelMed_freq_21 <-
+  CID_UmidRelMed_freq[substr(CID_UmidRelMed_freq$CID, 1, 1) == "Z", ]
+
+```
+
+```{r}
+CID_VelVentMed_freq_01 <-
+  data.table::rbindlist(l = list(CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "A", ],
+                                 CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "B", ]),
+                        use.names = TRUE)
+
+CID_VelVentMed_freq_02 <-
+  data.table::rbindlist(l = list(CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "C", ],
+                                 CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "D" &
+                                                       substr(CID_VelVentMed_freq$CID, 2, 2) < 5, ]),
+                        use.names = TRUE)
+
+
+CID_VelVentMed_freq_03 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "D" &
+                        substr(CID_VelVentMed_freq$CID, 2, 2) > 4, ]
+CID_VelVentMed_freq_04 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "E", ]
+CID_VelVentMed_freq_05 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "F", ]
+CID_VelVentMed_freq_06 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "G", ]
+CID_VelVentMed_freq_07 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "H" &
+                        substr(CID_VelVentMed_freq$CID, 2, 2) < 6, ]
+CID_VelVentMed_freq_08 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "H" &
+                        substr(CID_VelVentMed_freq$CID, 2, 2) > 5, ]
+CID_VelVentMed_freq_09 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "I", ]
+CID_VelVentMed_freq_10 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "J", ]
+CID_VelVentMed_freq_11 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "K", ]
+CID_VelVentMed_freq_12 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "L", ]
+CID_VelVentMed_freq_13 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "M", ]
+CID_VelVentMed_freq_14 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "N", ]
+CID_VelVentMed_freq_15 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "O", ]
+CID_VelVentMed_freq_16 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "P", ]
+CID_VelVentMed_freq_17 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "Q", ]
+CID_VelVentMed_freq_18 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "R", ]
+CID_VelVentMed_freq_19 <-
+  data.table::rbindlist(l = list(CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "S", ],
+                                 CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "T", ]),
+                        use.names = TRUE)
+CID_VelVentMed_freq_22 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "U", ]
+CID_VelVentMed_freq_20 <-
+  data.table::rbindlist(
+    l = list(
+      CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "V", ],
+      CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "W", ],
+      CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "X", ],
+      CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "Y", ]
+    ),
+    use.names = TRUE
+  )
+CID_VelVentMed_freq_21 <-
+  CID_VelVentMed_freq[substr(CID_VelVentMed_freq$CID, 1, 1) == "Z", ]
+
+```
+
+
+
+```{r}
+analise <- ls(pattern = "CID_.*[1-9]")
+```
+
+```{r}
+lapply(analise, function(x) {
+  x <- "CID_EvapPiche_freq_01"
+  df <- get(x)
+  nrow <- length(unique(df$CID))
+  ncol <- length(unique(df$Clima))
+  
+  matriz <- matrix(df$Freq, nrow = nrow, ncol = ncol)
+  
+  rownames(matriz) <- unique(df$CID)
+  colnames(matriz) <- unique(df$Clima)
+  
+  degree(matriz, gmode = "twomode", cmode = "indegree")
+  closeness(matriz, gmode = "twomode")
+  betweenness(matriz, gmode = "twomode")
+  
+  gplot(
+    matriz,
+    gmode = "twomode",
+    displaylabels = TRUE,
+    edge.col = "gray",
+    label.cex = 0.7,
+    usearrows = FALSE,
+    vertex.cex = closeness(matriz, gmode = "twomode") * 3
+  )
+  title(main = x)
+})
+
+```
+
