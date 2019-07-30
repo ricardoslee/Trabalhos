@@ -48,13 +48,11 @@ if(!require(rgl)) {
 
 ```
 
-```{r}
+```{r, include=FALSE}
 CONSULTAS_CONS <- fread("consultas_cons_cap7.csv", drop = c("V1"))
 ```
 
-# MapReduce
-
-```{r MapReduce}
+```{r, include=FALSE}
 CAP_Precip_freq <- as.data.frame(table(CONSULTAS_CONS$CAP,round(CONSULTAS_CONS$Precip, digits = 0)))
 names(CAP_Precip_freq) <- c("CAP","Clima","Freq")
 
@@ -86,7 +84,7 @@ names(CAP_TDelta_freq) <- c("CAP","Clima","Freq")
 ```
 
 
-```{r}
+```{r, include=FALSE}
 CAP_EvapPiche_freq$FreqRel <- CAP_EvapPiche_freq$Freq/nrow(CONSULTAS_CONS)
 CAP_Ins_freq$FreqRel <- CAP_Ins_freq$Freq/nrow(CONSULTAS_CONS)
 CAP_Precip_freq$FreqRel <- CAP_Precip_freq$Freq/nrow(CONSULTAS_CONS)
@@ -101,7 +99,7 @@ CAP_VelVentMed_freq$FreqRel <- CAP_VelVentMed_freq$Freq/nrow(CONSULTAS_CONS)
 
 
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_EvapPiche_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_EvapPiche_freq$Clima)))
@@ -113,7 +111,7 @@ colnames(MATRIX_EVAPPICHE) <- unique(CAP_EvapPiche_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_Ins_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_Ins_freq$Clima)))
@@ -125,7 +123,7 @@ colnames(MATRIX_INS) <- unique(CAP_Ins_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_Precip_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_Precip_freq$Clima)))
@@ -137,7 +135,7 @@ colnames(MATRIX_PRECIP) <- unique(CAP_Precip_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_TDelta_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_TDelta_freq$Clima)))
@@ -150,7 +148,7 @@ colnames(MATRIX_TDELTA) <- unique(CAP_TDelta_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_TempCompMed_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_TempCompMed_freq$Clima)))
@@ -163,7 +161,7 @@ colnames(MATRIX_TEMPCOMPMED) <- unique(CAP_TempCompMed_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_TMax_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_TMax_freq$Clima)))
@@ -176,7 +174,7 @@ colnames(MATRIX_TMAX) <- unique(CAP_TMax_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_Tmin_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_Tmin_freq$Clima)))
@@ -189,7 +187,7 @@ colnames(MATRIX_TMIN) <- unique(CAP_Tmin_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_UmidRelMed_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_UmidRelMed_freq$Clima)))
@@ -202,7 +200,7 @@ colnames(MATRIX_UMIDRELMED) <- unique(CAP_UmidRelMed_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_VelVentMed_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_VelVentMed_freq$Clima)))
@@ -217,7 +215,7 @@ colnames(MATRIX_VELVENTMED) <- unique(CAP_VelVentMed_freq$Clima)
 
 
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_EvapPiche_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_EvapPiche_freq$Clima)))
@@ -229,7 +227,7 @@ colnames(MATRIX_EVAPPICHE_REL) <- unique(CAP_EvapPiche_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_Ins_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_Ins_freq$Clima)))
@@ -241,7 +239,7 @@ colnames(MATRIX_INS_REL) <- unique(CAP_Ins_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_Precip_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_Precip_freq$Clima)))
@@ -253,7 +251,7 @@ colnames(MATRIX_PRECIP_REL) <- unique(CAP_Precip_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_TDelta_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_TDelta_freq$Clima)))
@@ -266,7 +264,7 @@ colnames(MATRIX_TDELTA_REL) <- unique(CAP_TDelta_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_TempCompMed_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_TempCompMed_freq$Clima)))
@@ -279,7 +277,7 @@ colnames(MATRIX_TEMPCOMPMED_REL) <- unique(CAP_TempCompMed_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_TMax_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_TMax_freq$Clima)))
@@ -292,7 +290,7 @@ colnames(MATRIX_TMAX_REL) <- unique(CAP_TMax_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_Tmin_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_Tmin_freq$Clima)))
@@ -305,7 +303,7 @@ colnames(MATRIX_TMIN_REL) <- unique(CAP_Tmin_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_UmidRelMed_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_UmidRelMed_freq$Clima)))
@@ -318,7 +316,7 @@ colnames(MATRIX_UMIDRELMED_REL) <- unique(CAP_UmidRelMed_freq$Clima)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 nrow <- max(unique(as.integer(CAP_VelVentMed_freq$CAP)))
 ncol <- max(unique(as.integer(CAP_VelVentMed_freq$Clima)))
@@ -347,20 +345,22 @@ lapply(analise, function(x) {
   rownames(matriz) <- unique(df$CID)
   colnames(matriz) <- unique(df$Clima)
   
-  degree(matriz, gmode = "twomode", cmode = "indegree")
-  closeness(matriz, gmode = "twomode")
-  betweenness(matriz, gmode = "twomode")
-  
   gplot(
     matriz,
     gmode = "twomode",
-    displaylabels = TRUE,
+    diag = TRUE,
+    # displaylabels = TRUE,
     edge.col = "gray",
     label.cex = 0.7,
     usearrows = FALSE,
     vertex.cex = closeness(matriz, gmode = "twomode") * 3
   )
   title(main = x)
+
+  degree(matriz, gmode = "twomode", cmode = "indegree")
+  closeness(matriz, gmode = "twomode")
+  betweenness(matriz, gmode = "twomode")
+  
 })
 
 ```
